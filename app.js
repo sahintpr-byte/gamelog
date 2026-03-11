@@ -77,6 +77,17 @@ function showApp(){
   const name=currentUser.user_metadata?.username||currentUser.email.split('@')[0];
   document.getElementById('userBadge').innerHTML='👤 <strong>'+name+'</strong>';
   initHero();
+  // Preload lists so modal list select works immediately from search view
+  loadMyListsSilent();
+}
+
+async function loadMyListsSilent(){
+  const {data}=await sb.from('lists').select('*').eq('user_id',currentUser.id).order('created_at');
+  if(!data||!data.length){
+    const {data:nl}=await sb.from('lists').insert({user_id:currentUser.id,name:'Listem',is_default:true}).select().single();
+    myLists=[nl];
+  } else { myLists=data; }
+  if(!activeListId&&myLists.length) activeListId=myLists[0].id;
 }
 
 sb.auth.onAuthStateChange((event,session)=>{

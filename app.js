@@ -125,7 +125,46 @@ function switchView(v){
 
 /* ── SEARCH ── */
 document.getElementById('searchBtn').onclick=searchGames;
-document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchGames();});
+document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter'){closeDropdown();searchGames();}});
+document.getElementById('searchInput').addEventListener('input',debounce(liveSearchGames,400));
+document.getElementById('searchInput').addEventListener('blur',()=>setTimeout(closeDropdown,200));
+
+let _searchTimer=null;
+function debounce(fn,ms){return function(...args){clearTimeout(_searchTimer);_searchTimer=setTimeout(()=>fn(...args),ms);};}
+function closeDropdown(){const d=document.getElementById('searchDropdown');if(d)d.remove();}
+
+async function liveSearchGames(){
+  const q=document.getElementById('searchInput').value.trim();
+  closeDropdown();
+  if(q.length<2)return;
+  try{
+    const r=await fetch('https://api.rawg.io/api/games?key='+RAWG+'&search='+encodeURIComponent(q)+'&page_size=6&search_precise=true');
+    const data=await r.json();
+    if(!data.results||!data.results.length)return;
+    const inp=document.getElementById('searchInput');
+    const rect=inp.getBoundingClientRect();
+    const drop=document.createElement('div');
+    drop.id='searchDropdown';
+    drop.style.cssText='position:fixed;top:'+(rect.bottom+window.scrollY+4)+'px;left:'+rect.left+'px;width:'+rect.width+'px;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:500;overflow:hidden;max-height:320px;overflow-y:auto;';
+    data.results.forEach(game=>{
+      const year=game.released?game.released.slice(0,4):'';
+      const item=document.createElement('div');
+      item.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;';
+      item.innerHTML=(game.background_image?'<img src="'+game.background_image+'" style="width:48px;height:28px;object-fit:cover;border-radius:4px;flex-shrink:0">':'<div style="width:48px;height:28px;background:var(--surface2);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center">🎮</div>')+
+        '<div style="min-width:0"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+game.name+'</div>'+
+        '<div style="font-size:12px;color:var(--muted)">'+year+'</div></div>';
+      item.onmouseenter=()=>item.style.background='var(--surface2)';
+      item.onmouseleave=()=>item.style.background='';
+      item.onmousedown=()=>{
+        document.getElementById('searchInput').value=game.name;
+        closeDropdown();
+        searchGames();
+      };
+      drop.appendChild(item);
+    });
+    document.body.appendChild(drop);
+  }catch(e){}
+}
 
 async function searchGames(){
   const q=document.getElementById('searchInput').value.trim(); if(!q) return;

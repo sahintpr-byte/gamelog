@@ -647,11 +647,7 @@ async function exportList(fmt){
     toast(t('toastXLSX'));
   } else if(fmt==='pdf'){
     const win=window.open('','_blank');
-    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+listName+'</title><style>body{font-family:Arial,sans-serif;padding:24px}h1{font-size:20px;margin-bottom:16px}table{width:100%;border-collapse:collapse;font-size:13px}th{background:#1a1a2e;color:#e8ff47;text-align:left;padding:8px 10px}td{padding:7px 10px;border-bottom:1px solid #ddd}.steam-link{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
-  border-radius:5px;background:rgba(23,26,33,.9);border:1px solid rgba(102,192,244,.2);
-  text-decoration:none;flex-shrink:0;transition:all .2s;}
-.steam-link:hover{background:#1b2838;border-color:#66c0f4;transform:scale(1.1);}
-</style></head><body><h1>🎮 '+listName+'</h1><table><thead><tr><th>#</th><th>Oyun</th><th>Puan</th><th>Yıl</th><th>Türler</th><th>Not</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+r['Oyun Adı']+'</td><td>'+r['Puan']+'/10</td><td>'+r['Yıl']+'</td><td>'+r['Türler']+'</td><td>'+r['Not']+'</td></tr>').join('')+'</tbody></table></body></html>');
+    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+listName+'</title><style>body{font-family:Arial,sans-serif;padding:24px}h1{font-size:22px;margin-bottom:16px}table{width:100%;border-collapse:collapse;font-size:13px}th{background:#1a1a2e;color:#fff;text-align:left;padding:8px 10px}td{padding:7px 10px;border-bottom:1px solid #ddd}</style></head><body><h1>🎮 '+listName+'</h1><table><thead><tr><th>#</th><th>Oyun</th><th>Puan</th><th>Yıl</th><th>Not</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+r[t('colName')]+'</td><td>'+r[t('colScore')]+'/10</td><td>'+r[t('colYear')]+'</td><td>'+r[t('colNote')]+'</td></tr>').join('')+'</tbody></table></body></html>');
     win.document.close(); setTimeout(()=>win.print(),400);
     toast(t('toastPDF'));
   }

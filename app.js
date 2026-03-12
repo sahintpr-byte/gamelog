@@ -205,7 +205,10 @@ async function renderResults(games){
       '<a href="https://www.metacritic.com/game/'+slug+'/" target="_blank" rel="noopener" style="display:block"><img class="game-card-img" src="'+game.background_image+'" alt="" loading="lazy"></a>':
       '<div class="game-card-img-placeholder">🎮</div>')+
       '<div class="game-card-body">'+
-        '<div class="game-card-title">'+game.name+'</div>'+
+        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:2px">'+
+          '<div class="game-card-title" style="margin-bottom:0">'+game.name+'</div>'+
+          '<a href="https://store.steampowered.com/search/?term='+encodeURIComponent(game.name)+'" target="_blank" rel="noopener" title="Steam'de Ara" class="steam-link" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 256c0 137-111.2 248-248.4 248-113.8 0-209.7-76.3-239.1-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5v1.2L176.6 279c-15.5-.9-30.7 3.4-43.5 12.1L0 235.1C10.2 103.7 122.2 8 248 8c136.9 0 248 111 248 248z" fill="#66c0f4"/></svg></a>'+
+        '</div>'+
         '<div class="game-card-meta"><span>'+year+' · '+genres+'</span>'+(rating?'<span style="font-size:12px;font-weight:600;color:'+rc+'">'+rating+'</span>':'')+'</div>'+
         '<button class="btn-add'+(isAdded?' added':'')+'">'+(isAdded?t('addedBtn'):t('addBtn'))+'</button>'+
       '</div>';
@@ -471,7 +474,7 @@ async function renderList(targetEl,userId,readonly,listId,page){
       const tr=document.createElement('tr');
       tr.innerHTML='<td style="color:var(--muted);font-size:12px">'+num+'</td>'+
         '<td>'+(game.game_image?'<a href="'+mcUrl(game.game_name)+'" target="_blank" rel="noopener"><img class="tbl-img" src="'+game.game_image+'" alt="" loading="lazy" style="transition:opacity .2s" onmouseover="this.style.opacity=.7" onmouseout="this.style.opacity=1"></a>':'🎮')+'</td>'+
-        '<td style="font-weight:600">'+game.game_name+'</td>'+
+        '<td><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:600">'+game.game_name+'</span><a href="https://store.steampowered.com/search/?term='+encodeURIComponent(game.game_name)+'" target="_blank" rel="noopener" title="Steam'de Ara" class="steam-link"><svg width="11" height="11" viewBox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 256c0 137-111.2 248-248.4 248-113.8 0-209.7-76.3-239.1-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5v1.2L176.6 279c-15.5-.9-30.7 3.4-43.5 12.1L0 235.1C10.2 103.7 122.2 8 248 8c136.9 0 248 111 248 248z" fill="#66c0f4"/></svg></a></div></td>'+
         '<td><span class="tbl-score '+sc(game.score)+'">'+game.score+'<span style="color:var(--muted);font-size:11px">/10</span></span></td>'+
         '<td style="color:var(--muted)">'+year+'</td>'+
         '<td style="color:var(--muted)">'+genres+'</td>'+
@@ -496,7 +499,10 @@ async function renderList(targetEl,userId,readonly,listId,page){
         '<div style="display:grid;grid-template-columns:80px 1fr auto;gap:16px;align-items:center">'+
           (game.game_image?'<a href="'+mcUrl(game.game_name)+'" target="_blank" rel="noopener" style="display:block"><img class="list-item-img" src="'+game.game_image+'" alt="" loading="lazy" style="transition:opacity .2s" onmouseover="this.style.opacity=.7" onmouseout="this.style.opacity=1"></a>':'<div class="list-item-img" style="display:flex;align-items:center;justify-content:center;color:#444;font-size:24px">🎮</div>')+
           '<div>'+
-            '<div class="list-item-title">'+game.game_name+'</div>'+
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+              '<div class="list-item-title" style="margin-bottom:0">'+game.game_name+'</div>'+
+              '<a href="https://store.steampowered.com/search/?term='+encodeURIComponent(game.game_name)+'" target="_blank" rel="noopener" title="Steam'de Ara" class="steam-link"><svg width="12" height="12" viewBox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 256c0 137-111.2 248-248.4 248-113.8 0-209.7-76.3-239.1-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5v1.2L176.6 279c-15.5-.9-30.7 3.4-43.5 12.1L0 235.1C10.2 103.7 122.2 8 248 8c136.9 0 248 111 248 248z" fill="#66c0f4"/></svg></a>'+
+            '</div>'+
             '<div class="list-item-meta"><span>'+year+'</span><span>'+genres+'</span><span>📅 '+date+'</span></div>'+
             (game.notes?'<div class="list-item-note">"'+game.notes+'"</div>':'')+
           '</div>'+
@@ -641,7 +647,11 @@ async function exportList(fmt){
     toast(t('toastXLSX'));
   } else if(fmt==='pdf'){
     const win=window.open('','_blank');
-    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+listName+'</title><style>body{font-family:Arial,sans-serif;padding:24px}h1{font-size:20px;margin-bottom:16px}table{width:100%;border-collapse:collapse;font-size:13px}th{background:#1a1a2e;color:#e8ff47;text-align:left;padding:8px 10px}td{padding:7px 10px;border-bottom:1px solid #ddd}</style></head><body><h1>🎮 '+listName+'</h1><table><thead><tr><th>#</th><th>Oyun</th><th>Puan</th><th>Yıl</th><th>Türler</th><th>Not</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+r['Oyun Adı']+'</td><td>'+r['Puan']+'/10</td><td>'+r['Yıl']+'</td><td>'+r['Türler']+'</td><td>'+r['Not']+'</td></tr>').join('')+'</tbody></table></body></html>');
+    win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+listName+'</title><style>body{font-family:Arial,sans-serif;padding:24px}h1{font-size:20px;margin-bottom:16px}table{width:100%;border-collapse:collapse;font-size:13px}th{background:#1a1a2e;color:#e8ff47;text-align:left;padding:8px 10px}td{padding:7px 10px;border-bottom:1px solid #ddd}.steam-link{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+  border-radius:5px;background:rgba(23,26,33,.9);border:1px solid rgba(102,192,244,.2);
+  text-decoration:none;flex-shrink:0;transition:all .2s;}
+.steam-link:hover{background:#1b2838;border-color:#66c0f4;transform:scale(1.1);}
+</style></head><body><h1>🎮 '+listName+'</h1><table><thead><tr><th>#</th><th>Oyun</th><th>Puan</th><th>Yıl</th><th>Türler</th><th>Not</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+r['Oyun Adı']+'</td><td>'+r['Puan']+'/10</td><td>'+r['Yıl']+'</td><td>'+r['Türler']+'</td><td>'+r['Not']+'</td></tr>').join('')+'</tbody></table></body></html>');
     win.document.close(); setTimeout(()=>win.print(),400);
     toast(t('toastPDF'));
   }

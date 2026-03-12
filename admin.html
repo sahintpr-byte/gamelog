@@ -197,9 +197,10 @@ body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-ser
     <div class="page" id="page-users">
       <div class="page-header">
         <div class="page-title">👥 <span>Kullanıcılar</span></div>
-        <div class="page-sub">Kayıtlı tüm kullanıcılar</div>
+        <div class="page-sub">Kayıtlı tüm kullanıcılar — şifreler güvenlik nedeniyle gösterilemiyor</div>
       </div>
       <div id="usersContent"><div class="loading"><div class="spinner"></div></div></div>
+      <div id="userDetailPanel" style="display:none;margin-top:20px"></div>
     </div>
 
     <!-- GAMES -->
@@ -375,26 +376,88 @@ async function loadOverview(){
 async function loadUsers(){
   const el=document.getElementById('usersContent');
   el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  document.getElementById('userDetailPanel').style.display='none';
   const {data:users}=await sb.from('profiles').select('*').order('created_at',{ascending:false});
   if(!users||!users.length){el.innerHTML='<div class="loading">Kullanıcı yok.</div>';return;}
 
-  // Get game and book counts per user
   const {data:gameCounts}=await sb.from('game_lists').select('user_id');
   const {data:bookCounts}=await sb.from('book_lists').select('user_id');
   const gc={},bc={};
   (gameCounts||[]).forEach(r=>{gc[r.user_id]=(gc[r.user_id]||0)+1;});
   (bookCounts||[]).forEach(r=>{bc[r.user_id]=(bc[r.user_id]||0)+1;});
 
-  const rows=users.map(u=>`<tr>
+  const rows=users.map(u=>`<tr style="cursor:pointer" onclick="loadUserDetail('${u.id}','${u.username}')">
     <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${u.username[0].toUpperCase()}</div><strong>${u.username}</strong></div></td>
     <td class="mono" style="color:var(--muted);font-size:11px">${u.id.slice(0,8)}...</td>
+    <td class="mono" style="color:var(--muted);font-size:11px">••••••••</td>
     <td><span class="badge cyan">🎮 ${gc[u.id]||0} oyun</span></td>
     <td><span class="badge green">📚 ${bc[u.id]||0} kitap</span></td>
     <td class="mono">${fdate(u.created_at)}</td>
+    <td><span style="font-size:11px;color:var(--accent)">→ Detay</span></td>
   </tr>`).join('');
 
-  el.innerHTML=tableWrap('Tüm Kullanıcılar',users.length,
-    '<th>Kullanıcı</th><th>ID</th><th>Oyunlar</th><th>Kitaplar</th><th>Kayıt Tarihi</th>',rows);
+  el.innerHTML=tableWrap('Tüm Kullanıcılar — satıra tıkla detay gör',users.length,
+    '<th>Kullanıcı</th><th>ID</th><th>Şifre</th><th>Oyunlar</th><th>Kitaplar</th><th>Kayıt Tarihi</th><th></th>',rows);
+}
+
+async function loadUserDetail(userId, username){
+  const panel=document.getElementById('userDetailPanel');
+  panel.style.display='block';
+  panel.innerHTML=`<div style="background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:20px;margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="avatar" style="width:40px;height:40px;font-size:18px">${username[0].toUpperCase()}</div>
+        <div><div style="font-size:18px;font-weight:700">${username}</div><div style="font-size:12px;color:var(--muted)">kullanıcı detayı</div></div>
+      </div>
+      <button onclick="document.getElementById('userDetailPanel').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 12px;cursor:pointer;font-family:inherit">✕ Kapat</button>
+    </div>
+    <div id="userDetailTabs" style="display:flex;gap:8px;margin-bottom:16px">
+      <button class="tab active" onclick="showUserTab('games','${userId}',this)">🎮 Oyunlar</button>
+      <button class="tab" onclick="showUserTab('books','${userId}',this)">📚 Kitaplar</button>
+    </div>
+    <div id="userDetailContent"><div class="loading"><div class="spinner"></div></div></div>
+  </div>`;
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+  showUserTab('games', userId, panel.querySelector('.tab'));
+}
+
+async function showUserTab(type, userId, btn){
+  document.querySelectorAll('#userDetailTabs .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const el=document.getElementById('userDetailContent');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+
+  if(type==='games'){
+    const {data:items}=await sb.from('game_lists').select('*').eq('user_id',userId).order('added_at',{ascending:false});
+    if(!items||!items.length){el.innerHTML='<div style="color:var(--muted);padding:12px">Oyun eklenmemiş.</div>';return;}
+    const rows=items.map((i,idx)=>`<tr>
+      <td class="mono" style="color:var(--muted)">${idx+1}</td>
+      <td>${i.game_image?`<img class="cover-thumb" src="${i.game_image}" alt="">`:''}</td>
+      <td><strong>${i.game_name||'—'}</strong></td>
+      <td><span class="score-pill ${sc(i.score)}">${i.score}/10</span></td>
+      <td style="color:var(--muted);font-size:12px">${(i.genres||[]).slice(0,2).join(', ')||'—'}</td>
+      <td style="color:var(--muted);font-size:12px;font-style:italic;max-width:180px;overflow:hidden;text-overflow:ellipsis">${i.notes||''}</td>
+      <td class="mono">${fdate(i.added_at)}</td>
+    </tr>`).join('');
+    el.innerHTML=`<div style="overflow-x:auto"><table class="data-table">
+      <thead><tr><th>#</th><th></th><th>Oyun</th><th>Puan</th><th>Tür</th><th>Not</th><th>Tarih</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+  } else {
+    const {data:items}=await sb.from('book_lists').select('*').eq('user_id',userId).order('added_at',{ascending:false});
+    if(!items||!items.length){el.innerHTML='<div style="color:var(--muted);padding:12px">Kitap eklenmemiş.</div>';return;}
+    const rows=items.map((i,idx)=>`<tr>
+      <td class="mono" style="color:var(--muted)">${idx+1}</td>
+      <td>${i.book_image?`<img class="cover-thumb" src="${i.book_image}" alt="">`:''}</td>
+      <td><strong>${i.book_title||'—'}</strong><div style="font-size:11px;color:var(--muted);font-style:italic">${i.book_author||''}</div></td>
+      <td><span class="score-pill ${sc(i.score)}">${i.score}/10</span></td>
+      <td style="color:var(--muted);font-size:12px">${i.published_year||'—'}</td>
+      <td style="color:var(--muted);font-size:12px;font-style:italic;max-width:180px;overflow:hidden;text-overflow:ellipsis">${i.notes||''}</td>
+      <td class="mono">${fdate(i.added_at)}</td>
+    </tr>`).join('');
+    el.innerHTML=`<div style="overflow-x:auto"><table class="data-table">
+      <thead><tr><th>#</th><th></th><th>Kitap</th><th>Puan</th><th>Yıl</th><th>Not</th><th>Tarih</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+  }
 }
 
 // ── GAMES ──

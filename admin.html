@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0f;--surface:#13131a;--surface2:#1a1a24;--border:#2a2a38;
+  --accent:#7c3aed;--accent2:#06b6d4;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;
+  --text:#e8e8f0;--muted:#6b6b80;--radius:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;}
+
+/* AUTH */
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 30% 40%,rgba(124,58,237,.15) 0%,transparent 60%);}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:40px;width:100%;max-width:380px;box-shadow:0 24px 64px rgba(0,0,0,.5);}
+.auth-logo{font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.auth-title{font-size:28px;font-weight:700;margin-bottom:4px;}
+.auth-title span{color:var(--accent);}
+.auth-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--muted);
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.field input{width:100%;background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:8px;color:var(--text);font-family:'Space Grotesk',sans-serif;
+  font-size:14px;padding:11px 14px;outline:none;transition:border-color .2s;margin-bottom:14px;}
+.field input:focus{border-color:var(--accent);}
+.btn-login{width:100%;background:var(--accent);border:none;border-radius:8px;color:#fff;
+  font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;padding:13px;
+  cursor:pointer;transition:all .2s;margin-top:4px;}
+.btn-login:hover{background:#6d28d9;transform:translateY(-1px);}
+.btn-login:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.auth-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;
+  border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
+
+/* LAYOUT */
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);
+  padding:24px 0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.sidebar-logo .logo-tag{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:2px;text-transform:uppercase;}
+.sidebar-logo .logo-name{font-size:20px;font-weight:700;margin-top:2px;}
+.sidebar-logo .logo-name span{color:var(--accent);}
+.nav-section{padding:0 12px;margin-bottom:8px;}
+.nav-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:2px;
+  text-transform:uppercase;padding:0 8px;margin-bottom:6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;
+  font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s;margin-bottom:2px;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(124,58,237,.15);color:var(--accent);}
+.nav-item .icon{font-size:16px;width:20px;text-align:center;}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);margin-top:auto;}
+.btn-logout-side{width:100%;background:none;border:1.5px solid var(--border);color:var(--muted);
+  border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:13px;
+  padding:8px;cursor:pointer;transition:all .2s;}
+.btn-logout-side:hover{border-color:var(--red);color:var(--red);}
+
+/* MAIN */
+.main{padding:32px;overflow-y:auto;}
+.page{display:none;}.page.active{display:block;}
+.page-header{margin-bottom:28px;}
+.page-title{font-size:26px;font-weight:700;letter-spacing:-.5px;}
+.page-title span{color:var(--accent);}
+.page-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+.stat-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.stat-value{font-family:'Space Mono',monospace;font-size:32px;font-weight:700;line-height:1;}
+.stat-value.purple{color:var(--accent);}
+.stat-value.cyan{color:var(--accent2);}
+.stat-value.green{color:var(--green);}
+.stat-value.yellow{color:var(--yellow);}
+.stat-sub{font-size:12px;color:var(--muted);margin-top:6px;}
+
+/* TABLE */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+.table-card-header{padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;}
+.table-card-title{font-size:14px;font-weight:600;}
+.table-card-count{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);
+  background:var(--surface2);padding:3px 10px;border-radius:20px;border:1px solid var(--border);}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{text-align:left;padding:10px 20px;font-size:10px;font-weight:700;
+  color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;
+  border-bottom:1px solid var(--border);white-space:nowrap;}
+.data-table td{padding:12px 20px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--surface2);}
+.avatar{width:32px;height:32px;border-radius:50%;background:rgba(124,58,237,.2);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;
+  color:var(--accent);flex-shrink:0;border:1.5px solid rgba(124,58,237,.3);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;
+  font-size:11px;font-weight:600;}
+.badge.green{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.badge.cyan{background:rgba(6,182,212,.1);color:var(--accent2);border:1px solid rgba(6,182,212,.2);}
+.badge.purple{background:rgba(124,58,237,.1);color:var(--accent);border:1px solid rgba(124,58,237,.2);}
+.cover-thumb{width:32px;height:46px;object-fit:cover;border-radius:4px;
+  background:var(--surface2);vertical-align:middle;}
+.mono{font-family:'Space Mono',monospace;font-size:12px;}
+.score-pill{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;
+  padding:2px 8px;border-radius:6px;}
+.score-pill.high{background:rgba(16,185,129,.15);color:var(--green);}
+.score-pill.mid{background:rgba(245,158,11,.15);color:var(--yellow);}
+.score-pill.low{background:rgba(239,68,68,.15);color:var(--red);}
+
+/* LOADING */
+.loading{text-align:center;padding:40px;color:var(--muted);}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface);
+  border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;}
+.tab{background:none;border:none;color:var(--muted);font-family:'Space Grotesk',sans-serif;
+  font-size:13px;font-weight:500;padding:7px 16px;border-radius:7px;cursor:pointer;transition:all .2s;}
+.tab.active{background:var(--surface2);color:var(--text);}
+
+/* DELETE BTN */
+.btn-del{background:none;border:1px solid var(--border);color:var(--muted);
+  border-radius:6px;font-size:12px;padding:4px 10px;cursor:pointer;transition:all .2s;}
+.btn-del:hover{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.08);}
+
+@media(max-width:768px){.app{grid-template-columns:1fr;}.sidebar{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="authScreen" style="display:flex">
+  <div class="auth-box">
+    <div class="auth-logo">Admin Panel</div>
+    <div class="auth-title">GAME<span>LOG</span> × BOOK<span>LOG</span></div>
+    <div class="auth-sub">Yönetim paneline giriş yap.</div>
+    <div class="field"><label>E-posta</label><input type="email" id="adminEmail" placeholder="admin@mail.com"></div>
+    <div class="field"><label>Şifre</label><input type="password" id="adminPass" placeholder="••••••••"></div>
+    <button class="btn-login" id="loginBtn">Giriş Yap</button>
+    <div class="auth-err" id="authErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="appScreen" style="display:none">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-tag">Admin Panel</div>
+      <div class="logo-name">GAME<span>LOG</span> × BOOK<span>LOG</span></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Genel</div>
+      <div class="nav-item active" data-page="overview"><span class="icon">📊</span> Özet</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Kullanıcılar</div>
+      <div class="nav-item" data-page="users"><span class="icon">👥</span> Kullanıcılar</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">GAMELOG</div>
+      <div class="nav-item" data-page="games"><span class="icon">🎮</span> Oyun Listeleri</div>
+      <div class="nav-item" data-page="top-games"><span class="icon">🏆</span> En Çok Eklenen</div>
+      <div class="nav-item" data-page="game-comments"><span class="icon">💬</span> Yorumlar</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">BOOKLOG</div>
+      <div class="nav-item" data-page="books"><span class="icon">📚</span> Kitap Listeleri</div>
+      <div class="nav-item" data-page="top-books"><span class="icon">🏆</span> En Çok Eklenen</div>
+      <div class="nav-item" data-page="book-comments"><span class="icon">💬</span> Yorumlar</div>
+    </div>
+    <div style="flex:1"></div>
+    <div class="sidebar-footer">
+      <button class="btn-logout-side" id="logoutBtn">← Çıkış Yap</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="page-header">
+        <div class="page-title">📊 <span>Özet</span></div>
+        <div class="page-sub">Tüm platform istatistikleri</div>
+      </div>
+      <div class="stat-grid" id="overviewStats">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+      <div id="overviewRecent"></div>
+    </div>
+
+    <!-- USERS -->
+    <div class="page" id="page-users">
+      <div class="page-header">
+        <div class="page-title">👥 <span>Kullanıcılar</span></div>
+        <div class="page-sub">Kayıtlı tüm kullanıcılar</div>
+      </div>
+      <div id="usersContent"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- GAMES -->
+    <div class="page" id="page-games">
+      <div class="page-header">
+        <div class="page-title">🎮 <span>Oyun Listeleri</span></div>
+        <div class="page-sub">Kullanıcıların oyun listeleri</div>
+      </div>
+      <div id="gamesContent"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- TOP GAMES -->
+    <div class="page" id="page-top-games">
+      <div class="page-header">
+        <div class="page-title">🏆 <span>En Çok Eklenen Oyunlar</span></div>
+        <div class="page-sub">Platforma en çok eklenen oyunlar</div>
+      </div>
+      <div id="topGamesContent"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- GAME COMMENTS -->
+    <div class="page" id="page-game-comments">
+      <div class="page-header">
+        <div class="page-title">💬 <span>Oyun Yorumları</span></div>
+        <div class="page-sub">Tüm oyun yorumları</div>
+      </div>
+      <div id="gameCommentsContent"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- BOOKS -->
+    <div class="page" id="page-books">
+      <div class="page-header">
+        <div class="page-title">📚 <span>Kitap Listeleri</span></div>
+        <div class="page-sub">Kullanıcıların kitap listeleri</div>
+      </div>
+      <div id="booksContent"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- TOP BOOKS -->
+    <div class="page" id="page-top-books">
+      <div class="page-header">
+        <div class="page-title">🏆 <span>En Çok Eklenen Kitaplar</span></div>
+        <div class="page-sub">Platforma en çok eklenen kitaplar</div>
+      </div>
+      <div id="topBooksContent"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
+    <!-- BOOK COMMENTS -->
+    <div class="page" id="page-book-comments">
+      <div class="page-header">
+        <div class="page-title">💬 <span>Kitap Yorumları</span></div>
+        <div class="page-sub">Tüm kitap yorumları</div>
+      </div>
+      <div id="bookCommentsContent"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL='https://dzjmbwyandrkonqdjalk.supabase.co';
+const SB_KEY='sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD';
+const {createClient}=supabase;
+const sb=createClient(SB_URL,SB_KEY);
+
+let currentPage='overview';
+
+// ── AUTH ──
+document.getElementById('loginBtn').onclick=doLogin;
+document.getElementById('adminPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+async function doLogin(){
+  const email=document.getElementById('adminEmail').value.trim();
+  const pass=document.getElementById('adminPass').value;
+  const btn=document.getElementById('loginBtn');
+  document.getElementById('authErr').style.display='none';
+  if(!email||!pass){showErr('E-posta ve şifre gerekli.');return;}
+  btn.disabled=true;btn.textContent='Giriş yapılıyor...';
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  btn.disabled=false;btn.textContent='Giriş Yap';
+  if(error){showErr('Hatalı e-posta veya şifre.');return;}
+  showApp();
+}
+function showErr(msg){const el=document.getElementById('authErr');el.textContent=msg;el.style.display='block';}
+
+document.getElementById('logoutBtn').onclick=async()=>{
+  await sb.auth.signOut();
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+};
+
+sb.auth.onAuthStateChange((event,session)=>{
+  if(session?.user)showApp();
+});
+
+function showApp(){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appScreen').style.display='grid';
+  loadPage('overview');
+}
+
+// ── NAV ──
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.onclick=()=>{
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    item.classList.add('active');
+    loadPage(item.dataset.page);
+  };
+});
+
+function loadPage(page){
+  currentPage=page;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const loaders={
+    'overview':loadOverview,'users':loadUsers,
+    'games':loadGames,'top-games':loadTopGames,'game-comments':loadGameComments,
+    'books':loadBooks,'top-books':loadTopBooks,'book-comments':loadBookComments,
+  };
+  if(loaders[page])loaders[page]();
+}
+
+// ── HELPERS ──
+function sc(s){return s>=8?'high':s>=5?'mid':'low';}
+function fdate(d){return d?new Date(d).toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}):'—';}
+function tableWrap(title,count,thead,tbody){
+  return `<div class="table-card">
+    <div class="table-card-header">
+      <span class="table-card-title">${title}</span>
+      <span class="table-card-count">${count} kayıt</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="data-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table>
+    </div>
+  </div>`;
+}
+
+// ── OVERVIEW ──
+async function loadOverview(){
+  const el=document.getElementById('overviewStats');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+
+  const [{count:userCount},{count:gameCount},{count:bookCount},{count:gameCommentCount},{count:bookCommentCount}]=await Promise.all([
+    sb.from('profiles').select('*',{count:'exact',head:true}),
+    sb.from('game_lists').select('*',{count:'exact',head:true}),
+    sb.from('book_lists').select('*',{count:'exact',head:true}),
+    sb.from('comments').select('*',{count:'exact',head:true}),
+    sb.from('book_comments').select('*',{count:'exact',head:true}),
+  ]);
+
+  el.innerHTML=`
+    <div class="stat-card"><div class="stat-label">Kullanıcılar</div><div class="stat-value purple">${userCount||0}</div><div class="stat-sub">kayıtlı hesap</div></div>
+    <div class="stat-card"><div class="stat-label">Oyun Kaydı</div><div class="stat-value cyan">${gameCount||0}</div><div class="stat-sub">game_lists tablosu</div></div>
+    <div class="stat-card"><div class="stat-label">Kitap Kaydı</div><div class="stat-value green">${bookCount||0}</div><div class="stat-sub">book_lists tablosu</div></div>
+    <div class="stat-card"><div class="stat-label">Oyun Yorumu</div><div class="stat-value yellow">${gameCommentCount||0}</div><div class="stat-sub">comments tablosu</div></div>
+    <div class="stat-card"><div class="stat-label">Kitap Yorumu</div><div class="stat-value purple">${bookCommentCount||0}</div><div class="stat-sub">book_comments tablosu</div></div>
+  `;
+
+  // Recent users
+  const {data:recentUsers}=await sb.from('profiles').select('*').order('created_at',{ascending:false}).limit(5);
+  const recEl=document.getElementById('overviewRecent');
+  if(recentUsers&&recentUsers.length){
+    const rows=recentUsers.map(u=>`<tr>
+      <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${u.username[0].toUpperCase()}</div>${u.username}</div></td>
+      <td class="mono">${fdate(u.created_at)}</td>
+    </tr>`).join('');
+    recEl.innerHTML=tableWrap('Son Kayıt Olan Kullanıcılar',recentUsers.length,
+      '<th>Kullanıcı</th><th>Kayıt Tarihi</th>',rows);
+  }
+}
+
+// ── USERS ──
+async function loadUsers(){
+  const el=document.getElementById('usersContent');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const {data:users}=await sb.from('profiles').select('*').order('created_at',{ascending:false});
+  if(!users||!users.length){el.innerHTML='<div class="loading">Kullanıcı yok.</div>';return;}
+
+  // Get game and book counts per user
+  const {data:gameCounts}=await sb.from('game_lists').select('user_id');
+  const {data:bookCounts}=await sb.from('book_lists').select('user_id');
+  const gc={},bc={};
+  (gameCounts||[]).forEach(r=>{gc[r.user_id]=(gc[r.user_id]||0)+1;});
+  (bookCounts||[]).forEach(r=>{bc[r.user_id]=(bc[r.user_id]||0)+1;});
+
+  const rows=users.map(u=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${u.username[0].toUpperCase()}</div><strong>${u.username}</strong></div></td>
+    <td class="mono" style="color:var(--muted);font-size:11px">${u.id.slice(0,8)}...</td>
+    <td><span class="badge cyan">🎮 ${gc[u.id]||0} oyun</span></td>
+    <td><span class="badge green">📚 ${bc[u.id]||0} kitap</span></td>
+    <td class="mono">${fdate(u.created_at)}</td>
+  </tr>`).join('');
+
+  el.innerHTML=tableWrap('Tüm Kullanıcılar',users.length,
+    '<th>Kullanıcı</th><th>ID</th><th>Oyunlar</th><th>Kitaplar</th><th>Kayıt Tarihi</th>',rows);
+}
+
+// ── GAMES ──
+async function loadGames(){
+  const el=document.getElementById('gamesContent');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const {data:items}=await sb.from('game_lists').select('*,profiles(username)').order('added_at',{ascending:false}).limit(100);
+  if(!items||!items.length){el.innerHTML='<div class="loading">Kayıt yok.</div>';return;}
+
+  const rows=items.map(i=>`<tr>
+    <td>${i.game_image?`<img class="cover-thumb" src="${i.game_image}" alt="">`:''}</td>
+    <td><strong>${i.game_name||'—'}</strong></td>
+    <td>${i.profiles?.username||'—'}</td>
+    <td><span class="score-pill ${sc(i.score)}">${i.score}/10</span></td>
+    <td style="color:var(--muted);font-size:12px">${(i.genres||[]).slice(0,2).join(', ')||'—'}</td>
+    <td class="mono">${fdate(i.added_at)}</td>
+    <td><button class="btn-del" onclick="delGameEntry('${i.id}',this)">Sil</button></td>
+  </tr>`).join('');
+
+  el.innerHTML=tableWrap('Oyun Listesi Kayıtları',items.length,
+    '<th></th><th>Oyun</th><th>Kullanıcı</th><th>Puan</th><th>Tür</th><th>Eklenme</th><th></th>',rows);
+}
+
+async function delGameEntry(id,btn){
+  if(!confirm('Bu kaydı silmek istediğinize emin misiniz?'))return;
+  btn.disabled=true;btn.textContent='...';
+  await sb.from('game_lists').delete().eq('id',id);
+  btn.closest('tr').remove();
+}
+
+// ── TOP GAMES ──
+async function loadTopGames(){
+  const el=document.getElementById('topGamesContent');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const {data:items}=await sb.from('game_lists').select('game_id,game_name,game_image,score');
+  if(!items||!items.length){el.innerHTML='<div class="loading">Kayıt yok.</div>';return;}
+
+  const map={};
+  items.forEach(i=>{
+    if(!map[i.game_id])map[i.game_id]={name:i.game_name,image:i.game_image,count:0,scores:[]};
+    map[i.game_id].count++;
+    map[i.game_id].scores.push(i.score);
+  });
+  const sorted=Object.values(map).sort((a,b)=>b.count-a.count).slice(0,50);
+
+  const rows=sorted.map((g,idx)=>{
+    const avg=(g.scores.reduce((s,x)=>s+x,0)/g.scores.length).toFixed(1);
+    return `<tr>
+      <td class="mono" style="color:var(--muted)">${idx+1}</td>
+      <td>${g.image?`<img class="cover-thumb" src="${g.image}" alt="">`:''}</td>
+      <td><strong>${g.name}</strong></td>
+      <td><span class="badge purple">${g.count} kullanıcı</span></td>
+      <td><span class="score-pill ${sc(parseFloat(avg))}">${avg}/10</span></td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML=tableWrap('En Çok Eklenen Oyunlar',sorted.length,
+    '<th>#</th><th></th><th>Oyun</th><th>Eklenme</th><th>Ort. Puan</th>',rows);
+}
+
+// ── GAME COMMENTS ──
+async function loadGameComments(){
+  const el=document.getElementById('gameCommentsContent');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const {data:items}=await sb.from('comments').select('*,profiles(username)').order('created_at',{ascending:false}).limit(100);
+  if(!items||!items.length){el.innerHTML='<div class="loading">Yorum yok.</div>';return;}
+
+  const rows=items.map(i=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px">${(i.profiles?.username||'?')[0].toUpperCase()}</div>${i.profiles?.username||'—'}</div></td>
+    <td style="max-width:300px;font-size:13px">${i.content||'—'}</td>
+    <td class="mono">${fdate(i.created_at)}</td>
+    <td><button class="btn-del" onclick="delComment('comments','${i.id}',this)">Sil</button></td>
+  </tr>`).join('');
+
+  el.innerHTML=tableWrap('Oyun Yorumları',items.length,
+    '<th>Kullanıcı</th><th>Yorum</th><th>Tarih</th><th></th>',rows);
+}
+
+// ── BOOKS ──
+async function loadBooks(){
+  const el=document.getElementById('booksContent');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const {data:items}=await sb.from('book_lists').select('*,profiles(username)').order('added_at',{ascending:false}).limit(100);
+  if(!items||!items.length){el.innerHTML='<div class="loading">Kayıt yok.</div>';return;}
+
+  const rows=items.map(i=>`<tr>
+    <td>${i.book_image?`<img class="cover-thumb" src="${i.book_image}" alt="">`:''}</td>
+    <td><strong>${i.book_title||'—'}</strong></td>
+    <td style="color:var(--muted);font-size:12px;font-style:italic">${i.book_author||'—'}</td>
+    <td>${i.profiles?.username||'—'}</td>
+    <td><span class="score-pill ${sc(i.score)}">${i.score}/10</span></td>
+    <td class="mono">${fdate(i.added_at)}</td>
+    <td><button class="btn-del" onclick="delBookEntry('${i.id}',this)">Sil</button></td>
+  </tr>`).join('');
+
+  el.innerHTML=tableWrap('Kitap Listesi Kayıtları',items.length,
+    '<th></th><th>Kitap</th><th>Yazar</th><th>Kullanıcı</th><th>Puan</th><th>Eklenme</th><th></th>',rows);
+}
+
+async function delBookEntry(id,btn){
+  if(!confirm('Bu kaydı silmek istediğinize emin misiniz?'))return;
+  btn.disabled=true;btn.textContent='...';
+  await sb.from('book_lists').delete().eq('id',id);
+  btn.closest('tr').remove();
+}
+
+// ── TOP BOOKS ──
+async function loadTopBooks(){
+  const el=document.getElementById('topBooksContent');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const {data:items}=await sb.from('book_lists').select('book_id,book_title,book_image,book_author,score');
+  if(!items||!items.length){el.innerHTML='<div class="loading">Kayıt yok.</div>';return;}
+
+  const map={};
+  items.forEach(i=>{
+    if(!map[i.book_id])map[i.book_id]={title:i.book_title,image:i.book_image,author:i.book_author,count:0,scores:[]};
+    map[i.book_id].count++;
+    map[i.book_id].scores.push(i.score);
+  });
+  const sorted=Object.values(map).sort((a,b)=>b.count-a.count).slice(0,50);
+
+  const rows=sorted.map((b,idx)=>{
+    const avg=(b.scores.reduce((s,x)=>s+x,0)/b.scores.length).toFixed(1);
+    return `<tr>
+      <td class="mono" style="color:var(--muted)">${idx+1}</td>
+      <td>${b.image?`<img class="cover-thumb" src="${b.image}" alt="">`:''}</td>
+      <td><strong>${b.title}</strong><div style="font-size:11px;color:var(--muted);font-style:italic">${b.author||''}</div></td>
+      <td><span class="badge green">${b.count} kullanıcı</span></td>
+      <td><span class="score-pill ${sc(parseFloat(avg))}">${avg}/10</span></td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML=tableWrap('En Çok Eklenen Kitaplar',sorted.length,
+    '<th>#</th><th></th><th>Kitap</th><th>Eklenme</th><th>Ort. Puan</th>',rows);
+}
+
+// ── BOOK COMMENTS ──
+async function loadBookComments(){
+  const el=document.getElementById('bookCommentsContent');
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const {data:items}=await sb.from('book_comments').select('*,profiles(username)').order('created_at',{ascending:false}).limit(100);
+  if(!items||!items.length){el.innerHTML='<div class="loading">Yorum yok.</div>';return;}
+
+  const rows=items.map(i=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px">${(i.profiles?.username||'?')[0].toUpperCase()}</div>${i.profiles?.username||'—'}</div></td>
+    <td style="max-width:300px;font-size:13px">${i.content||'—'}</td>
+    <td class="mono">${fdate(i.created_at)}</td>
+    <td><button class="btn-del" onclick="delComment('book_comments','${i.id}',this)">Sil</button></td>
+  </tr>`).join('');
+
+  el.innerHTML=tableWrap('Kitap Yorumları',items.length,
+    '<th>Kullanıcı</th><th>Yorum</th><th>Tarih</th><th></th>',rows);
+}
+
+async function delComment(table,id,btn){
+  if(!confirm('Bu yorumu silmek istediğinize emin misiniz?'))return;
+  btn.disabled=true;btn.textContent='...';
+  await sb.from(table).delete().eq('id',id);
+  btn.closest('tr').remove();
+}
+</script>
+</body>
+</html>

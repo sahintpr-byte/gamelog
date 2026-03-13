@@ -356,11 +356,29 @@ function openLoginTrailer(game) {
     }).catch(function(){ showYoutubeButton(game.name); });
 
   function showYoutubeButton(name) {
-    // Embed YouTube search results directly in modal
-    var q = encodeURIComponent(name + ' official game trailer');
-    body.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed?listType=search&list='+q+'&autoplay=1" '+
-      'style="position:absolute;inset:0;width:100%;height:100%;border:none;" '+
-      'allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>';
+    var YT_KEY = 'AIzaSyC8N43du5BdPiXeomeRE-E6NWwfm_tx2XQ';
+    var q = encodeURIComponent(name + ' official trailer');
+    body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:28px;height:28px;border:2px solid #333;border-top-color:#e8ff47;border-radius:50%;animation:spin .7s linear infinite;"></div></div>';
+    fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&q='+q+'&type=video&maxResults=1&key='+YT_KEY)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var item = d.items && d.items[0];
+        if (item && item.id && item.id.videoId) {
+          body.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/'+item.id.videoId+'?autoplay=1" '+
+            'style="position:absolute;inset:0;width:100%;height:100%;border:none;" '+
+            'allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>';
+        } else {
+          var eq = encodeURIComponent(name + ' official trailer');
+          body.innerHTML = '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">'+
+            '<div style="font-size:13px;color:#888;">Video bulunamadı.</div>'+
+            '<a href="https://www.youtube.com/results?search_query='+eq+'" target="_blank" style="background:#ff0000;color:#fff;padding:10px 22px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">▶ YouTube'da Ara</a></div>';
+        }
+      }).catch(function(){
+        var eq = encodeURIComponent(name + ' official trailer');
+        body.innerHTML = '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">'+
+          '<div style="font-size:13px;color:#888;">Yüklenemedi.</div>'+
+          '<a href="https://www.youtube.com/results?search_query='+eq+'" target="_blank" style="background:#ff0000;color:#fff;padding:10px 22px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">▶ YouTube'da Ara</a></div>';
+      });
   }
 }
 

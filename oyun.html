@@ -537,7 +537,16 @@ function closeVideoModal() {
   applyTheme(localStorage.getItem('qwerst-theme') || 'dark');
 })();
 
-// Init polling
-// Start main app when supabase + XLSX ready
+// Start main app as soon as supabase is ready — no XLSX wait (XLSX only needed for export)
 (function wait(n) {
-  if (typeof initApp === "function" && typeof supabase !== "undefined" && typeof X
+  if (typeof initApp === "function" && typeof supabase !== "undefined") {
+    initApp();
+  } else if (n > 0) {
+    setTimeout(function(){ wait(n-1); }, 100);
+  } else {
+    console.error("Timeout: supabase or initApp not ready");
+  }
+})(80);
+</script>
+</body>
+</html>

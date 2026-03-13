@@ -73,6 +73,7 @@ document.getElementById('logoutBtn').onclick=async()=>{
 
 function showApp(){
   document.getElementById('authScreen').style.display='none';
+  document.getElementById('publicScreen').style.display='none';
   document.getElementById('appScreen').style.display='block';
   const name=currentUser.user_metadata?.username||currentUser.email.split('@')[0];
   document.getElementById('userBadge').innerHTML='👤 <strong>'+name+'</strong>';

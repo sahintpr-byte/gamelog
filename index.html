@@ -2,8 +2,9 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAMELOG</title>
+<title>QWERST.COM</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0d0d0f;--surface:#16161a;--surface2:#1e1e24;--border:#2a2a32;--accent:#e8ff47;--text:#f0f0f5;--muted:#666677;--radius:10px;}
@@ -207,13 +208,54 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .toast.show{transform:translateY(0);opacity:1;}
 .site-footer{text-align:center;margin-top:48px;padding:20px;font-size:13px;color:var(--muted);border-top:1px solid var(--border);}
 @media(max-width:800px){.lists-layout{grid-template-columns:1fr;}.hero-layout{grid-template-columns:1fr;}.hero-col{display:none;}header{padding:0 16px;}main{padding:24px 16px;}.user-badge{display:none;}}
+.steam-link{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+  border-radius:5px;background:rgba(23,26,33,.9);border:1px solid rgba(102,192,244,.2);
+  text-decoration:none;flex-shrink:0;transition:all .2s;}
+.steam-link:hover{background:#1b2838;border-color:#66c0f4;transform:scale(1.1);}
 </style>
 </head>
 <body>
 
-<div class="auth-screen" id="authScreen">
+<!-- PUBLIC LANDING (shown before login) -->
+<div id="publicScreen" style="display:block">
+  <header style="border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;background:rgba(13,13,15,.95);backdrop-filter:blur(12px);z-index:100;">
+    <div class="logo">QWERST<span class="logo-dot">.COM</span></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="kitap/index.html" style="color:var(--muted);text-decoration:none;font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor='#ff6b00';this.style.color='#ff6b00'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📚 Kitaplar</a>
+      <button onclick="showAuthScreen()" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">Giriş Yap</button>
+    </div>
+  </header>
+  <main style="max-width:1200px;margin:0 auto;padding:32px 24px;">
+    <!-- TRENDING SECTION -->
+    <div style="margin-bottom:48px;">
+      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent)">SON 1 AYDA ÇIKANLAR</h2>
+        <span style="font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">· Popüler Oyunlar</span>
+      </div>
+      <div id="trendingGames" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
+        <div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>Yükleniyor...</div>
+      </div>
+    </div>
+    <!-- MOST ADDED SECTION -->
+    <div style="margin-bottom:48px;">
+      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent)">EN ÇOK EKLENENLER</h2>
+        <span style="font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">· Topluluk Favorileri</span>
+      </div>
+      <div id="mostAddedGames" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
+        <div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>Yükleniyor...</div>
+      </div>
+    </div>
+    <div style="text-align:center;padding:48px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;">
+      Bu İslam ve Şahin kardeşlerin ortak projesidir.<br>
+      <a href="mailto:sahintoper@hotmail.com" style="color:#e8ff47;text-decoration:none;margin-top:6px;display:inline-block">sahintoper@hotmail.com</a>
+    </div>
+  </main>
+</div>
+
+<div class="auth-screen" id="authScreen" style="display:none;">
   <div class="auth-box">
-    <div class="auth-logo">GAMELOG</div>
+    <div class="auth-logo">QWERST<span style="color:#e8ff47">.COM</span></div>
     <div class="auth-sub">Oyun listeni oluştur, takip et.</div>
     <div class="auth-tabs">
       <button class="auth-tab active" id="loginTab">Giriş Yap</button>
@@ -230,7 +272,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 
 <div id="appScreen" style="display:none">
   <header>
-    <div class="logo" id="logoBtn">GAMELOG <span>oyun listem</span></div>
+    <div class="logo" id="logoBtn">QWERST<span class="logo-dot">.COM</span></div>
     <div class="header-right">
       <div class="user-badge" id="userBadge"></div>
       <div class="header-tabs">
@@ -238,7 +280,8 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <button class="tab-btn" id="tabMylist">📋 Listelerim</button>
         <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
       </div>
-      <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div><button class="btn-logout" id="logoutBtn">Çıkış</button>
+      <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>
+      <button class="btn-logout" id="logoutBtn">Çıkış</button>
     </div>
   </header>
   <main>

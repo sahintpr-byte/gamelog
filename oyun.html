@@ -217,6 +217,9 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
   text-decoration:none;flex-shrink:0;transition:all .2s;}
 .steam-link:hover{background:#1b2838;border-color:#66c0f4;transform:scale(1.1);}
 </style>
+
+<script data-cfasync="false" src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script data-cfasync="false" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -306,7 +309,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <div class="hero-col right" id="heroRight"></div>
       </div>
       <div id="searchResults"></div>
-      <footer class="site-footer" id="siteFooter">Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent);text-decoration:none">sahintoper@hotmail.com</a></footer>
+      <footer class="site-footer" id="siteFooter">Contact: <a href="/cdn-cgi/l/email-protection#51223039383f253e21342311393e253c30383d7f323e3c" style="color:var(--accent);text-decoration:none"><span class="__cf_email__" data-cfemail="fd8e9c95949389928d988fbd959289909c9491d39e9290">[email&#160;protected]</span></a></footer>
     </div>
     <div class="view" id="mylistView">
       <div class="lists-layout">
@@ -401,11 +404,9 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 
 <div class="toast" id="toast"></div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js" data-cfasync="false"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" data-cfasync="false"></script>
-<script src="lang.js" data-cfasync="false"></script>
-<script src="public.js" data-cfasync="false"></script>
-<script src="app.js" data-cfasync="false"></script>
+<script data-cfasync="false" src="lang.js"></script>
+<script data-cfasync="false" src="public.js"></script>
+<script data-cfasync="false" src="app.js"></script>
 <script data-cfasync="false">
 // Theme
 (function(){
@@ -435,14 +436,4 @@ if (typeof loadPublicGames === "function") {
 
 // Start main app when supabase + XLSX ready
 (function wait(n) {
-  if (typeof initApp === "function" && typeof supabase !== "undefined" && typeof XLSX !== "undefined") {
-    initApp();
-  } else if (n > 0) {
-    setTimeout(function(){ wait(n-1); }, 100);
-  } else {
-    console.error("App init timeout - supabase:" + typeof supabase + " XLSX:" + typeof XLSX);
-  }
-})(80);
-</script>
-</body>
-</html>
+  if (typeof initApp === "function" && typeof supabase !== "undefined" && typeof X

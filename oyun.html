@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0d0d0f;--surface:#16161a;--surface2:#1e1e24;--border:#2a2a32;--accent:#e8ff47;--text:#f0f0f5;--muted:#666677;--radius:10px;}
-:root.light{--bg:#f5f5f0;--surface:#ffffff;--surface2:#ebebeb;--border:#d8d8d0;--accent:#c8a800;--text:#1a1a1a;--muted:#888880;--radius:10px;}
-*{transition:background-color .25s,border-color .25s,color .1s;}
-.theme-btn{background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:16px;cursor:pointer;padding:4px 10px;line-height:1;transition:all .2s;}
+:root.light{--bg:#f0f0eb;--surface:#ffffff;--surface2:#e8e8e0;--border:#d0d0c8;--accent:#b8a000;--text:#1a1a1a;--muted:#777770;}
+body,div,header,main,input,button,select,textarea{transition:background-color .25s,border-color .25s;}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:15px;cursor:pointer;padding:4px 10px;line-height:1.4;transition:all .2s;}
 .theme-btn:hover{border-color:var(--accent);color:var(--text);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
@@ -226,8 +226,8 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
     <div class="logo">QWERST<span class="logo-dot">.COM</span></div>
     <div style="display:flex;align-items:center;gap:10px;">
       <a href="kitap/index.html" style="color:var(--muted);text-decoration:none;font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor='#ff6b00';this.style.color='#ff6b00'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📚 Kitaplar</a>
-      <button class="theme-btn" id="themeTogglePub" title="Tema değiştir">🌙</button>
-      <button id="loginBtn2" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">Giriş Yap</button>
+      <button class="theme-btn" id="themeTogglePub" onclick="if(window._toggleTheme)window._toggleTheme()">&#127769;</button>
+      <button id="loginBtn2" onclick="showAuthScreen()" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s">Giriş Yap</button>
     </div>
   </header>
   <main style="max-width:1200px;margin:0 auto;padding:32px 24px;">
@@ -251,7 +251,11 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>Yükleniyor...</div>
       </div>
     </div>
-    </main>
+    <div style="text-align:center;padding:48px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;">
+      Bu İslam ve Şahin kardeşlerin ortak projesidir.<br>
+      <a href="/cdn-cgi/l/email-protection#8af9ebe2e3e4fee5faeff8cae2e5fee7ebe3e6a4e9e5e7" style="color:#e8ff47;text-decoration:none;margin-top:6px;display:inline-block"><span class="__cf_email__" data-cfemail="b5c6d4dddcdbc1dac5d0c7f5dddac1d8d4dcd99bd6dad8">[email&#160;protected]</span></a>
+    </div>
+  </main>
 </div>
 
 <div class="auth-screen" id="authScreen" style="display:none">
@@ -283,7 +287,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <button class="tab-btn" id="tabMylist">📋 Listelerim</button>
         <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
       </div>
-      <button class="theme-btn" id="themeToggleApp" title="Tema değiştir">🌙</button>
+      <button class="theme-btn" id="themeToggleApp" onclick="if(window._toggleTheme)window._toggleTheme()">&#127769;</button>
       <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>
       <button class="btn-logout" id="logoutBtn">Çıkış</button>
     </div>
@@ -303,7 +307,10 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <div class="hero-col right" id="heroRight"></div>
       </div>
       <div id="searchResults"></div>
-      <footer class="site-footer" id="siteFooter">Contact: <a href="/cdn-cgi/l/email-protection#e89b898081869c87988d9aa880879c85898184c68b8785" style="color:var(--accent);text-decoration:none"><span class="__cf_email__" data-cfemail="becddfd6d7d0cad1cedbccfed6d1cad3dfd7d290ddd1d3">[email&#160;protected]</span></a></footer>
+      <footer class="site-footer">
+        Bu İslam ve Şahin kardeşlerin ortak projesidir.<br>
+        <span style="margin-top:6px;display:inline-block">Contact: <a href="/cdn-cgi/l/email-protection#087b696061667c67786d7a4860677c65696164266b6765" style="color:var(--accent);text-decoration:none"><span class="__cf_email__" data-cfemail="483b292021263c27382d3a0820273c25292124662b2725">[email&#160;protected]</span></a></span>
+      </footer>
     </div>
     <div class="view" id="mylistView">
       <div class="lists-layout">
@@ -398,22 +405,49 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 
 <div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js" data-cfasync="false"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" data-cfasync="false"></script>
+<script src="lang.js" data-cfasync="false"></script>
+<script src="public.js" data-cfasync="false"></script>
+<script src="app.js" data-cfasync="false"></script>
+<script data-cfasync="false">
+// Theme
+(function(){
+  var root = document.documentElement;
+  function applyTheme(t) {
+    if (t === 'light') root.classList.add('light');
+    else root.classList.remove('light');
+    var icon = t === 'light' ? '&#9728;' : '&#127769;';
+    ['themeTogglePub','themeToggleApp'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = icon;
+    });
+    localStorage.setItem('qwerst-theme', t);
+  }
+  window._applyTheme = applyTheme;
+  window._toggleTheme = function(){ applyTheme(root.classList.contains('light') ? 'dark' : 'light'); };
+  applyTheme(localStorage.getItem('qwerst-theme') || 'dark');
+})();
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="lang.js"></script>
-<script src="public.js"></script>
-<script src="app.js"></script>
-<script>
-// Wire login button
-var _loginWired = false;
-function wireLoginBtn() {
-  if (_loginWired) return;
-  var b = document.getElementById("loginBtn2");
-  if (b) { b.addEventListener("click", showAuthScreen); _loginWired = true; }
-}
-// Start app - aggressive polling, no DOMContentLoaded dependency
+// Init polling
 (function wait(n) {
-  if (typeof initApp === "function" && typeof supabase !== "undefined" && typeof XLSX !== "undefined") {
-    wireLoginBtn();
- 
+  if (typeof initApp==="function" && typeof supabase!=="undefined" && typeof XLSX!=="undefined") {
+    // Wire buttons
+    var lb = document.getElementById("loginBtn2");
+    if (lb) lb.onclick = showAuthScreen;
+    ['themeTogglePub','themeToggleApp'].forEach(function(id){
+      var b = document.getElementById(id);
+      if (b) b.onclick = window._toggleTheme;
+    });
+    window._applyTheme(localStorage.getItem('qwerst-theme') || 'dark');
+    initApp();
+    loadPublicGames();
+  } else if (n > 0) {
+    setTimeout(function(){ wait(n-1); }, 100);
+  } else {
+    console.error("Timeout: supabase="+typeof supabase+" XLSX="+typeof XLSX+" initApp="+typeof initApp);
+  }
+})(80);
+</script>
+</body>
+</html>

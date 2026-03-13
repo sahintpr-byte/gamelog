@@ -28,16 +28,16 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 function sc(s){return s<=4?'low':s<=6?'mid':'high';}
 function mcUrl(name){return 'https://www.metacritic.com/game/'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'/';}
 
-/* ── AUTH ── */
-document.getElementById('langTR').onclick=()=>switchLang('tr');
-document.getElementById('langEN').onclick=()=>switchLang('en');
-applyLang();
-
+/* ── AUTH (handled by earlyAuthInit below, these are fallback binds inside initApp) ── */
+// Note: earlyAuthInit at bottom of file handles auth before XLSX loads
+// These bindings are skipped if earlyAuthInit already ran
+if (!window._earlyAuthDone) {
 document.getElementById('loginTab').onclick=()=>setAuthMode('login');
 document.getElementById('registerTab').onclick=()=>setAuthMode('register');
 document.getElementById('authBtn').onclick=doAuth;
 document.getElementById('authEmail').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
 document.getElementById('authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
+}
 
 function setAuthMode(mode){
   authMode=mode;
@@ -848,4 +848,88 @@ function initHero(){
   rc.forEach(c=>right.appendChild(mk(c)));
 }
 
-}
+} // end initApp
+
+/* ── EARLY AUTH INIT (runs immediately, before initApp/XLSX) ── */
+(function earlyAuthInit() {
+  var SB_URL = 'https://dzjmbwyandrkonqdjalk.supabase.co';
+  var SB_KEY = 'sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD';
+
+  function waitForSupabase(tries) {
+    if (typeof supabase !== 'undefined') {
+      setupAuth();
+    } else if (tries > 0) {
+      setTimeout(function(){ waitForSupabase(tries-1); }, 100);
+    }
+  }
+
+  function setupAuth() {
+    var sb2 = supabase.createClient(SB_URL, SB_KEY);
+    var authMode = 'login';
+
+    // Always bind auth UI immediately
+    bindAuthUI();
+    // Check session separately for auto-login
+    sb2.auth.getSession().then(function(res){
+      var session = res.data && res.data.session;
+      if (session && session.user) {
+        // handled by initApp / onAuthStateChange
+      }
+    }).catch(function(){});
+
+    function bindAuthUI() {
+      var loginTab = document.getElementById('loginTab');
+      var registerTab = document.getElementById('registerTab');
+      var authBtn = document.getElementById('authBtn');
+      var authEmail = document.getElementById('authEmail');
+      var authPassword = document.getElementById('authPassword');
+
+      if (!authBtn) return;
+
+      function setMode(mode) {
+        authMode = mode;
+        loginTab.classList.toggle('active', mode==='login');
+        registerTab.classList.toggle('active', mode==='register');
+        authBtn.textContent = mode==='login' ? 'Giriş Yap' : 'Kayıt Ol';
+        document.getElementById('usernameField').style.display = mode==='register' ? 'block' : 'none';
+        document.getElementById('authError').style.display = 'none';
+        document.getElementById('authSuccess').style.display = 'none';
+      }
+
+      function showMsg(msg, type) {
+        var el = document.getElementById(type==='error' ? 'authError' : 'authSuccess');
+        el.textContent = msg; el.style.display = 'block';
+      }
+
+      async function doAuth2() {
+        var email = authEmail.value.trim();
+        var pass = authPassword.value;
+        if (!email || !pass) { showMsg('E-posta ve şifre gerekli.', 'error'); return; }
+        authBtn.disabled = true; authBtn.textContent = '...';
+        if (authMode === 'register') {
+          var username = (document.getElementById('authUsername').value.trim()) || email.split('@')[0];
+          var res = await sb2.auth.signUp({email, password: pass, options:{data:{username}}});
+          authBtn.disabled = false; authBtn.textContent = 'Kayıt Ol';
+          if (res.error) { showMsg(res.error.message, 'error'); return; }
+          showMsg('Kayıt başarılı! E-postanı doğrula.', 'success');
+        } else {
+          var res2 = await sb2.auth.signInWithPassword({email, password: pass});
+          authBtn.disabled = false; authBtn.textContent = 'Giriş Yap';
+          if (res2.error) { showMsg('E-posta veya şifre hatalı.', 'error'); return; }
+          // Session set — wait for initApp to pick it up, or reload
+          window.location.reload();
+        }
+      }
+
+      if (loginTab) loginTab.onclick = function(){ setMode('login'); };
+      if (registerTab) registerTab.onclick = function(){ setMode('register'); };
+      authBtn.onclick = doAuth2;
+      window._doAuth = doAuth2;
+      authEmail.addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth2(); });
+      authPassword.addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth2(); });
+      window._earlyAuthDone = true;
+    }
+  }
+
+  waitForSupabase(80);
+})();

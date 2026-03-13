@@ -251,7 +251,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <div class="auth-field"><label>E-posta</label><input type="email" id="authEmail" placeholder="ornek@mail.com"></div>
         <div class="auth-field"><label>Şifre</label><input type="password" id="authPassword" placeholder="••••••••"></div>
         <div class="auth-field" id="usernameField" style="display:none"><label>Kullanıcı Adı</label><input type="text" id="authUsername" placeholder="oyunsever42"></div>
-        <button class="btn-auth" id="authBtn">Giriş Yap</button>
+        <button class="btn-auth" id="authBtn" onclick="if(window._doAuth)window._doAuth()">Giriş Yap</button>
         <div class="auth-msg error" id="authError"></div>
         <div class="auth-msg success" id="authSuccess"></div>
       </div>
@@ -328,11 +328,18 @@ function openLoginTrailer(game) {
   var title = document.getElementById('videoModalTitle');
   var body = document.getElementById('videoModalBody');
   title.textContent = game.name;
-  body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;"></div></div>';
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 
-  // Try RAWG movies first
+  // 1. RAWG clip field (comes with game list, no extra request)
+  if (game.clip && game.clip.clip) {
+    body.innerHTML = '<video src="'+game.clip.clip+'" controls autoplay poster="'+(game.clip.preview||'')+'" style="position:absolute;inset:0;width:100%;height:100%;background:#000;"></video>';
+    return;
+  }
+
+  // 2. RAWG /movies endpoint
+  body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;"></div></div>';
+
   var RAWG = 'b1ba1bc900a14e699e5e98788646cf16';
   fetch('https://api.rawg.io/api/games/'+game.slug+'/movies?key='+RAWG)
     .then(function(r){return r.json();})
@@ -342,24 +349,21 @@ function openLoginTrailer(game) {
         var src = clip.data.max || clip.data['480'];
         body.innerHTML = '<video src="'+src+'" controls autoplay style="position:absolute;inset:0;width:100%;height:100%;background:#000;"></video>';
       } else {
-        // Fallback: YouTube embed via Invidious search
-        searchYoutube(game.name + ' official trailer');
+        showYoutubeButton(game.name);
       }
-    }).catch(function(){ searchYoutube(game.name + ' official trailer'); });
+    }).catch(function(){ showYoutubeButton(game.name); });
 
-  function searchYoutube(q) {
-    fetch('https://inv.nadeko.net/api/v1/search?q='+encodeURIComponent(q)+'&type=video')
-      .then(function(r){return r.json();})
-      .then(function(results){
-        var vid = (Array.isArray(results)?results:[])[0];
-        if(vid && vid.videoId) {
-          body.innerHTML = '<iframe src="https://www.youtube.com/embed/'+vid.videoId+'?autoplay=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="autoplay;encrypted-media" allowfullscreen></iframe>';
-        } else {
-          body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;">Video bulunamadı.</div>';
-        }
-      }).catch(function(){
-        body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;">Video yüklenemedi.</div>';
-      });
+  function showYoutubeButton(name) {
+    var q = encodeURIComponent(name + ' official game trailer');
+    body.innerHTML =
+      '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;">'+
+      '<div style="font-size:40px;">🎬</div>'+
+      '<div style="color:var(--text);font-size:15px;font-weight:600;">'+name+'</div>'+
+      '<div style="color:var(--muted);font-size:13px;">Bu oyun için gömülü video bulunamadı.</div>'+
+      '<a href="https://www.youtube.com/results?search_query='+q+'" target="_blank" rel="noopener" '+
+        'style="background:#ff0000;color:#fff;padding:10px 22px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">'+
+        '▶ YouTube\'da Ara</a>'+
+      '</div>';
   }
 }
 

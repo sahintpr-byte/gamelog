@@ -80,7 +80,8 @@ document.getElementById('logoutBtn').onclick=async()=>{
   await sb.auth.signOut();
   currentUser=null; myLists=[]; activeListId=null;
   document.getElementById('appScreen').style.display='none';
-  document.getElementById('authScreen').style.display='flex';
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('publicScreen').style.display='block';
 };
 
 function showApp(){
@@ -104,9 +105,9 @@ async function loadMyListsSilent(){
 }
 
 sb.auth.onAuthStateChange((event,session)=>{
-  if(session?.user){
+  if(session?.user && !currentUser){
     currentUser=session.user;
-    showApp();
+    if(document.getElementById('appScreen')) showApp();
   } else if(event==='SIGNED_OUT'){
     currentUser=null; myLists=[]; activeListId=null;
     document.getElementById('appScreen').style.display='none';

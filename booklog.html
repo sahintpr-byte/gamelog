@@ -11,6 +11,10 @@
   --accent:#2d5016;--accent2:#8b4513;--text:#1a1208;--muted:#8a7968;
   --radius:12px;--gold:#c9a84c;
 }
+:root.dark{--bg:#0d0d0f;--surface:#16161a;--surface2:#1e1e24;--border:#2a2a32;--accent:#a8e63d;--accent2:#e8a87c;--text:#f0f0f5;--muted:#666677;}
+*{transition:background-color .25s,border-color .25s,color .1s;}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:16px;cursor:pointer;padding:4px 10px;line-height:1;transition:all .2s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--text);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;}
 
@@ -392,6 +396,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <button class="tab-btn" id="tabMylist">📚 Listelerim</button>
         <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
       </div>
+      <button class="theme-btn" id="themeToggleApp" title="Tema değiştir">🌙</button>
       <div class="lang-toggle">
         <button class="lang-btn active" id="langTR">TR</button>
         <button class="lang-btn" id="langEN">EN</button>
@@ -522,7 +527,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 
 <div class="toast" id="toast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="booklog-lang.js"></script>
 <script src="booklog-app.js

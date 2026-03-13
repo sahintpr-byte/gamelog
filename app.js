@@ -852,3 +852,5 @@ function initHero(){
 }
 
 }
+
+initApp();

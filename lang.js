@@ -139,7 +139,7 @@ function applyLang(){
   document.getElementById('backBtn').textContent = t('backBtn');
   // Footer
   const footer = document.querySelector('.site-footer');
-  if(footer) footer.innerHTML = t('footer') + '<br><span style="margin-top:6px;display:inline-block">Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent);text-decoration:none">sahintoper@hotmail.com</a></span>';
+  if(footer) footer.innerHTML = t('footer') + '<br><span style="margin-top:6px;display:inline-block">Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent);text-decoration:none">sahintoper&#64;hotmail&#46;com</a></span>';
   // Lang toggle
   document.getElementById('langTR').classList.toggle('active', l === 'tr');
   document.getElementById('langEN').classList.toggle('active', l === 'en');

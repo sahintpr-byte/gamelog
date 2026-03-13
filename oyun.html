@@ -10,410 +10,143 @@
 :root{--bg:#0d0d0f;--surface:#16161a;--surface2:#1e1e24;--border:#2a2a32;--accent:#e8ff47;--text:#f0f0f5;--muted:#666677;--radius:10px;}
 :root.light{--bg:#f0f0eb;--surface:#ffffff;--surface2:#e8e8e0;--border:#d0d0c8;--accent:#b8a000;--text:#1a1a1a;--muted:#777770;}
 body,div,header,main,input,button,select,textarea{transition:background-color .25s,border-color .25s;}
-.theme-btn{background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:15px;cursor:pointer;padding:4px 10px;line-height:1.4;transition:all .2s;}
-.theme-btn:hover{border-color:var(--accent);color:var(--text);}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
-.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:400px;animation:slideUp .3s ease;}
-.auth-logo{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px;color:var(--accent);text-align:center;margin-bottom:4px;}
-.auth-sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:32px;}
-.auth-tabs{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
-.auth-tab{flex:1;background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:10px;cursor:pointer;transition:all .2s;}
-.auth-tab.active{background:var(--surface2);color:var(--accent);}
-.auth-field{margin-bottom:14px;}
-.auth-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
-.auth-field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;padding:12px 14px;outline:none;transition:border-color .2s;}
-.auth-field input:focus{border-color:var(--accent);}
-.btn-auth{width:100%;background:var(--accent);border:none;border-radius:8px;color:#0d0d0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:14px;cursor:pointer;margin-top:8px;transition:opacity .2s;}
-.btn-auth:hover{opacity:.88;}.btn-auth:disabled{opacity:.5;cursor:not-allowed;}
-.auth-msg{border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
-.auth-msg.error{background:#2a1a1a;border:1px solid #5a2a2a;color:#ff8080;}
-.auth-msg.success{background:#1a2a1a;border:1px solid #2a5a2a;color:#80c080;}
-header{border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;background:rgba(13,13,15,.95);backdrop-filter:blur(12px);z-index:100;}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent);cursor:pointer;}
-.logo span{color:var(--muted);font-size:13px;font-family:'DM Sans',sans-serif;margin-left:10px;font-weight:300;}
-.header-right{display:flex;align-items:center;gap:8px;}
-.user-badge{font-size:13px;color:var(--muted);padding:5px 12px;background:var(--surface2);border-radius:20px;border:1px solid var(--border);}
-.user-badge strong{color:var(--accent);}
-.header-tabs{display:flex;gap:4px;}
-.tab-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .2s;}
-.tab-btn.active,.tab-btn:hover{background:var(--surface2);color:var(--text);}
-.tab-btn.active{color:var(--accent);}
-.btn-logout{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .2s;}
-.btn-logout:hover{border-color:#ff6b6b;color:#ff6b6b;}
-.lang-toggle{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-right:4px;}
-.lang-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;padding:5px 10px;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
-.lang-btn.active{background:var(--surface2);color:var(--accent);}
-.lang-btn:hover{color:var(--text);}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:15px;cursor:pointer;padding:4px 10px;line-height:1;}
+.theme-btn:hover{color:var(--accent);border-color:var(--accent);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+.hidden{display:none !important;}
 
-main{max-width:1200px;margin:0 auto;padding:32px 24px;}
-.view{display:none;}.view.active{display:block;}
-.hero-layout{display:grid;grid-template-columns:180px 1fr 180px;gap:24px;align-items:center;padding:48px 0 40px;min-height:360px;}
-.hero-col{display:flex;flex-direction:column;gap:14px;}
-.hero-col.right{align-items:flex-end;}
-.search-hero{text-align:center;}
-.search-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);letter-spacing:4px;line-height:1;margin-bottom:8px;}
-.search-hero h1 em{color:var(--accent);font-style:normal;}
-.search-hero p{color:var(--muted);font-size:15px;margin-bottom:32px;}
-.search-bar{display:flex;gap:10px;max-width:600px;margin:0 auto;}
-.search-bar input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;padding:14px 18px;outline:none;transition:border-color .2s;}
-.search-bar input:focus{border-color:var(--accent);}
-.search-bar input::placeholder{color:var(--muted);}
-.btn-primary{background:var(--accent);color:#0d0d0f;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:14px 24px;cursor:pointer;white-space:nowrap;}
-.btn-primary:hover{opacity:.88;}
-.scattered-card{border-radius:10px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.08);position:relative;transition:transform .25s;width:160px;}
-.hero-col.left .scattered-card:nth-child(1){transform:rotate(-4deg) translateX(-6px);}
-.hero-col.left .scattered-card:nth-child(2){transform:rotate(3deg) translateX(8px);}
-.hero-col.left .scattered-card:nth-child(3){transform:rotate(-2deg) translateX(-4px);}
-.hero-col.right .scattered-card:nth-child(1){transform:rotate(4deg) translateX(6px);}
-.hero-col.right .scattered-card:nth-child(2){transform:rotate(-3deg) translateX(-8px);}
-.hero-col.right .scattered-card:nth-child(3){transform:rotate(2deg) translateX(4px);}
-.scattered-card:hover{transform:rotate(0deg) scale(1.05)!important;z-index:5;}
-.scattered-card img{display:block;width:160px;height:75px;object-fit:cover;}
-.scattered-card .sc-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.85),transparent);padding:16px 8px 5px;font-size:9px;font-weight:700;color:rgba(255,255,255,.9);text-align:center;letter-spacing:.8px;text-transform:uppercase;}
-#searchResults{margin-top:32px;}
-.results-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
-.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
-.game-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s;}
-.game-card:hover{transform:translateY(-3px);border-color:var(--accent);}
-.game-card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--surface2);}
-.game-card-img-placeholder{width:100%;aspect-ratio:16/9;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:32px;}
-.game-card-body{padding:12px 14px 14px;}
-.game-card-title{font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.game-card-meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.btn-add{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:8px;cursor:pointer;transition:all .2s;}
-.btn-add:hover{background:var(--accent);color:#0d0d0f;border-color:var(--accent);}
-.btn-add.added{background:#1a2e1a;color:#6fcf6f;border-color:#3a5c3a;cursor:default;}
-.loading{text-align:center;padding:48px;color:var(--muted);font-size:14px;}
-.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:slideUp .25s ease;}
-.modal-header{display:flex;gap:16px;padding:20px;border-bottom:1px solid var(--border);}
-.modal-img{width:100px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;background:var(--surface2);}
-.modal-info{flex:1;min-width:0;}
-.modal-title{font-size:17px;font-weight:600;margin-bottom:4px;line-height:1.3;}
-.modal-meta{font-size:12px;color:var(--muted);}
-.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:0 4px;line-height:1;align-self:flex-start;}
-.modal-close:hover{color:var(--text);}
-.modal-body{padding:20px;}
-.modal-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
-.score-picker{margin-bottom:20px;}
-.score-display{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--accent);letter-spacing:2px;line-height:1;margin-bottom:12px;}
-.score-display span{color:var(--muted);font-size:28px;}
-.score-slider{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--border);outline:none;margin-bottom:8px;}
-.score-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;}
-.score-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
-.notes-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:12px;resize:vertical;min-height:80px;outline:none;margin-bottom:16px;transition:border-color .2s;}
-.notes-input:focus{border-color:var(--accent);}
-.list-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 14px;outline:none;margin-bottom:16px;cursor:pointer;}
-.modal-actions{display:flex;gap:10px;}
-.btn-cancel{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:12px;cursor:pointer;}
-.btn-cancel:hover{background:var(--border);}
-.btn-save{flex:2;background:var(--accent);border:none;color:#0d0d0f;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:12px;cursor:pointer;}
-.btn-save:hover{opacity:.88;}
-.lists-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start;}
-.lists-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.lists-sidebar-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.lists-sidebar-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--muted);}
-.btn-new-list{background:var(--accent);border:none;color:#0d0d0f;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;padding:5px 10px;cursor:pointer;}
-.list-nav-item{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);gap:8px;}
-.list-nav-item:last-child{border-bottom:none;}
-.list-nav-item:hover{background:var(--surface2);}
-.list-nav-item.active{background:var(--surface2);border-left:3px solid var(--accent);}
-.list-nav-name{font-size:14px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.list-nav-count{font-size:11px;color:var(--muted);flex-shrink:0;}
-.list-nav-actions{display:flex;gap:4px;opacity:0;transition:opacity .2s;}
-.list-nav-item:hover .list-nav-actions{opacity:1;}
-.list-nav-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 4px;border-radius:4px;}
-.list-nav-btn:hover{color:var(--text);}
-.list-nav-btn.del:hover{color:#ff6b6b;}
-.list-content-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;}
-.list-content-desc{font-size:13px;color:var(--muted);margin-top:2px;}
-.list-stats{display:flex;gap:20px;}
-.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);letter-spacing:1px;}
-.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
-.list-sort{display:flex;gap:6px;flex-wrap:wrap;}
-.sort-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 14px;cursor:pointer;transition:all .2s;}
-.sort-btn.active,.sort-btn:hover{background:var(--surface2);border-color:var(--accent);color:var(--accent);}
-.view-toggle{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-.view-toggle-btn{background:none;border:none;color:var(--muted);font-size:16px;padding:5px 10px;cursor:pointer;transition:all .2s;}
-.view-toggle-btn.active{background:var(--surface2);color:var(--accent);}
-.tool-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:5px 12px;cursor:pointer;}
-.export-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px;z-index:50;min-width:140px;box-shadow:0 8px 24px rgba(0,0,0,.5);}
-.export-menu-item{padding:8px 12px;font-size:13px;cursor:pointer;border-radius:5px;}
-.export-menu-item:hover{background:var(--surface2);}
-.list-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
-.list-item-img{width:80px;height:48px;object-fit:cover;border-radius:6px;background:var(--surface2);}
-.list-item-title{font-size:15px;font-weight:600;margin-bottom:4px;}
-.list-item-meta{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;}
-.list-item-note{font-size:12px;color:var(--muted);margin-top:4px;font-style:italic;}
-.score-badge{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;line-height:1;}
-.score-badge.low{color:#ff6b6b;}.score-badge.mid{color:#ffd166;}.score-badge.high{color:var(--accent);}
-.score-badge span{color:var(--muted);font-size:13px;}
-.item-actions{display:flex;gap:6px;}
-.icon-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:30px;height:30px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.icon-btn:hover{background:var(--border);color:var(--text);}
-.icon-btn.del:hover{background:#3a1a1a;color:#ff6b6b;border-color:#5a2a2a;}
-.game-table{width:100%;border-collapse:collapse;font-size:13px;}
-.game-table th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--surface);}
-.game-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
-.game-table tr:hover td{background:var(--surface2);}
-.tbl-img{width:56px;height:32px;object-fit:cover;border-radius:4px;background:var(--surface2);}
-.tbl-score{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;}
-.pagination{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:24px;flex-wrap:wrap;}
-.page-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;min-width:34px;height:34px;padding:0 10px;cursor:pointer;transition:all .2s;}
-.page-btn:hover{background:var(--surface2);color:var(--text);}
-.page-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0f;font-weight:700;}
-.page-btn:disabled{opacity:.3;cursor:default;}
-.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
-.empty-icon{font-size:48px;margin-bottom:12px;opacity:.4;}
-.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--text);margin-bottom:8px;}
-.text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 14px;outline:none;margin-bottom:12px;transition:border-color .2s;}
-.text-input:focus{border-color:var(--accent);}
-.section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-.user-search-bar{display:flex;gap:10px;margin-bottom:24px;}
-.user-search-bar input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 16px;outline:none;transition:border-color .2s;}
-.user-search-bar input:focus{border-color:var(--accent);}
-.user-card{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;}
-.user-avatar{width:38px;height:38px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent);border:1px solid var(--border);}
-.user-card-name{font-weight:600;font-size:15px;}
-.btn-follow{background:var(--accent);border:none;color:#0d0d0f;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:7px 16px;cursor:pointer;}
-.btn-follow.following{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
-.btn-follow.following:hover{background:#3a1a1a;color:#ff6b6b;border-color:#5a2a2a;}
-.btn-view-list{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 14px;cursor:pointer;margin-right:6px;}
-.btn-view-list:hover{border-color:var(--accent);color:var(--accent);}
-.friends-tabs,.profile-lists-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
-.friends-tab,.profile-list-tab{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 16px;cursor:pointer;transition:all .2s;}
-.friends-tab.active,.profile-list-tab.active{background:var(--surface2);border-color:var(--accent);color:var(--accent);}
-.profile-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
-.profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);border:2px solid var(--border);}
-.profile-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;}
-.profile-stats{font-size:13px;color:var(--muted);}
-.btn-back{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 14px;cursor:pointer;}
-.comment-section{margin-top:8px;}
-.comment-toggle{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;padding:4px 0;}
-.comment-toggle:hover{color:var(--accent);}
-.comment-box{background:var(--surface2);border-radius:8px;padding:12px;margin-top:8px;display:none;}
-.comment-box.open{display:block;}
-.comment-item{display:flex;gap:10px;margin-bottom:10px;}
-.comment-avatar{width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;}
-.comment-author{font-size:12px;font-weight:600;color:var(--accent);margin-bottom:2px;}
-.comment-text{font-size:13px;}
-.comment-date{font-size:11px;color:var(--muted);}
-.comment-input-row{display:flex;gap:8px;margin-top:10px;}
-.comment-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;outline:none;}
-.comment-input:focus{border-color:var(--accent);}
-.btn-comment{background:var(--accent);border:none;color:#0d0d0f;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 14px;cursor:pointer;}
-.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--accent);color:var(--text);padding:12px 20px;border-radius:8px;font-size:14px;font-weight:500;z-index:300;transform:translateY(80px);opacity:0;transition:all .3s;}
-.toast.show{transform:translateY(0);opacity:1;}
-.site-footer{text-align:center;margin-top:48px;padding:20px;font-size:13px;color:var(--muted);border-top:1px solid var(--border);}
-@media(max-width:800px){.lists-layout{grid-template-columns:1fr;}.hero-layout{grid-template-columns:1fr;}.hero-col{display:none;}header{padding:0 16px;}main{padding:24px 16px;}.user-badge{display:none;}}
-.steam-link{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
-  border-radius:5px;background:rgba(23,26,33,.9);border:1px solid rgba(102,192,244,.2);
-  text-decoration:none;flex-shrink:0;transition:all .2s;}
-.steam-link:hover{background:#1b2838;border-color:#66c0f4;transform:scale(1.1);}
+/* PUBLIC SCREEN STYLES */
+#publicScreen{padding:20px;max-width:1200px;margin:0 auto;}
+.pub-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;padding:10px 0;}
+.pub-logo{font-family:'Bebas Neue',cursive;font-size:32px;letter-spacing:2px;color:var(--accent);text-decoration:none;}
+.pub-nav{display:flex;gap:15px;align-items:center;}
+.btn-login{background:var(--accent);color:#000;border:none;padding:8px 20px;border-radius:20px;font-weight:600;cursor:pointer;font-size:14px;}
+.section-title{font-family:'Bebas Neue',cursive;font-size:28px;margin-bottom:20px;letter-spacing:1px;display:flex;align-items:center;gap:10px;}
+#most-played-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;}
+
+/* AUTH SCREEN */
+#authScreen{display:none;position:fixed;inset:0;background:var(--bg);z-index:1000;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.auth-card{background:var(--surface);border:1px solid var(--border);padding:32px;border-radius:20px;width:100%;max-width:400px;}
+.auth-tabs{display:flex;gap:20px;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.auth-tab{padding:8px 0;color:var(--muted);cursor:pointer;font-weight:600;position:relative;}
+.auth-tab.active{color:var(--accent);}
+.auth-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent);}
+.auth-form{display:flex;flex-direction:column;gap:15px;}
+.auth-form input{background:var(--surface2);border:1px solid var(--border);padding:12px;border-radius:var(--radius);color:#fff;outline:none;}
+.auth-form button{background:var(--accent);color:#000;border:none;padding:12px;border-radius:var(--radius);font-weight:700;cursor:pointer;margin-top:10px;}
+.auth-back{margin-top:20px;color:var(--muted);cursor:pointer;font-size:14px;}
+
+/* APP SCREEN (LOGGED IN) */
+#appScreen{display:none;}
+header.site-header{height:64px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+.nav-links{display:flex;gap:25px;}
+.nav-link{color:var(--muted);text-decoration:none;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.nav-link.active{color:var(--accent);}
+.user-area{display:flex;align-items:center;gap:15px;}
+
+/* GAME CARDS */
+.game-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s, border-color .2s;position:relative;}
+.game-card:hover{transform:translateY(-4px);border-color:var(--accent);}
+.game-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#222;}
+.game-info{padding:12px;}
+.game-name{font-weight:600;font-size:14px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.game-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);}
+
+/* RESPONSIVE */
+@media (max-width:600px){
+  #most-played-list{grid-template-columns:1fr 1fr;}
+  .pub-logo{font-size:24px;}
+  .nav-text{display:none;}
+}
 </style>
 </head>
 <body>
 
-<!-- PUBLIC LANDING (shown before login) -->
-<div id="publicScreen" style="display:block">
-  <header style="border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;background:rgba(13,13,15,.95);backdrop-filter:blur(12px);z-index:100;">
-    <div class="logo">QWERST<span class="logo-dot">.COM</span></div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <a href="kitap/index.html" style="color:var(--muted);text-decoration:none;font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor='#ff6b00';this.style.color='#ff6b00'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📚 Kitaplar</a>
-      <button class="theme-btn" id="themeTogglePub" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
-      <button id="loginBtn2" onclick="var p=document.getElementById('publicScreen');var a=document.getElementById('authScreen');if(p)p.style.display='none';if(a)a.style.display='flex';" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s">Giriş Yap</button>
+<div id="publicScreen">
+  <header class="pub-header">
+    <a href="index.html" class="pub-logo">QWERST</a>
+    <div class="pub-nav">
+      <button class="theme-btn" id="themeTogglePub" onclick="_toggleTheme()">🌙</button>
+      <button class="btn-login" onclick="showAuthScreen()">GİRİŞ YAP</button>
     </div>
   </header>
-  <main style="max-width:1200px;margin:0 auto;padding:32px 24px;">
-    <!-- TRENDING SECTION -->
-    <div style="margin-bottom:48px;">
-      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;">
-        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent)">SON 1 AYDA ÇIKANLAR</h2>
-        <span style="font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">· Popüler Oyunlar</span>
-      </div>
-      <div id="trendingGames" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
-        <div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>Yükleniyor...</div>
-      </div>
-    </div>
-    <!-- MOST ADDED SECTION -->
-    <div style="margin-bottom:48px;">
-      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;">
-        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent)">EN ÇOK EKLENENLER</h2>
-        <span style="font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">· Topluluk Favorileri</span>
-      </div>
-      <div id="mostAddedGames" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
-        <div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>Yükleniyor...</div>
-      </div>
-    </div>
-    <div style="text-align:center;padding:48px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;">
-      <a href="/cdn-cgi/l/email-protection#8af9ebe2e3e4fee5faeff8cae2e5fee7ebe3e6a4e9e5e7" style="color:#e8ff47;text-decoration:none;margin-top:6px;display:inline-block"><span class="__cf_email__" data-cfemail="b5c6d4dddcdbc1dac5d0c7f5dddac1d8d4dcd99bd6dad8">[email&#160;protected]</span></a>
-    </div>
-  </main>
-</div>
 
-<div class="auth-screen" id="authScreen" style="display:none">
-  <div class="auth-box">
-    <div class="auth-logo">QWERST<span style="color:#e8ff47">.COM</span></div>
-    <div class="auth-sub">Oyun listeni oluştur, takip et.</div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="loginTab">Giriş Yap</button>
-      <button class="auth-tab" id="registerTab">Kayıt Ol</button>
-    </div>
-    <div class="auth-field"><label>E-posta</label><input type="email" id="authEmail" placeholder="ornek@mail.com"></div>
-    <div class="auth-field"><label>Şifre</label><input type="password" id="authPassword" placeholder="••••••••"></div>
-    <div class="auth-field" id="usernameField" style="display:none"><label>Kullanıcı Adı</label><input type="text" id="authUsername" placeholder="oyunsever42"></div>
-    <button class="btn-auth" id="authBtn">Giriş Yap</button>
-    <div class="auth-msg error" id="authError"></div>
-    <div class="auth-msg success" id="authSuccess"></div>
-  </div>
-</div>
-
-</div>
-
-<div id="appScreen" style="display:none">
-  <header>
-    <div class="logo" id="logoBtn">QWERST<span class="logo-dot">.COM</span></div>
-    <div class="header-right">
-      <div class="user-badge" id="userBadge"></div>
-      <div class="header-tabs">
-        <button class="tab-btn active" id="tabSearch">🔍 Ara</button>
-        <button class="tab-btn" id="tabMylist">📋 Listelerim</button>
-        <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
-      </div>
-      <button class="theme-btn" id="themeToggleApp" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
-      <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>
-      <button class="btn-logout" id="logoutBtn">Çıkış</button>
-    </div>
-  </header>
   <main>
-    <div class="view active" id="searchView">
-      <div class="hero-layout">
-        <div class="hero-col left" id="heroLeft"></div>
-        <div class="search-hero">
-          <h1>OYUN <em>BUL,</em><br>LİSTEYE <em>EKLE</em></h1>
-          <p>Milyonlarca oyun arasından ara, puanla, takip et.</p>
-          <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Oyun adı ara..." autocomplete="off">
-            <button class="btn-primary" id="searchBtn">Ara</button>
-          </div>
-        </div>
-        <div class="hero-col right" id="heroRight"></div>
-      </div>
-      <div id="searchResults"></div>
-      <footer class="site-footer" id="siteFooter">Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent);text-decoration:none">sahintoper@hotmail.com</a></footer>
-    </div>
-    <div class="view" id="mylistView">
-      <div class="lists-layout">
-        <div class="lists-sidebar">
-          <div class="lists-sidebar-header">
-            <span class="lists-sidebar-title">LİSTELER</span>
-            <button class="btn-new-list" id="newListBtn">+ Yeni</button>
-          </div>
-          <div id="listsNav"></div>
-        </div>
-        <div id="listContent">
-          <div class="empty-state"><div class="empty-icon">📋</div><h3>LİSTE SEÇ</h3><p>Soldan bir liste seç.</p></div>
-        </div>
-      </div>
-    </div>
-    <div class="view" id="friendsView">
-      <div class="section-title">ARKADAŞLAR</div>
-      <div class="user-search-bar">
-        <input type="text" id="userSearchInput" placeholder="Kullanıcı adı ara...">
-        <button class="btn-primary" id="userSearchBtn">Ara</button>
-      </div>
-      <div class="friends-tabs">
-        <button class="friends-tab active" id="ftFollowing">Takip Ettiklerim</button>
-        <button class="friends-tab" id="ftFollowers">Takipçilerim</button>
-        <button class="friends-tab" id="ftSearch">Arama Sonuçları</button>
-      </div>
-      <div id="friendsContent"></div>
-    </div>
-    <div class="view" id="profileView">
-      <div class="profile-header">
-        <button class="btn-back" id="backBtn">← Geri</button>
-        <div class="profile-avatar" id="profileAvatar"></div>
-        <div>
-          <div class="profile-name" id="profileName"></div>
-          <div class="profile-stats" id="profileStats"></div>
-        </div>
-        <button class="btn-follow" id="profileFollowBtn"></button>
-      </div>
-      <div class="profile-lists-tabs" id="profileListsTabs"></div>
-      <div id="profileListItems"></div>
+    <h2 class="section-title"><span>🔥</span> HALKIN SEÇİMİ</h2>
+    <div id="most-played-list">
+      <div style="grid-column:1/-1; text-align:center; padding:50px; color:var(--muted)">Yükleniyor...</div>
     </div>
   </main>
 </div>
 
-<div class="modal-overlay" id="ratingModal">
-  <div class="modal">
-    <div class="modal-header">
-      <img class="modal-img" id="modalImg" src="" alt="">
-      <div class="modal-info">
-        <div class="modal-title" id="modalTitle"></div>
-        <div class="modal-meta" id="modalMeta"></div>
-      </div>
-      <button class="modal-close" id="modalClose">✕</button>
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <div id="tabLogin" class="auth-tab active" onclick="setAuthMode('login')">Giriş Yap</div>
+      <div id="tabRegister" class="auth-tab" onclick="setAuthMode('register')">Kayıt Ol</div>
     </div>
-    <div class="modal-body">
-      <div class="score-picker">
-        <div class="modal-label">PUAN VER</div>
-        <div class="score-display" id="scoreDisplay">7<span>/10</span></div>
-        <input type="range" class="score-slider" id="scoreSlider" min="1" max="10" value="7">
-        <div class="score-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
-      </div>
-      <div class="modal-label">LİSTE SEÇ</div>
-      <select class="list-select" id="listSelect"></select>
-      <div class="modal-label">NOT (opsiyonel)</div>
-      <textarea class="notes-input" id="notesInput" placeholder="Bu oyun hakkında düşüncelerini yaz..."></textarea>
-      <div class="modal-actions">
-        <button class="btn-cancel" id="modalCancel">İptal</button>
-        <button class="btn-save" id="saveBtn">Listeye Ekle ✓</button>
-      </div>
+    <div class="auth-form">
+      <input type="text" id="authUsername" placeholder="Kullanıcı Adı" class="hidden">
+      <input type="email" id="authEmail" placeholder="E-posta">
+      <input type="password" id="authPass" placeholder="Şifre">
+      <button id="authBtn" onclick="handleAuth()">Giriş Yap</button>
     </div>
+    <div class="auth-back" onclick="location.reload()">← Geri Dön</div>
   </div>
 </div>
 
-<div class="modal-overlay" id="newListModal">
-  <div class="modal" style="max-width:380px">
-    <div class="modal-header">
-      <div class="modal-info"><div class="modal-title" id="newListModalTitle">Yeni Liste</div></div>
-      <button class="modal-close" id="newListModalClose">✕</button>
+<div id="appScreen">
+  <header class="site-header">
+    <div class="nav-links">
+      <div class="nav-link active" onclick="showTab('search')"><span>🔍</span> <span class="nav-text" id="tabSearch">Ara</span></div>
+      <div class="nav-link" onclick="showTab('mylist')"><span>📋</span> <span class="nav-text" id="tabMylist">Listelerim</span></div>
+      <div class="nav-link" onclick="showTab('friends')"><span>👥</span> <span class="nav-text" id="tabFriends">Arkadaşlar</span></div>
     </div>
-    <div class="modal-body">
-      <div class="modal-label">Liste Adı</div>
-      <input class="text-input" id="newListName" placeholder="ör: Oynamak İstediklerim">
-      <div class="modal-label">Açıklama (opsiyonel)</div>
-      <input class="text-input" id="newListDesc" placeholder="Kısa bir açıklama...">
-      <div class="modal-actions">
-        <button class="btn-cancel" id="newListCancel">İptal</button>
-        <button class="btn-save" id="newListSave">Kaydet</button>
-      </div>
+    <div class="user-area">
+      <button class="theme-btn" id="themeToggleApp" onclick="_toggleTheme()">🌙</button>
+      <button class="theme-btn" onclick="handleLogout()" id="logoutBtn">Çıkış</button>
     </div>
-  </div>
+  </header>
+
+  <main id="mainContent" style="padding:20px; max-width:1200px; margin:0 auto;">
+    <div id="tab-search" class="tab-content">
+       <div class="search-hero" style="text-align:center; padding:40px 0;">
+         <h1 id="heroH1" style="font-family:'Bebas Neue'; font-size:48px; margin-bottom:10px;">OYUN BUL, LİSTEYE EKLE</h1>
+         <div style="display:flex; gap:10px; max-width:600px; margin:20px auto;">
+           <input type="text" id="searchInput" placeholder="Oyun adı ara..." style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:#fff;">
+           <button id="searchBtn" onclick="searchGames()" style="background:var(--accent); border:none; padding:0 25px; border-radius:10px; font-weight:700; cursor:pointer;">Ara</button>
+         </div>
+       </div>
+       <div id="searchResults" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px;"></div>
+    </div>
+    
+    <div id="tab-mylist" class="tab-content hidden">
+       <div id="myListsContainer"></div>
+    </div>
+
+    <div id="tab-friends" class="tab-content hidden">
+       <div id="friendsContainer"></div>
+    </div>
+  </main>
 </div>
 
-<div class="toast" id="toast"></div>
+<div id="toast" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--accent); color:#000; padding:10px 20px; border-radius:20px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .3s; z-index:9999;"></div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js" data-cfasync="false"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" data-cfasync="false"></script>
-<script src="lang.js" data-cfasync="false"></script>
-<script src="public.js" data-cfasync="false"></script>
-<script src="app.js" data-cfasync="false"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="lang.js"></script>
+<script src="public.js"></script>
+<script src="app.js"></script>
+
 <script data-cfasync="false">
-// Theme
+// TEMA YÖNETİMİ
 (function(){
   var root = document.documentElement;
   function applyTheme(t) {
     if (t === 'light') root.classList.add('light');
     else root.classList.remove('light');
-    var icon = t === 'light' ? '&#9728;' : '&#127769;';
+    var icon = t === 'light' ? '☀️' : '🌙';
     ['themeTogglePub','themeToggleApp'].forEach(function(id){
       var el = document.getElementById(id);
       if (el) el.innerHTML = icon;
@@ -425,24 +158,30 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
   applyTheme(localStorage.getItem('qwerst-theme') || 'dark');
 })();
 
-// Init polling
-// Run loadPublicGames immediately - only needs public.js (already loaded above)
-if (typeof loadPublicGames === "function") {
-  loadPublicGames();
-} else {
-  console.error("loadPublicGames not found - public.js may not have loaded");
+// SİSTEMİ BAŞLAT
+async function bootSystem() {
+  if (typeof initApp === "function" && typeof supabase !== "undefined") {
+    try {
+      // Supabase istemcisini app.js'den alıyoruz (sb global değişkeni)
+      const { data: { session } } = await sb.auth.getSession();
+      
+      if (session && session.user) {
+        // GİRİŞ VAR
+        showApp(session.user);
+      } else {
+        // GİRİŞ YOK
+        loadPublicGames();
+      }
+    } catch (e) {
+      console.error("Boot Error:", e);
+      loadPublicGames();
+    }
+  } else {
+    setTimeout(bootSystem, 100);
+  }
 }
 
-// Start main app when supabase + XLSX ready
-(function wait(n) {
-  if (typeof initApp === "function" && typeof supabase !== "undefined" && typeof XLSX !== "undefined") {
-    initApp();
-  } else if (n > 0) {
-    setTimeout(function(){ wait(n-1); }, 100);
-  } else {
-    console.error("App init timeout - supabase:" + typeof supabase + " XLSX:" + typeof XLSX);
-  }
-})(80);
+window.addEventListener('DOMContentLoaded', bootSystem);
 </script>
 </body>
 </html>

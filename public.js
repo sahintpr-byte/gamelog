@@ -7,6 +7,17 @@ function showAuthScreen() {
   if (auth) auth.style.display = "flex";
 }
 
+function showYouTubeFallback(body, gameName) {
+  // YouTube nocookie embed with search query
+  var ytId = encodeURIComponent(gameName + " official game trailer 2024 2025");
+  body.innerHTML =
+    '<div style="position:relative;width:100%;padding-bottom:56.25%">' +
+      '<iframe id="trailerFrame" src="https://www.youtube-nocookie.com/embed?listType=search&list=' + ytId + '&autoplay=0&rel=0&modestbranding=1" ' +
+      'style="position:absolute;inset:0;width:100%;height:100%;border:none" allow="encrypted-media;fullscreen" allowfullscreen loading="lazy"></iframe>' +
+    '</div>' +
+    '<p style="color:#444;font-size:11px;text-align:center;padding:6px 8px">YouTube arama sonucu</p>';
+}
+
 function openTrailer(game) {
   var existing = document.getElementById("trailerModal");
   if (existing) existing.remove();
@@ -40,35 +51,53 @@ function openTrailer(game) {
   }
   document.getElementById("trailerClose").addEventListener("click", stopAndClose);
 
-  // Fetch trailer from RAWG movies endpoint
-  fetch("https://api.rawg.io/api/games/" + game.id + "/movies?key=" + RAWG)
-    .then(function(r) { return r.json(); })
+  // Use game.slug if available (from RAWG), otherwise search by name
+  var gameSlug = game.slug || null;
+  var searchUrl = gameSlug
+    ? "https://api.rawg.io/api/games/" + gameSlug + "/movies?key=" + RAWG
+    : "https://api.rawg.io/api/games?key=" + RAWG + "&search=" + encodeURIComponent(game.name) + "&page_size=1";
+
+  function loadMovies(slug) {
+    return fetch("https://api.rawg.io/api/games/" + slug + "/movies?key=" + RAWG).then(function(r) { return r.json(); });
+  }
+
+  var fetchPromise;
+  if (gameSlug) {
+    fetchPromise = loadMovies(gameSlug);
+  } else {
+    // Search for the game first to get its slug
+    fetchPromise = fetch("https://api.rawg.io/api/games?key=" + RAWG + "&search=" + encodeURIComponent(game.name) + "&page_size=1")
+      .then(function(r) { return r.json(); })
+      .then(function(sd) {
+        if (sd.results && sd.results.length > 0) {
+          return loadMovies(sd.results[0].slug);
+        }
+        return { results: [] };
+      });
+  }
+
+  fetchPromise
     .then(function(data) {
       var body = document.getElementById("trailerBody");
       if (!body) return;
       if (data.results && data.results.length > 0) {
-        // Use first trailer video directly
         var clip = data.results[0];
         var videoUrl = (clip.data && (clip.data.max || clip.data["480"])) || clip.preview;
-        body.innerHTML =
-          '<video id="trailerFrame" controls autoplay style="width:100%;max-height:460px;display:block;background:#000" poster="' + (clip.preview || "") + '">' +
-            '<source src="' + videoUrl + '" type="video/mp4">' +
-            'Tarayıcınız video desteklemiyor.' +
-          '</video>';
+        if (videoUrl) {
+          body.innerHTML =
+            '<video id="trailerFrame" controls autoplay style="width:100%;max-height:460px;display:block;background:#000" poster="' + (clip.preview || "") + '">' +
+              '<source src="' + videoUrl + '" type="video/mp4">' +
+            '</video>';
+        } else {
+          showYouTubeFallback(body, game.name);
+        }
       } else {
-        // No RAWG trailer — show YouTube iframe via invidious (no API key needed)
-        var ytQuery = encodeURIComponent(game.name + " official game trailer");
-        body.innerHTML =
-          '<div style="position:relative;width:100%;padding-bottom:56.25%">' +
-            '<iframe id="trailerFrame" src="https://www.youtube-nocookie.com/embed?listType=search&list=' + ytQuery + '&autoplay=0&rel=0" ' +
-            'style="position:absolute;inset:0;width:100%;height:100%;border:none" allow="encrypted-media;fullscreen" allowfullscreen></iframe>' +
-          '</div>' +
-          '<p style="color:#555;font-size:11px;text-align:center;padding:8px">RAWG fragman bulunamadı, YouTube arama sonucu gösteriliyor.</p>';
+        showYouTubeFallback(body, game.name);
       }
     })
     .catch(function() {
       var body = document.getElementById("trailerBody");
-      if (body) body.innerHTML = '<p style="color:#666">Fragman yüklenemedi.</p>';
+      if (body) showYouTubeFallback(body, game.name);
     });
 }
 

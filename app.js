@@ -7,7 +7,11 @@ const RAWG   = 'b1ba1bc900a14e699e5e98788646cf16';
 const { createClient } = supabase;
 const sb = createClient(SB_URL, SB_KEY);
 
-// Auto-login: check existing session before showing auth screen
+const PAGE_SIZE = 30;
+let currentUser=null, currentGame=null, currentSort='date', dateSortAsc=false;
+let listViewMode='list', currentPage=1;
+
+// Auto-login: check existing session immediately
 (async function checkSession() {
   try {
     const { data: { session } } = await sb.auth.getSession();
@@ -17,10 +21,6 @@ const sb = createClient(SB_URL, SB_KEY);
     }
   } catch(e) {}
 })();
-
-const PAGE_SIZE = 30;
-let currentUser=null, currentGame=null, currentSort='date', dateSortAsc=false;
-let listViewMode='list', currentPage=1;
 let authMode='login', friendsTab='following';
 let myLists=[], activeListId=null, viewingProfile=null, editingListId=null;
 
@@ -106,11 +106,12 @@ async function loadMyListsSilent(){
 sb.auth.onAuthStateChange((event,session)=>{
   if(session?.user){
     currentUser=session.user;
-    if(document.getElementById('authScreen').style.display!=='none') showApp();
+    showApp();
   } else if(event==='SIGNED_OUT'){
     currentUser=null; myLists=[]; activeListId=null;
     document.getElementById('appScreen').style.display='none';
-    document.getElementById('authScreen').style.display='flex';
+    document.getElementById('authScreen').style.display='none';
+    document.getElementById('publicScreen').style.display='block';
   }
 });
 

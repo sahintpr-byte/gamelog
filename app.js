@@ -8,7 +8,8 @@ const { createClient } = supabase;
 const sb = createClient(SB_URL, SB_KEY);
 
 const PAGE_SIZE = 30;
-let currentUser=null, currentGame=null, currentSort='date', dateSortAsc=false;
+var currentUser=null, currentGame=null, currentSort='date', dateSortAsc=false;
+window._getSetUser = function(u){ if(u!==undefined) currentUser=u; return currentUser; };
 let listViewMode='list', currentPage=1;
 
 // Auto-login: check existing session immediately
@@ -916,8 +917,13 @@ function initHero(){
           var res2 = await sb2.auth.signInWithPassword({email, password: pass});
           authBtn.disabled = false; authBtn.textContent = 'Giriş Yap';
           if (res2.error) { showMsg('E-posta veya şifre hatalı.', 'error'); return; }
-          // Session set — wait for initApp to pick it up, or reload
-          window.location.reload();
+          // Set global user and show app directly
+          if (typeof window._getSetUser === 'function') window._getSetUser(res2.data.user);
+          if (typeof showApp === 'function' && typeof initApp !== 'undefined') {
+            showApp();
+          } else {
+            window.location.reload();
+          }
         }
       }
 

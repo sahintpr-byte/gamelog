@@ -80,13 +80,11 @@ document.getElementById('logoutBtn').onclick=async()=>{
   await sb.auth.signOut();
   currentUser=null; myLists=[]; activeListId=null;
   document.getElementById('appScreen').style.display='none';
-  document.getElementById('authScreen').style.display='none';
-  document.getElementById('publicScreen').style.display='block';
+  document.getElementById('authScreen').style.display='block';
 };
 
 function showApp(){
   document.getElementById('authScreen').style.display='none';
-  document.getElementById('publicScreen').style.display='none';
   document.getElementById('appScreen').style.display='block';
   const name=currentUser.user_metadata?.username||currentUser.email.split('@')[0];
   document.getElementById('userBadge').innerHTML='👤 <strong>'+name+'</strong>';
@@ -111,8 +109,7 @@ sb.auth.onAuthStateChange((event,session)=>{
   } else if(event==='SIGNED_OUT'){
     currentUser=null; myLists=[]; activeListId=null;
     document.getElementById('appScreen').style.display='none';
-    document.getElementById('authScreen').style.display='none';
-    document.getElementById('publicScreen').style.display='block';
+    document.getElementById('authScreen').style.display='block';
   }
 });
 
@@ -852,5 +849,3 @@ function initHero(){
 }
 
 }
-
-initApp();

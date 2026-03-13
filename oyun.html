@@ -212,6 +212,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .toast.show{transform:translateY(0);opacity:1;}
 .site-footer{text-align:center;margin-top:48px;padding:20px;font-size:13px;color:var(--muted);border-top:1px solid var(--border);}
 @media(max-width:800px){.lists-layout{grid-template-columns:1fr;}.hero-layout{grid-template-columns:1fr;}.hero-col{display:none;}header{padding:0 16px;}main{padding:24px 16px;}.user-badge{display:none;}}
+@media(max-width:760px){#loginTwoCol{grid-template-columns:1fr!important;}#loginTwoCol .auth-sticky{position:static!important;}}
 .steam-link{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
   border-radius:5px;background:rgba(23,26,33,.9);border:1px solid rgba(102,192,244,.2);
   text-decoration:none;flex-shrink:0;transition:all .2s;}
@@ -223,61 +224,152 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 </head>
 <body>
 
-<!-- PUBLIC LANDING (shown before login) -->
-<div id="publicScreen" style="display:block">
+<!-- LOGIN + TRENDING PAGE -->
+<div id="authScreen" style="display:block;min-height:100vh;background:var(--bg);">
+
+  <!-- Header -->
   <header style="border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;background:rgba(13,13,15,.95);backdrop-filter:blur(12px);z-index:100;">
-    <div class="logo">QWERST<span class="logo-dot">.COM</span></div>
+    <a href="index.html" class="logo" style="text-decoration:none">QWERST<span class="logo-dot">.COM</span></a>
     <div style="display:flex;align-items:center;gap:10px;">
       <a href="kitap/index.html" style="color:var(--muted);text-decoration:none;font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor='#ff6b00';this.style.color='#ff6b00'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📚 Kitaplar</a>
-      <button class="theme-btn" id="themeTogglePub" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
-      <button id="loginBtn2" onclick="var p=document.getElementById('publicScreen');var a=document.getElementById('authScreen');if(p)p.style.display='none';if(a)a.style.display='flex';" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s">Giriş Yap</button>
+      <button class="theme-btn" id="themeTogglePub" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
     </div>
   </header>
-  <main style="max-width:1200px;margin:0 auto;padding:32px 24px;">
-    <!-- TRENDING SECTION -->
-    <div style="margin-bottom:48px;">
-      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;">
-        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent)">SON 1 AYDA ÇIKANLAR</h2>
-        <span style="font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">· Popüler Oyunlar</span>
-      </div>
-      <div id="trendingGames" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
-        <div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>Yükleniyor...</div>
-      </div>
-    </div>
-    <!-- MOST ADDED SECTION -->
-    <div style="margin-bottom:48px;">
-      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;">
-        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--accent)">EN ÇOK EKLENENLER</h2>
-        <span style="font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">· Topluluk Favorileri</span>
-      </div>
-      <div id="mostAddedGames" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
-        <div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>Yükleniyor...</div>
-      </div>
-    </div>
-    <div style="text-align:center;padding:48px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;">
-      <a href="/cdn-cgi/l/email-protection#8af9ebe2e3e4fee5faeff8cae2e5fee7ebe3e6a4e9e5e7" style="color:#e8ff47;text-decoration:none;margin-top:6px;display:inline-block"><span class="__cf_email__" data-cfemail="b5c6d4dddcdbc1dac5d0c7f5dddac1d8d4dcd99bd6dad8">[email&#160;protected]</span></a>
-    </div>
-  </main>
-</div>
 
-<div class="auth-screen" id="authScreen" style="display:none">
-  <div class="auth-box">
-    <div class="auth-logo">QWERST<span style="color:#e8ff47">.COM</span></div>
-    <div class="auth-sub">Oyun listeni oluştur, takip et.</div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="loginTab">Giriş Yap</button>
-      <button class="auth-tab" id="registerTab">Kayıt Ol</button>
+  <!-- Two-column layout -->
+  <div id="loginTwoCol" style="max-width:1100px;margin:0 auto;padding:48px 24px;display:grid;grid-template-columns:380px 1fr;gap:48px;align-items:start;">
+
+    <!-- LEFT: Login Box -->
+    <div style="position:sticky;top:80px;">
+      <div class="auth-box" style="margin:0;">
+        <div class="auth-logo">QWERST<span style="color:#e8ff47">.COM</span></div>
+        <div class="auth-sub">Oyun listeni oluştur, takip et.</div>
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="loginTab">Giriş Yap</button>
+          <button class="auth-tab" id="registerTab">Kayıt Ol</button>
+        </div>
+        <div class="auth-field"><label>E-posta</label><input type="email" id="authEmail" placeholder="ornek@mail.com"></div>
+        <div class="auth-field"><label>Şifre</label><input type="password" id="authPassword" placeholder="••••••••"></div>
+        <div class="auth-field" id="usernameField" style="display:none"><label>Kullanıcı Adı</label><input type="text" id="authUsername" placeholder="oyunsever42"></div>
+        <button class="btn-auth" id="authBtn">Giriş Yap</button>
+        <div class="auth-msg error" id="authError"></div>
+        <div class="auth-msg success" id="authSuccess"></div>
+      </div>
     </div>
-    <div class="auth-field"><label>E-posta</label><input type="email" id="authEmail" placeholder="ornek@mail.com"></div>
-    <div class="auth-field"><label>Şifre</label><input type="password" id="authPassword" placeholder="••••••••"></div>
-    <div class="auth-field" id="usernameField" style="display:none"><label>Kullanıcı Adı</label><input type="text" id="authUsername" placeholder="oyunsever42"></div>
-    <button class="btn-auth" id="authBtn">Giriş Yap</button>
-    <div class="auth-msg error" id="authError"></div>
-    <div class="auth-msg success" id="authSuccess"></div>
+
+    <!-- RIGHT: Trending Games -->
+    <div>
+      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--accent)">SON 1 AYDA ÇIKANLAR</h2>
+        <span style="font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">· Popüler Oyunlar</span>
+      </div>
+      <div id="loginTrendingGames" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="text-align:center;padding:40px;color:var(--muted)">
+          <div style="width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>
+          Yükleniyor...
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- Video Modal -->
+<div id="videoModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closeVideoModal()">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;width:100%;max-width:860px;position:relative;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);">
+      <div id="videoModalTitle" style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--accent)"></div>
+      <button onclick="closeVideoModal()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;">✕</button>
+    </div>
+    <div id="videoModalBody" style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
+      <!-- iframe or video injected here -->
+    </div>
+  </div>
 </div>
+
+<script data-cfasync="false">
+// Load trending games for login page
+(function loadLoginTrending() {
+  var RAWG = 'b1ba1bc900a14e699e5e98788646cf16';
+  var today = new Date();
+  var from = new Date(today); from.setDate(from.getDate() - 30);
+  var fmt = function(d){ return d.toISOString().slice(0,10); };
+  var url = 'https://api.rawg.io/api/games?key='+RAWG+'&dates='+fmt(from)+','+fmt(today)+'&ordering=-added&page_size=10';
+  fetch(url).then(function(r){return r.json();}).then(function(data){
+    var el = document.getElementById('loginTrendingGames');
+    if(!el) return;
+    var games = (data.results||[]).slice(0,10);
+    if(!games.length){ el.innerHTML='<div style="color:var(--muted);padding:20px">Oyun bulunamadı.</div>'; return; }
+    el.innerHTML = '';
+    games.forEach(function(g, i){
+      var mc = g.metacritic ? '<span style="background:#'+mcColor(g.metacritic)+';color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;margin-left:8px;">'+g.metacritic+'</span>' : '';
+      var genres = (g.genres||[]).slice(0,2).map(function(x){return x.name;}).join(', ');
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;cursor:pointer;transition:all .2s;';
+      row.onmouseover = function(){ this.style.borderColor='var(--accent)'; this.style.transform='translateX(4px)'; };
+      row.onmouseout = function(){ this.style.borderColor='var(--border)'; this.style.transform=''; };
+      row.innerHTML =
+        '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--muted);min-width:28px;text-align:right;">'+(i+1)+'</div>'+
+        '<img src="'+(g.background_image||'')+'" onerror="this.style.display=\'none\'" style="width:60px;height:42px;object-fit:cover;border-radius:7px;flex-shrink:0;">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+g.name+mc+'</div>'+
+          '<div style="font-size:11px;color:var(--muted);margin-top:2px;">'+genres+'</div>'+
+        '</div>'+
+        '<div style="font-size:11px;color:var(--muted);white-space:nowrap;">▶ Fragman</div>';
+      row.onclick = function(){ openLoginTrailer(g); };
+      el.appendChild(row);
+    });
+  }).catch(function(){ document.getElementById('loginTrendingGames').innerHTML='<div style="color:var(--muted);padding:20px">Yüklenemedi.</div>'; });
+
+  function mcColor(s){ if(s>=75) return '3d8b3d'; if(s>=50) return 'b87d00'; return '8b2020'; }
+})();
+
+function openLoginTrailer(game) {
+  var modal = document.getElementById('videoModal');
+  var title = document.getElementById('videoModalTitle');
+  var body = document.getElementById('videoModalBody');
+  title.textContent = game.name;
+  body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;"></div></div>';
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  // Try RAWG movies first
+  var RAWG = 'b1ba1bc900a14e699e5e98788646cf16';
+  fetch('https://api.rawg.io/api/games/'+game.slug+'/movies?key='+RAWG)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var clip = (d.results||[])[0];
+      if(clip && clip.data && (clip.data.max||clip.data['480'])) {
+        var src = clip.data.max || clip.data['480'];
+        body.innerHTML = '<video src="'+src+'" controls autoplay style="position:absolute;inset:0;width:100%;height:100%;background:#000;"></video>';
+      } else {
+        // Fallback: YouTube embed via Invidious search
+        searchYoutube(game.name + ' official trailer');
+      }
+    }).catch(function(){ searchYoutube(game.name + ' official trailer'); });
+
+  function searchYoutube(q) {
+    fetch('https://inv.nadeko.net/api/v1/search?q='+encodeURIComponent(q)+'&type=video')
+      .then(function(r){return r.json();})
+      .then(function(results){
+        var vid = (Array.isArray(results)?results:[])[0];
+        if(vid && vid.videoId) {
+          body.innerHTML = '<iframe src="https://www.youtube.com/embed/'+vid.videoId+'?autoplay=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="autoplay;encrypted-media" allowfullscreen></iframe>';
+        } else {
+          body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;">Video bulunamadı.</div>';
+        }
+      }).catch(function(){
+        body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;">Video yüklenemedi.</div>';
+      });
+  }
+}
+
+function closeVideoModal() {
+  var modal = document.getElementById('videoModal');
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('videoModalBody').innerHTML = '';
+}
+</script>
 
 <div id="appScreen" style="display:none">
   <header>
@@ -427,13 +519,6 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 })();
 
 // Init polling
-// Run loadPublicGames immediately - only needs public.js (already loaded above)
-if (typeof loadPublicGames === "function") {
-  loadPublicGames();
-} else {
-  console.error("loadPublicGames not found - public.js may not have loaded");
-}
-
 // Start main app when supabase + XLSX ready
 (function wait(n) {
   if (typeof initApp === "function" && typeof supabase !== "undefined" && typeof X

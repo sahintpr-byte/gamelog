@@ -222,7 +222,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
     <div class="logo">QWERST<span class="logo-dot">.COM</span></div>
     <div style="display:flex;align-items:center;gap:10px;">
       <a href="kitap/index.html" style="color:var(--muted);text-decoration:none;font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor='#ff6b00';this.style.color='#ff6b00'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📚 Kitaplar</a>
-      <button onclick="showAuthScreen()" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">Giriş Yap</button>
+      <button id="loginBtn2" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">Giriş Yap</button>
     </div>
   </header>
   <main style="max-width:1200px;margin:0 auto;padding:32px 24px;">
@@ -403,5 +403,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="lang.js"></script>
+<script src="public.js"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){var b=document.getElementById("loginBtn2");if(b)b.addEventListener("click",showAuthScreen);});</script>
 <script src="app.js"></script>
 <script>

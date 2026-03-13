@@ -3,8 +3,20 @@ function initApp() {
 const SB_URL = 'https://dzjmbwyandrkonqdjalk.supabase.co';
 const SB_KEY = 'sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD';
 const RAWG   = 'b1ba1bc900a14e699e5e98788646cf16';
+
 const { createClient } = supabase;
 const sb = createClient(SB_URL, SB_KEY);
+
+// Auto-login: check existing session before showing auth screen
+(async function checkSession() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session && session.user) {
+      currentUser = session.user;
+      showApp();
+    }
+  } catch(e) {}
+})();
 
 const PAGE_SIZE = 30;
 let currentUser=null, currentGame=null, currentSort='date', dateSortAsc=false;

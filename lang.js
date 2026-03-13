@@ -45,7 +45,7 @@ const LANG = {
     toastCSV:'CSV indirildi!', toastXLSX:'Excel indirildi!', toastPDF:'PDF için yazdır penceresini kullan.',
     confirmDel:'" listeden silinsin mi?', confirmListDel:'" listesi ve içindeki tüm oyunlar silinsin mi?',
     colName:'Oyun Adı', colScore:'Puan', colYear:'Yıl', colGenres:'Türler', colPlatform:'Platform', colNote:'Not', colDate:'Eklenme',
-    footer:'Bu İslam ve Şahin kardeşlerin ortak projesidir.',
+    footer:'',
     oyunCount:' oyun · ', listeCount:' liste',
     dateLocale:'tr-TR',
   },
@@ -95,7 +95,7 @@ const LANG = {
     toastCSV:'CSV downloaded!', toastXLSX:'Excel downloaded!', toastPDF:'Use the print window to save as PDF.',
     confirmDel:' removed from list?', confirmListDel:' list and all its games will be deleted?',
     colName:'Game Name', colScore:'Score', colYear:'Year', colGenres:'Genres', colPlatform:'Platform', colNote:'Note', colDate:'Added',
-    footer:'A joint project by Islam and Sahin.',
+    footer:'',
     oyunCount:' games · ', listeCount:' lists',
     dateLocale:'en-US',
   }
@@ -139,7 +139,7 @@ function applyLang(){
   document.getElementById('backBtn').textContent = t('backBtn');
   // Footer
   const footer = document.querySelector('.site-footer');
-  if(footer) footer.innerHTML = t('footer') + '<br><span style="margin-top:6px;display:inline-block">Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent);text-decoration:none">sahintoper&#64;hotmail&#46;com</a></span>';
+  if(footer) footer.innerHTML = 'Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent);text-decoration:none">sahintoper@hotmail.com</a>';
   // Lang toggle
   document.getElementById('langTR').classList.toggle('active', l === 'tr');
   document.getElementById('langEN').classList.toggle('active', l === 'en');

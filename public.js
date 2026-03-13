@@ -10,29 +10,66 @@ function showAuthScreen() {
 function openTrailer(game) {
   var existing = document.getElementById("trailerModal");
   if (existing) existing.remove();
-  var query = encodeURIComponent(game.name + " official trailer");
   var steamUrl = "https://store.steampowered.com/search/?term=" + encodeURIComponent(game.name);
+  var RAWG = "b1ba1bc900a14e699e5e98788646cf16";
+
   var modal = document.createElement("div");
   modal.id = "trailerModal";
-  modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px";
-  var bg = game.background_image ? '<img src="' + game.background_image + '" style="width:100%;border-radius:8px;max-height:220px;object-fit:cover">' : "";
+  modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px";
+
+  // Build modal with loading state
   modal.innerHTML =
-    '<div style="background:#13131a;border:1px solid #2a2a38;border-radius:16px;overflow:hidden;width:100%;max-width:680px">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #2a2a38">' +
-        '<span style="font-weight:600;color:#fff;font-size:15px">&#127916; ' + game.name + "</span>" +
-        '<button id="trailerClose" style="background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1">&#x2715;</button>' +
-      "</div>" +
-      '<div style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px">' +
-        bg +
-        '<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">' +
-          '<a href="https://www.youtube.com/results?search_query=' + query + '" target="_blank" rel="noopener" style="background:#ff0000;color:#fff;text-decoration:none;padding:10px 24px;border-radius:8px;font-weight:700;font-size:14px">&#9654; YouTube Fragman</a>' +
-          '<a href="' + steamUrl + '" target="_blank" rel="noopener" style="background:#1b2838;color:#66c0f4;text-decoration:none;padding:10px 24px;border-radius:8px;font-weight:700;font-size:14px;border:1px solid #66c0f4">Steam Sayfası</a>' +
+    '<div style="background:#13131a;border:1px solid #2a2a38;border-radius:16px;overflow:hidden;width:100%;max-width:820px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #2a2a38">' +
+        '<span style="font-weight:600;color:#fff;font-size:14px">&#127916; ' + game.name + "</span>" +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<a href="' + steamUrl + '" target="_blank" rel="noopener" style="background:#1b2838;color:#66c0f4;text-decoration:none;padding:6px 14px;border-radius:7px;font-weight:600;font-size:12px;border:1px solid #66c0f4;white-space:nowrap">Steam Sayfası</a>' +
+          '<button id="trailerClose" style="background:none;border:none;color:#888;font-size:22px;cursor:pointer;line-height:1;padding:0 4px">&#x2715;</button>' +
         "</div>" +
       "</div>" +
+      '<div id="trailerBody" style="display:flex;align-items:center;justify-content:center;min-height:200px;padding:24px;color:#888;font-size:14px">Fragman aranıyor...</div>' +
     "</div>";
-  modal.addEventListener("click", function(e) { if (e.target === modal) modal.remove(); });
+
+  modal.addEventListener("click", function(e) { if (e.target === modal) { stopAndClose(); } });
   document.body.appendChild(modal);
-  document.getElementById("trailerClose").addEventListener("click", function() { modal.remove(); });
+
+  function stopAndClose() {
+    var frame = document.getElementById("trailerFrame");
+    if (frame) frame.src = "";
+    modal.remove();
+  }
+  document.getElementById("trailerClose").addEventListener("click", stopAndClose);
+
+  // Fetch trailer from RAWG movies endpoint
+  fetch("https://api.rawg.io/api/games/" + game.id + "/movies?key=" + RAWG)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var body = document.getElementById("trailerBody");
+      if (!body) return;
+      if (data.results && data.results.length > 0) {
+        // Use first trailer video directly
+        var clip = data.results[0];
+        var videoUrl = (clip.data && (clip.data.max || clip.data["480"])) || clip.preview;
+        body.innerHTML =
+          '<video id="trailerFrame" controls autoplay style="width:100%;max-height:460px;display:block;background:#000" poster="' + (clip.preview || "") + '">' +
+            '<source src="' + videoUrl + '" type="video/mp4">' +
+            'Tarayıcınız video desteklemiyor.' +
+          '</video>';
+      } else {
+        // No RAWG trailer — show YouTube iframe via invidious (no API key needed)
+        var ytQuery = encodeURIComponent(game.name + " official game trailer");
+        body.innerHTML =
+          '<div style="position:relative;width:100%;padding-bottom:56.25%">' +
+            '<iframe id="trailerFrame" src="https://www.youtube-nocookie.com/embed?listType=search&list=' + ytQuery + '&autoplay=0&rel=0" ' +
+            'style="position:absolute;inset:0;width:100%;height:100%;border:none" allow="encrypted-media;fullscreen" allowfullscreen></iframe>' +
+          '</div>' +
+          '<p style="color:#555;font-size:11px;text-align:center;padding:8px">RAWG fragman bulunamadı, YouTube arama sonucu gösteriliyor.</p>';
+      }
+    })
+    .catch(function() {
+      var body = document.getElementById("trailerBody");
+      if (body) body.innerHTML = '<p style="color:#666">Fragman yüklenemedi.</p>';
+    });
 }
 
 function buildGameCard(game, idx, onClick) {

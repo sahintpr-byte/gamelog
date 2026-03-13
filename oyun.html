@@ -226,8 +226,8 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
     <div class="logo">QWERST<span class="logo-dot">.COM</span></div>
     <div style="display:flex;align-items:center;gap:10px;">
       <a href="kitap/index.html" style="color:var(--muted);text-decoration:none;font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor='#ff6b00';this.style.color='#ff6b00'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📚 Kitaplar</a>
-      <button class="theme-btn" id="themeTogglePub" onclick="if(window._toggleTheme)window._toggleTheme()">&#127769;</button>
-      <button id="loginBtn2" onclick="showAuthScreen()" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s">Giriş Yap</button>
+      <button class="theme-btn" id="themeTogglePub" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
+      <button id="loginBtn2" onclick="var p=document.getElementById('publicScreen');var a=document.getElementById('authScreen');if(p)p.style.display='none';if(a)a.style.display='flex';" style="background:var(--accent);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px;transition:all .2s">Giriş Yap</button>
     </div>
   </header>
   <main style="max-width:1200px;margin:0 auto;padding:32px 24px;">
@@ -252,7 +252,6 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
       </div>
     </div>
     <div style="text-align:center;padding:48px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;">
-      Bu İslam ve Şahin kardeşlerin ortak projesidir.<br>
       <a href="/cdn-cgi/l/email-protection#8af9ebe2e3e4fee5faeff8cae2e5fee7ebe3e6a4e9e5e7" style="color:#e8ff47;text-decoration:none;margin-top:6px;display:inline-block"><span class="__cf_email__" data-cfemail="b5c6d4dddcdbc1dac5d0c7f5dddac1d8d4dcd99bd6dad8">[email&#160;protected]</span></a>
     </div>
   </main>
@@ -287,7 +286,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <button class="tab-btn" id="tabMylist">📋 Listelerim</button>
         <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
       </div>
-      <button class="theme-btn" id="themeToggleApp" onclick="if(window._toggleTheme)window._toggleTheme()">&#127769;</button>
+      <button class="theme-btn" id="themeToggleApp" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
       <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>
       <button class="btn-logout" id="logoutBtn">Çıkış</button>
     </div>
@@ -307,10 +306,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <div class="hero-col right" id="heroRight"></div>
       </div>
       <div id="searchResults"></div>
-      <footer class="site-footer">
-        Bu İslam ve Şahin kardeşlerin ortak projesidir.<br>
-        <span style="margin-top:6px;display:inline-block">Contact: <a href="/cdn-cgi/l/email-protection#087b696061667c67786d7a4860677c65696164266b6765" style="color:var(--accent);text-decoration:none"><span class="__cf_email__" data-cfemail="483b292021263c27382d3a0820273c25292124662b2725">[email&#160;protected]</span></a></span>
-      </footer>
+      <footer class="site-footer" id="siteFooter">Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent);text-decoration:none">sahintoper@hotmail.com</a></footer>
     </div>
     <div class="view" id="mylistView">
       <div class="lists-layout">
@@ -430,22 +426,21 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 })();
 
 // Init polling
+// Run loadPublicGames immediately - only needs public.js (already loaded above)
+if (typeof loadPublicGames === "function") {
+  loadPublicGames();
+} else {
+  console.error("loadPublicGames not found - public.js may not have loaded");
+}
+
+// Start main app when supabase + XLSX ready
 (function wait(n) {
-  if (typeof initApp==="function" && typeof supabase!=="undefined" && typeof XLSX!=="undefined") {
-    // Wire buttons
-    var lb = document.getElementById("loginBtn2");
-    if (lb) lb.onclick = showAuthScreen;
-    ['themeTogglePub','themeToggleApp'].forEach(function(id){
-      var b = document.getElementById(id);
-      if (b) b.onclick = window._toggleTheme;
-    });
-    window._applyTheme(localStorage.getItem('qwerst-theme') || 'dark');
+  if (typeof initApp === "function" && typeof supabase !== "undefined" && typeof XLSX !== "undefined") {
     initApp();
-    loadPublicGames();
   } else if (n > 0) {
     setTimeout(function(){ wait(n-1); }, 100);
   } else {
-    console.error("Timeout: supabase="+typeof supabase+" XLSX="+typeof XLSX+" initApp="+typeof initApp);
+    console.error("App init timeout - supabase:" + typeof supabase + " XLSX:" + typeof XLSX);
   }
 })(80);
 </script>

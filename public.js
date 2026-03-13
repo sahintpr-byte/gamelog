@@ -193,6 +193,10 @@ async function loadPublicGames() {
   var mostEl = document.getElementById("mostAddedGames");
   if (mostEl) {
     try {
+      if (typeof supabase === "undefined") {
+        mostEl.innerHTML = '<div style="color:var(--muted);grid-column:1/-1;padding:20px;text-align:center">Supabase yüklenemedi.</div>';
+        return;
+      }
       var SB_URL = "https://dzjmbwyandrkonqdjalk.supabase.co";
       var SB_KEY = "sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD";
       var sbPub = supabase.createClient(SB_URL, SB_KEY);

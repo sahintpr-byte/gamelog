@@ -43,7 +43,7 @@ const LANG = {
     confirmDel:'" listeden silinsin mi?',confirmListDel:'" listesi ve içindeki tüm kitaplar silinsin mi?',
     colName:'Kitap Adı',colAuthor:'Yazar',colScore:'Puan',colYear:'Yıl',colGenres:'Kategoriler',
     colPages:'Sayfa',colNote:'Not',colDate:'Eklenme',
-    footer:'',
+    footer:'Bu İslam ve Şahin kardeşlerin ortak projesidir.',
     bookCount:' kitap · ',listCount:' liste',dateLocale:'tr-TR',
   },
   en:{
@@ -90,7 +90,7 @@ const LANG = {
     confirmDel:'" removed from list?',confirmListDel:'" list and all its books will be deleted?',
     colName:'Book Name',colAuthor:'Author',colScore:'Score',colYear:'Year',colGenres:'Categories',
     colPages:'Pages',colNote:'Note',colDate:'Added',
-    footer:'',
+    footer:'A joint project by Islam and Sahin.',
     bookCount:' books · ',listCount:' lists',dateLocale:'en-US',
   }
 };
@@ -129,7 +129,7 @@ function applyLang(){
   document.getElementById('noteLbl').textContent=t('noteLbl');
   document.getElementById('notesInput').placeholder=t('notePH');
   document.getElementById('modalCancel').textContent=t('cancelBtn');
-  document.getElementById('siteFooter').innerHTML='Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent2);text-decoration:none">sahintoper@hotmail.com</a>';
+  document.getElementById('siteFooter').innerHTML=t('footer')+'<br><span style="margin-top:6px;display:inline-block">Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent2);text-decoration:none">sahintoper@hotmail.com</a></span>';
   document.getElementById('langTR').classList.toggle('active',currentLang==='tr');
   document.getElementById('langEN').classList.toggle('active',currentLang==='en');
 }

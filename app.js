@@ -504,8 +504,8 @@ async function renderList(targetEl,userId,readonly,listId,page){
       const date=new Date(game.added_at).toLocaleDateString(t('dateLocale'));
       const item=document.createElement('div'); item.className='list-item';
       item.innerHTML=
-        '<div style="display:grid;grid-template-columns:80px 1fr auto;gap:16px;align-items:center">'+
-          (game.game_image?'<a href="'+mcUrl(game.game_name)+'" target="_blank" rel="noopener" style="display:block"><img class="list-item-img" src="'+game.game_image+'" alt="" loading="lazy" style="transition:opacity .2s" onmouseover="this.style.opacity=.7" onmouseout="this.style.opacity=1"></a>':'<div class="list-item-img" style="display:flex;align-items:center;justify-content:center;color:#444;font-size:24px">🎮</div>')+
+        '<div style="display:grid;grid-template-columns:140px 1fr auto;gap:20px;align-items:center">'+
+          (game.game_image?'<a href="'+mcUrl(game.game_name)+'" target="_blank" rel="noopener" style="display:block"><img class="list-item-img" src="'+game.game_image+'" alt="" loading="lazy" style="transition:opacity .2s" onmouseover="this.style.opacity=.7" onmouseout="this.style.opacity=1"></a>':'<div class="list-item-img" style="display:flex;align-items:center;justify-content:center;color:#444;font-size:36px">🎮</div>')+
           '<div>'+
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
               '<div class="list-item-title" style="margin-bottom:0">'+game.game_name+'</div>'+

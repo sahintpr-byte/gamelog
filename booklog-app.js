@@ -164,32 +164,32 @@ async function searchBooks(){
   const res=document.getElementById('searchResults');
   res.innerHTML='<div class="loading"><div class="spinner"></div>'+t('searching')+'</div>';
   try{
-    const r=await fetch('https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(q)+'&maxResults=20&key=AIzaSyAGDcIi4P_phJ8qH-JP92m6_VZ_d5ZecL4');
+    const r=await fetch('https://openlibrary.org/search.json?q='+encodeURIComponent(q)+'&limit=20&fields=key,title,author_name,first_publish_year,cover_i,ratings_average,ratings_count,number_of_pages_median,subject');
     const data=await r.json();
-    if(!data.items||!data.items.length){res.innerHTML='<div class="loading">'+t('noResults')+'</div>';return;}
+    if(!data.docs||!data.docs.length){res.innerHTML='<div class="loading">'+t('noResults')+'</div>';return;}
     const {data:added}=await sb.from('book_lists').select('book_id').eq('user_id',currentUser.id);
     const addedIds=new Set((added||[]).map(r=>r.book_id));
-    res.innerHTML='<div class="results-label">'+data.items.length+t('resultsLabel')+'</div>';
+    res.innerHTML='<div class="results-label">'+data.docs.length+t('resultsLabel')+'</div>';
     const grid=document.createElement('div');grid.className='results-grid';
-    data.items.forEach(item=>{
-      const info=item.volumeInfo||{};
-      const isAdded=addedIds.has(item.id);
-      const cover=(info.imageLinks?.thumbnail||info.imageLinks?.smallThumbnail||'').replace('http:','https:');
-      const authors=(info.authors||[]).slice(0,2).join(', ')||'—';
-      const year=info.publishedDate?info.publishedDate.slice(0,4):'—';
-      const rating=info.averageRating;
+    data.docs.forEach(doc=>{
+      const bookId=doc.key;
+      const isAdded=addedIds.has(bookId);
+      const cover=doc.cover_i?'https://covers.openlibrary.org/b/id/'+doc.cover_i+'-M.jpg':'';
+      const authors=(doc.author_name||[]).slice(0,2).join(', ')||'—';
+      const year=doc.first_publish_year||'—';
+      const rating=doc.ratings_average?'⭐'+doc.ratings_average.toFixed(1):'';
       const card=document.createElement('div');card.className='book-card';
       card.innerHTML=(cover?'<img class="book-card-cover" src="'+cover+'" alt="" loading="lazy">':'<div class="book-card-cover-placeholder">📖</div>')+
         '<div class="book-card-body">'+
-          '<div class="book-card-title">'+info.title+'</div>'+
-          '<div class="book-card-author">'+authors+' · '+year+(rating?' · ⭐'+rating:'')+'</div>'+
+          '<div class="book-card-title">'+doc.title+'</div>'+
+          '<div class="book-card-author">'+authors+' · '+year+(rating?' · '+rating:'')+'</div>'+
           '<button class="btn-add'+(isAdded?' added':'')+'">'+( isAdded?t('addedBtn'):t('addBtn'))+'</button>'+
         '</div>';
-      if(!isAdded)card.querySelector('.btn-add').onclick=()=>openModal(item);
+      if(!isAdded)card.querySelector('.btn-add').onclick=()=>openModal(doc);
       grid.appendChild(card);
     });
     res.appendChild(grid);
-  }catch(e){res.innerHTML='<div class="loading">'+t('connErr')+'</div>';}
+  }catch(e){console.error(e);res.innerHTML='<div class="loading">'+t('connErr')+'</div>';}
 }
 
 /* ── MODAL ── */

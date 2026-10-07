@@ -29,6 +29,54 @@ function sc(s){return s<=4?'low':s<=6?'mid':'high';}
 function mcUrl(name){return 'https://www.metacritic.com/game/'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'/';}
 
 /* ── AUTH ── */
+function readSharedListPayload(){
+  const raw=location.hash.startsWith('#shared=')?location.hash.slice(8):'';
+  if(!raw)return null;
+  try{
+    const json=decodeURIComponent(escape(atob(decodeURIComponent(raw))));
+    const payload=JSON.parse(json);
+    return payload&&payload.v===1&&Array.isArray(payload.i)?payload:null;
+  }catch(e){return null;}
+}
+function showSharedList(payload){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appScreen').style.display='none';
+  const root=document.createElement('main');
+  root.style.cssText='max-width:900px;margin:0 auto;padding:32px 20px;min-height:100vh;';
+  const title=document.createElement('h1');
+  title.style.cssText='font-family:Bebas Neue,sans-serif;font-size:42px;letter-spacing:2px;color:var(--accent);';
+  title.textContent=payload.n||'Paylaşılan Liste';
+  const desc=document.createElement('p');
+  desc.style.cssText='color:var(--muted);margin-bottom:24px;';
+  desc.textContent=payload.d||'QWERST oyun listesi · Salt-okunur görünüm';
+  const list=document.createElement('div'); list.style.cssText='display:grid;gap:12px;';
+  payload.i.forEach(game=>{
+    const card=document.createElement('article');
+    card.style.cssText='display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;';
+    const img=game.g?document.createElement('img'):document.createElement('div');
+    if(game.g){img.src=game.g;img.alt='';img.loading='lazy';}else img.textContent='🎮';
+    img.style.cssText='width:120px;height:76px;object-fit:cover;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:30px;';
+    const info=document.createElement('div');
+    const name=document.createElement('div'); name.style.cssText='font-size:17px;font-weight:700;'; name.textContent=game.n||'Bilinmeyen oyun';
+    const meta=document.createElement('div'); meta.style.cssText='font-size:12px;color:var(--muted);margin-top:5px;'; meta.textContent=[game.y,Array.isArray(game.gn)?game.gn.slice(0,2).join(', '):''].filter(Boolean).join(' · ');
+    info.append(name,meta);
+    if(game.no){const note=document.createElement('div');note.style.cssText='font-size:13px;color:var(--muted);font-style:italic;margin-top:7px;';note.textContent='"'+game.no+'"';info.appendChild(note);}
+    const score=document.createElement('div'); score.style.cssText='font-family:Bebas Neue,sans-serif;font-size:28px;color:var(--accent);'; score.textContent=(game.s==null?'—':game.s)+'/10';
+    card.append(img,info,score); list.appendChild(card);
+  });
+  root.append(title,desc,list); document.body.appendChild(root);
+}
+const sharedListPayload=readSharedListPayload();
+if(sharedListPayload){showSharedList(sharedListPayload);return;}
+async function copyShareLink(list){
+  const {data:items,error}=await sb.from('game_lists').select('game_name,game_image,released,genres,score,notes').eq('user_id',currentUser.id).eq('list_id',list.id).order('added_at',{ascending:false});
+  if(error){toast('Liste paylaşım için alınamadı.');return;}
+  const payload={v:1,n:list.name,d:list.description||'',i:(items||[]).map(g=>({n:g.game_name,g:g.game_image,y:g.released,gn:g.genres,s:g.score,no:g.notes}))};
+  const encoded=encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload)))));
+  const url=location.origin+location.pathname+'#shared='+encoded;
+  try{await navigator.clipboard.writeText(url);toast('Paylaşım linki panoya kopyalandı.');}catch(e){window.prompt('Paylaşım linkini kopyalayın:',url);}
+}
+
 document.getElementById('loginTab').onclick=()=>setAuthMode('login');
 document.getElementById('registerTab').onclick=()=>setAuthMode('register');
 document.getElementById('authBtn').onclick=doAuth;
@@ -346,6 +394,7 @@ async function selectList(id){
         '<button class="sort-btn" data-sort="name">'+t('sortName')+'</button>'+
       '</div>'+
       '<div style="display:flex;gap:8px;align-items:center">'+
+        '<button id="shareListBtn" class="tool-btn">🔗 Paylaş</button>'+
         '<div class="view-toggle">'+
           '<button class="view-toggle-btn active" id="viewBtnList" title="'+t('viewList')+'">☰</button>'+
           '<button class="view-toggle-btn" id="viewBtnTable" title="'+t('viewTable')+'">⊞</button>'+
@@ -363,6 +412,8 @@ async function selectList(id){
     '</div>'+
     '<div id="paginationTop" class="pagination" style="margin-bottom:16px;margin-top:0"></div>'+
     '<div id="myListItems"></div>';
+
+  document.getElementById('shareListBtn').onclick=()=>copyShareLink(list);
 
   document.getElementById('dateSortBtn').onclick=function(){
     dateSortAsc=currentSort==='date'?!dateSortAsc:false;

@@ -7,6 +7,12 @@ alter table public.lists enable row level security;
 alter table public.profiles enable row level security;
 alter table public.game_lists enable row level security;
 
+drop policy if exists "users can publish own lists" on public.lists;
+create policy "users can publish own lists"
+on public.lists for update to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
 drop policy if exists "public can read shared lists" on public.lists;
 create policy "public can read shared lists"
 on public.lists for select to anon, authenticated

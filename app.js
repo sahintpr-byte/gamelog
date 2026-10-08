@@ -84,6 +84,7 @@ async function loadSharedListPath(route){
 }
 const sharedListPath=readSharedListPath();
 if(sharedListPath){loadSharedListPath(sharedListPath);return;}
+showPublicApp();
 async function copyShareLink(list){
   const {data:profile}=await sb.from('profiles').select('username').eq('id',currentUser.id).maybeSingle();
   const username=profile?.username||currentUser.user_metadata?.username||currentUser.email.split('@')[0];
@@ -97,14 +98,31 @@ async function copyShareLink(list){
 function showPublicLogin(){
   const screen=document.getElementById('authScreen');
   if(screen) screen.classList.remove('public-home');
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('authScreen').style.display='block';
   setAuthMode('login');
   setTimeout(()=>document.getElementById('authEmail')?.focus(),50);
+}
+function showPublicApp(){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  document.getElementById('logoutBtn').style.display='none';
+  document.getElementById('userBadge').innerHTML='👤 <strong>Misafir</strong>';
+  initHero();
+  if(typeof loadTrendingGames==='function') loadTrendingGames();
+  ['homeListOpen','homeListOpen2'].forEach(id=>{
+    const button=document.getElementById(id);
+    if(button) button.onclick=showPublicLogin;
+  });
+  const focusSearch=document.getElementById('homeSearchFocus');
+  if(focusSearch) focusSearch.onclick=()=>document.getElementById('searchInput').focus();
 }
 function showPublicHome(){
   const screen=document.getElementById('authScreen');
   if(screen) screen.classList.add('public-home');
   document.getElementById('authError').style.display='none';
   document.getElementById('authSuccess').style.display='none';
+  showPublicApp();
 }
 document.getElementById('publicListsBtn').onclick=showPublicLogin;
 document.getElementById('publicBackBtn').onclick=showPublicHome;
@@ -162,6 +180,7 @@ document.getElementById('logoutBtn').onclick=async()=>{
 function showApp(){
   document.getElementById('authScreen').style.display='none';
   document.getElementById('appScreen').style.display='block';
+  document.getElementById('logoutBtn').style.display='';
   const name=currentUser.user_metadata?.username||currentUser.email.split('@')[0];
   document.getElementById('userBadge').innerHTML='👤 <strong>'+name+'</strong>';
   initHero();
@@ -201,7 +220,7 @@ sb.auth.onAuthStateChange((event,session)=>{
 /* ── NAV ── */
 document.getElementById('logoBtn').onclick=()=>switchView('search');
 document.getElementById('tabSearch').onclick=()=>switchView('search');
-document.getElementById('tabMylist').onclick=()=>switchView('mylist');
+document.getElementById('tabMylist').onclick=()=>currentUser?switchView('mylist'):showPublicLogin();
 document.getElementById('tabFriends').onclick=()=>switchView('friends');
 document.getElementById('topGamesBtn').onclick=openTopGamesView;
 document.getElementById('bottomGamesBtn').onclick=openBottomGamesView;
@@ -209,6 +228,7 @@ document.getElementById('newsBtn').onclick=openNewsView;
 document.getElementById('backBtn').onclick=()=>switchView('friends');
 
 function switchView(v){
+  if(v==='mylist'&&!currentUser){showPublicLogin();return;}
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
   const views={search:'searchView',mylist:'mylistView',friends:'friendsView',profile:'profileView',topGames:'topGamesView',bottomGames:'bottomGamesView',news:'newsView'};
@@ -841,6 +861,10 @@ function switchFriendsTab(tab){
 }
 async function loadFriendsTab(){
   const el=document.getElementById('friendsContent');
+  if(!currentUser){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><h3>ARKADAŞLAR</h3><p>Arkadaşlarını görmek için giriş yapmalısın.</p></div>';
+    return;
+  }
   el.innerHTML='<div class="loading"><div class="spinner"></div>'+t('loadingTxt')+'</div>';
   if(friendsTab==='following'){
     // Get IDs first, then fetch profiles separately

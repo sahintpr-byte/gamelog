@@ -143,6 +143,11 @@ function openTopGamesView() {
 
 // ── TOP 250 PC GAMES (Metacritic scores via RAWG) ──
 var topPCGamesLoaded = false;
+function topGameKey(name) {
+  return String(name || "").toLowerCase()
+    .replace(/\s*[:\-–—]?\s*(update|remastered|definitive edition|complete edition|enhanced edition|game of the year edition|goty edition|director's cut|redux)\s*$/i, "")
+    .replace(/[^a-z0-9]+/g, " ").trim();
+}
 async function loadTopPCGames() {
   var el = document.getElementById("topGamesGrid");
   if (!el || topPCGamesLoaded) return;
@@ -152,14 +157,21 @@ async function loadTopPCGames() {
   if (meta) meta.textContent = "Metacritic skorları getiriliyor...";
   try {
     var requests = [];
-    for (var page=1; page<=7; page++) {
+    for (var page=1; page<=10; page++) {
       requests.push(fetch("https://api.rawg.io/api/games?key="+RAWG+"&platforms=4&ordering=-metacritic&page_size=40&page="+page)
         .then(function(r){ if(!r.ok) throw new Error("RAWG API "+r.status); return r.json(); }));
     }
     var pages = await Promise.all(requests);
     var games = [];
     pages.forEach(function(data){ if(data.results) games = games.concat(data.results); });
-    games = games.filter(function(g){ return g.metacritic; }).sort(function(a,b){ return b.metacritic-a.metacritic; }).slice(0,250);
+    games = games.filter(function(g){ return g.metacritic; }).sort(function(a,b){ return b.metacritic-a.metacritic; });
+    var seen = {};
+    games = games.filter(function(g){
+      var key = topGameKey(g.name);
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    }).slice(0,250);
     if (!games.length) throw new Error("Liste boş");
     el.innerHTML = "";
     games.forEach(function(g,i){ el.appendChild(buildGameCard(g,i,openTrailer)); });

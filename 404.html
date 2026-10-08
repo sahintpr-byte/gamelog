@@ -1,0 +1,12 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>QWERST</title>
+<script>
+(function(){
+  var marker='/oyun.html/';
+  if(location.pathname.indexOf(marker)!==-1){
+    sessionStorage.setItem('qwerst-shared-path',location.pathname);
+    location.replace('/oyun.html');
+  }
+})();
+</script>

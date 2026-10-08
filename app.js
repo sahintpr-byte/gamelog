@@ -35,9 +35,12 @@ function shareSlug(value){
 }
 function readSharedListPath(){
   const marker='/oyun.html/';
-  const at=location.pathname.indexOf(marker);
+  let path=location.pathname;
+  const pending=sessionStorage.getItem('qwerst-shared-path');
+  if(pending){path=pending;sessionStorage.removeItem('qwerst-shared-path');history.replaceState({},'',path);}
+  const at=path.indexOf(marker);
   if(at<0)return null;
-  const parts=location.pathname.slice(at+marker.length).split('/').filter(Boolean).map(decodeURIComponent);
+  const parts=path.slice(at+marker.length).split('/').filter(Boolean).map(decodeURIComponent);
   return parts.length>=2?{username:parts[0],listSlug:parts[1]}:null;
 }
 function showSharedList(payload){

@@ -309,6 +309,73 @@ async function loadGameNews() {
   }
 }
 
+// ── RECOMMENDATIONS ──
+var recommendationCache = {};
+var RECOMMENDATIONS = {
+  'best-2026': {
+    title:"2026'NIN EN İYİ OYUNLARI",
+    subtitle:'Bu yıl çıkan, en yüksek puanlı oyunlar.',
+    query:'dates=2026-01-01,2026-12-31&ordering=-rating'
+  },
+  'best-horror': {
+    title:'EN İYİ KORKU OYUNLARI',
+    subtitle:'Korku türünün en çok öne çıkan oyunları.',
+    query:'genres=4&ordering=-rating&metacritic=70,100'
+  },
+  'horror-2026': {
+    title:"2026'DA OYNANACAK EN İYİ KORKU OYUNLARI",
+    subtitle:'Son yıllardan seçilmiş, bugün oynanabilecek güçlü korku oyunları.',
+    query:'genres=4&dates=2020-01-01,2026-12-31&ordering=-rating'
+  },
+  'upcoming-2027': {
+    title:"2027'DE ÇIKMASI BEKLENEN OYUNLAR",
+    subtitle:'2027 çıkış tarihine sahip, merakla beklenen yapımlar.',
+    query:'dates=2027-01-01,2027-12-31&ordering=-added'
+  }
+};
+function openRecommendationsView(type) {
+  document.querySelectorAll('.view').forEach(function(view){ view.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(button){ button.classList.remove('active'); });
+  var view=document.getElementById('recommendationsView');
+  if(view) view.classList.add('active');
+  loadRecommendationList(type);
+}
+async function loadRecommendationList(type) {
+  var config=RECOMMENDATIONS[type]||RECOMMENDATIONS['best-2026'];
+  var grid=document.getElementById('recommendationGrid');
+  var title=document.getElementById('recommendationTitle');
+  var subtitle=document.getElementById('recommendationSubtitle');
+  var meta=document.getElementById('recommendationMeta');
+  if(!grid) return;
+  title.textContent=config.title;
+  subtitle.textContent=config.subtitle;
+  if(recommendationCache[type]){
+    renderRecommendationGames(recommendationCache[type],meta);
+    return;
+  }
+  grid.innerHTML='<div class=\"loading\" style=\"grid-column:1/-1\">Liste yükleniyor...</div>';
+  if(meta) meta.textContent='RAWG verileri getiriliyor...';
+  try {
+    var url='https://api.rawg.io/api/games?key='+RAWG+'&platforms=4&'+config.query+'&page_size=24';
+    var response=await fetch(url);
+    if(!response.ok) throw new Error('RAWG API '+response.status);
+    var data=await response.json();
+    var games=(data.results||[]).filter(function(game){return game.name;}).slice(0,24);
+    if(!games.length) throw new Error('Liste boş');
+    recommendationCache[type]=games;
+    renderRecommendationGames(games,meta);
+  } catch(e) {
+    grid.innerHTML='<div style=\"color:var(--muted);grid-column:1/-1;padding:24px;text-align:center\">Bu tavsiye listesi şu anda yüklenemedi. Lütfen tekrar deneyin.</div>';
+    if(meta) meta.textContent='Veri alınamadı';
+  }
+}
+function renderRecommendationGames(games,meta) {
+  var grid=document.getElementById('recommendationGrid');
+  grid.innerHTML='';
+  games.forEach(function(game,index){ grid.appendChild(buildGameCard(game,index,openTrailer)); });
+  if(meta) meta.textContent=games.length+' oyun · RAWG / Metacritic';
+}
+
 // ── MOST ADDED (Supabase, polls until ready) ──
 function loadMostAdded() {
   var el = document.getElementById("mostAddedGames");

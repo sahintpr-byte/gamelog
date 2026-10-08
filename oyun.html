@@ -139,6 +139,19 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .news-card p{font-size:13px;color:var(--muted);line-height:1.5;}
 .news-card-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:14px;font-size:11px;color:var(--muted);}
 .news-card-footer a{color:var(--accent);text-decoration:none;font-weight:600;}
+.recommend-menu{position:relative;display:inline-flex;}
+.recommend-menu>button{background:none;border:none;color:var(--muted);font:500 14px 'DM Sans',sans-serif;padding:6px 12px;border-radius:6px;cursor:pointer;}
+.recommend-menu>button:hover,.recommend-menu:focus-within>button{background:var(--surface2);color:var(--text);}
+.recommend-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:285px;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.3);padding:6px;z-index:600;}
+.recommend-menu:hover .recommend-dropdown,.recommend-menu:focus-within .recommend-dropdown{display:block;}
+.recommend-dropdown button{display:block;width:100%;background:none;border:none;color:var(--text);font:500 13px 'DM Sans',sans-serif;text-align:left;padding:10px 12px;border-radius:7px;cursor:pointer;}
+.recommend-dropdown button:hover{background:var(--surface2);color:var(--accent);}
+.recommend-toolbar{display:flex;justify-content:space-between;align-items:end;gap:18px;padding:28px 0 18px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.recommend-toolbar h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,56px);letter-spacing:2px;line-height:1;color:var(--accent);}
+.recommend-toolbar p{color:var(--muted);font-size:13px;margin-top:8px;}
+.recommend-meta{color:var(--muted);font-size:12px;white-space:nowrap;}
+#recommendationGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+#recommendationGrid .game-card{min-width:0;}
 .top-games-note{color:var(--muted);font-size:12px;margin:16px 0 4px;}
 .personal-teaser{display:flex;justify-content:space-between;align-items:center;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:28px;}
 .personal-teaser h3{font-size:16px;margin-bottom:5px;}
@@ -514,6 +527,15 @@ function closeVideoModal() {
         <button class="tab-btn" id="topGamesBtn" type="button" onclick="openTopGamesView()">🏆 Top 250</button>
         <button class="tab-btn" id="bottomGamesBtn" type="button" onclick="openBottomGamesView()">💀 Bottom 250</button>
         <button class="tab-btn" id="newsBtn" type="button" onclick="openNewsView()">📰 Oyun Haberleri</button>
+        <div class="recommend-menu">
+          <button type="button">💡 Tavsiye ▾</button>
+          <div class="recommend-dropdown">
+            <button type="button" onclick="openRecommendationsView('best-2026')">2026'nın en iyi oyunları</button>
+            <button type="button" onclick="openRecommendationsView('best-horror')">En iyi korku oyunları</button>
+            <button type="button" onclick="openRecommendationsView('horror-2026')">2026'da oynanacak en iyi korku oyunları</button>
+            <button type="button" onclick="openRecommendationsView('upcoming-2027')">2027'de çıkması beklenen oyunlar</button>
+          </div>
+        </div>
       </div>
       <div class="site-language-picker"></div>
       <button class="theme-btn" id="themeToggleApp" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
@@ -579,6 +601,17 @@ function closeVideoModal() {
         <div class="news-status" id="newsStatus">Haberler hazırlanıyor...</div>
       </div>
       <div id="newsGrid"><div class="loading">Oyun haberleri yükleniyor...</div></div>
+    </div>
+    <div class="view" id="recommendationsView">
+      <div class="recommend-toolbar">
+        <div>
+          <h1 id="recommendationTitle">TAVSİYELER</h1>
+          <p id="recommendationSubtitle">Senin için seçtiğimiz oyunlar.</p>
+        </div>
+        <div class="recommend-meta" id="recommendationMeta">Veri hazırlanıyor...</div>
+      </div>
+      <div id="recommendationGrid"><div class="loading">Tavsiye listesi yükleniyor...</div></div>
+      <p class="top-games-note">Listeler RAWG oyun verileri; puan, tür, çıkış tarihi ve popülerlik bilgilerine göre hazırlanır.</p>
     </div>
     <div class="view" id="mylistView">
       <div class="lists-layout">

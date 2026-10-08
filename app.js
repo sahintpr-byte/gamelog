@@ -231,7 +231,7 @@ function switchView(v){
   if(v==='mylist'&&!currentUser){showPublicLogin();return;}
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
-  const views={search:'searchView',mylist:'mylistView',friends:'friendsView',profile:'profileView',topGames:'topGamesView',bottomGames:'bottomGamesView',news:'newsView'};
+  const views={search:'searchView',mylist:'mylistView',friends:'friendsView',profile:'profileView',topGames:'topGamesView',bottomGames:'bottomGamesView',news:'newsView',recommendations:'recommendationsView'};
   const tabs={search:'tabSearch',mylist:'tabMylist',friends:'tabFriends'};
   document.getElementById(views[v]).classList.add('active');
   if(tabs[v]) document.getElementById(tabs[v]).classList.add('active');

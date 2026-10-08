@@ -150,14 +150,6 @@ function showApp(){
   const name=currentUser.user_metadata?.username||currentUser.email.split('@')[0];
   document.getElementById('userBadge').innerHTML='👤 <strong>'+name+'</strong>';
   initHero();
-  if(typeof loadTrendingGames==='function') loadTrendingGames();
-  const openLists=()=>document.getElementById('tabMylist').click();
-  ['homeListOpen','homeListOpen2'].forEach(id=>{
-    const button=document.getElementById(id);
-    if(button) button.onclick=openLists;
-  });
-  const focusSearch=document.getElementById('homeSearchFocus');
-  if(focusSearch) focusSearch.onclick=()=>document.getElementById('searchInput').focus();
   // Preload lists so modal list select works immediately from search view
   loadMyListsSilent();
 }

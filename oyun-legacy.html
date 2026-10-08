@@ -73,33 +73,6 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .scattered-card img{display:block;width:160px;height:75px;object-fit:cover;}
 .scattered-card .sc-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.85),transparent);padding:16px 8px 5px;font-size:9px;font-weight:700;color:rgba(255,255,255,.9);text-align:center;letter-spacing:.8px;text-transform:uppercase;}
 #searchResults{margin-top:32px;}
-.app-home-hero{display:flex;justify-content:space-between;align-items:end;gap:24px;padding:42px 0 28px;border-bottom:1px solid var(--border);margin-bottom:26px;}
-.app-home-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,58px);letter-spacing:2px;line-height:1;}
-.app-home-title em{color:var(--accent);font-style:normal;}
-.app-home-sub{color:var(--muted);font-size:14px;margin-top:9px;}
-  .app-home-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-  .app-home-actions .btn-primary{padding:11px 18px;}
-  .app-home-actions .btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:11px 14px;cursor:pointer;}
-  .app-home-actions .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
-.app-section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:26px 0 14px;}
-.app-section-head h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;}
-.app-section-head span{font-size:12px;color:var(--muted);}
-#trendingGames{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
-#trendingGames .game-card{min-width:0;}
-.personal-teaser{display:flex;justify-content:space-between;align-items:center;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:28px;}
-.personal-teaser h3{font-size:16px;margin-bottom:5px;}
-.personal-teaser p{font-size:13px;color:var(--muted);}
-.personal-teaser .btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:10px 14px;cursor:pointer;white-space:nowrap;}
-.personal-teaser .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
-.lists-layout{min-height:620px;}
-.lists-sidebar{position:sticky;top:84px;}
-.lists-sidebar-header{background:var(--surface);}
-.list-content-title{font-size:34px;}
-.list-stats{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;}
-.list-stats .stat-val{font-size:30px;}
-.view#mylistView{padding-top:18px;}
-.view#mylistView:before{content:'Listelerini düzenle, puanlarını takip et ve arkadaşlarınla paylaş.';display:block;color:var(--muted);font-size:14px;margin:0 0 20px;}
-@media(max-width:800px){.app-home-hero{display:block;padding-top:28px}.app-home-actions{margin-top:18px}.personal-teaser{align-items:flex-start;flex-direction:column}.lists-sidebar{position:static}.list-stats{margin-top:14px}}
 .results-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
 .results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
 .game-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s;}
@@ -462,25 +435,17 @@ function closeVideoModal() {
   </header>
   <main>
     <div class="view active" id="searchView">
-      <div class="app-home-hero">
-        <div>
-          <div class="app-home-title">OYUN <em>KEŞFİNE</em><br>DEVAM ET.</div>
-          <p class="app-home-sub">Popüler oyunları keşfet, listelerini yönet ve arkadaşlarınla paylaş.</p>
+      <div class="hero-layout">
+        <div class="hero-col left" id="heroLeft"></div>
+        <div class="search-hero">
+          <h1>OYUN <em>BUL,</em><br>LİSTEYE <em>EKLE</em></h1>
+          <p>Milyonlarca oyun arasından ara, puanla, takip et.</p>
+          <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Oyun adı ara..." autocomplete="off">
+            <button class="btn-primary" id="searchBtn">Ara</button>
+          </div>
         </div>
-        <div class="app-home-actions">
-          <button class="btn-primary" id="homeSearchFocus">⌕ Yeni oyun ara</button>
-          <button class="btn-secondary" id="homeListOpen">📋 Listelerim</button>
-        </div>
-      </div>
-      <div class="search-bar" style="max-width:720px;margin:0 0 18px;">
-        <input type="text" id="searchInput" placeholder="Oyun adı ara..." autocomplete="off">
-        <button class="btn-primary" id="searchBtn">Ara</button>
-      </div>
-      <div class="app-section-head"><h2>SON 1 AYDA ÇIKAN EN POPÜLER OYUNLAR</h2><span>Güncel keşifler</span></div>
-      <div id="trendingGames"><div class="loading">Popüler oyunlar yükleniyor...</div></div>
-      <div class="personal-teaser">
-        <div><h3>Kişisel alanın hazır</h3><p>Listelerini düzenle, puanlarını takip et ve seçili listeyi paylaş.</p></div>
-        <button class="btn-secondary" id="homeListOpen2">Listelerim sayfasını aç →</button>
+        <div class="hero-col right" id="heroRight"></div>
       </div>
       <div id="searchResults"></div>
       <footer class="site-footer" id="siteFooter">Contact: <a href="/cdn-cgi/l/email-protection#51223039383f253e21342311393e253c30383d7f323e3c" style="color:var(--accent);text-decoration:none"><span class="__cf_email__" data-cfemail="fd8e9c95949389928d988fbd959289909c9491d39e9290">[email&#160;protected]</span></a></footer>

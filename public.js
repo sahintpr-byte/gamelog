@@ -35,6 +35,8 @@ function openTrailer(game) {
     b.style.padding = "0";
     b.innerHTML = '<video id="trailerFrame" controls autoplay playsinline style="width:100%;max-height:500px;display:block;background:#000" poster="'+(poster||'')+'">'
       + '<source src="'+url+'" type="video/mp4"></video>';
+    var video = document.getElementById("trailerFrame");
+    if(video) video.addEventListener("error", function(){ searchYT(game.name); });
   }
   function showYT(videoId) {
     var b = document.getElementById("trailerBody"); if(!b)return;
@@ -48,13 +50,22 @@ function openTrailer(game) {
     var q = encodeURIComponent(name + " official game trailer");
     var b = document.getElementById("trailerBody"); if(!b)return;
     b.innerHTML = '<div style="color:#666;text-align:center;padding:10px">YouTube aranıyor...</div>';
-    fetch("https://inv.nadeko.net/api/v1/search?q="+q+"&type=video&page=1")
+    var YT_KEY = "AIzaSyC8N43du5BdPiXeomeRE-E6NWwfm_tx2XQ";
+    fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+q+"&type=video&maxResults=1&key="+YT_KEY)
       .then(function(r){return r.json();})
-      .then(function(items){
-        if(items&&items.length>0){ showYT(items[0].videoId); }
-        else { var b2=document.getElementById("trailerBody"); if(b2) b2.innerHTML='<p style="color:#666;padding:20px;text-align:center">Video bulunamadı.</p>'; }
+      .then(function(data){
+        var item = data.items && data.items[0];
+        if(item && item.id && item.id.videoId){ showYT(item.id.videoId); }
+        else { showYoutubeSearch(name); }
       })
-      .catch(function(){ var b2=document.getElementById("trailerBody"); if(b2) b2.innerHTML='<p style="color:#666;padding:20px;text-align:center">Video yüklenemedi.</p>'; });
+      .catch(function(){ showYoutubeSearch(name); });
+  }
+  function showYoutubeSearch(name) {
+    var b = document.getElementById("trailerBody"); if(!b)return;
+    var q = encodeURIComponent(name + " official game trailer");
+    b.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;text-align:center">'
+      + '<div style="color:#999;font-size:13px">Video otomatik yüklenemedi.</div>'
+      + '<a href="https://www.youtube.com/results?search_query='+q+'" target="_blank" rel="noopener" style="background:#ff0000;color:#fff;padding:10px 18px;border-radius:7px;text-decoration:none;font-weight:600;font-size:13px">▶ YouTube’da Ara</a></div>';
   }
   function tryRawg(slug) {
     fetch("https://api.rawg.io/api/games/"+slug+"/movies?key="+RAWG)

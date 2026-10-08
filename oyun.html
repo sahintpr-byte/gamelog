@@ -110,6 +110,13 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .app-section-head span{font-size:12px;color:var(--muted);}
 #trendingGames{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
 #trendingGames .game-card{min-width:0;}
+.top-games-header{display:flex;justify-content:space-between;align-items:end;gap:20px;padding:28px 0 18px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.top-games-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,56px);letter-spacing:2px;line-height:1;color:var(--accent);}
+.top-games-header p{color:var(--muted);font-size:13px;margin-top:8px;}
+.top-games-meta{color:var(--muted);font-size:12px;text-align:right;white-space:nowrap;}
+#topGamesGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+#topGamesGrid .game-card{min-width:0;}
+.top-games-note{color:var(--muted);font-size:12px;margin:16px 0 4px;}
 .personal-teaser{display:flex;justify-content:space-between;align-items:center;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:28px;}
 .personal-teaser h3{font-size:16px;margin-bottom:5px;}
 .personal-teaser p{font-size:13px;color:var(--muted);}
@@ -123,7 +130,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .list-stats .stat-val{font-size:30px;}
 .view#mylistView{padding-top:18px;}
 .view#mylistView:before{content:'Listelerini düzenle, puanlarını takip et ve arkadaşlarınla paylaş.';display:block;color:var(--muted);font-size:14px;margin:0 0 20px;}
-@media(max-width:800px){.app-home-hero{display:block;padding-top:28px}.app-home-actions{margin-top:18px}.personal-teaser{align-items:flex-start;flex-direction:column}.lists-sidebar{position:static}.list-stats{margin-top:14px}}
+@media(max-width:800px){.app-home-hero{display:block;padding-top:28px}.app-home-actions{margin-top:18px}.personal-teaser{align-items:flex-start;flex-direction:column}.lists-sidebar{position:static}.list-stats{margin-top:14px}.top-games-header{display:block}.top-games-meta{text-align:left;margin-top:12px}}
 .results-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
 .results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
 .game-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s;}
@@ -478,6 +485,7 @@ function closeVideoModal() {
         <button class="tab-btn active" id="tabSearch">🔍 Ara</button>
         <button class="tab-btn" id="tabMylist">📋 Listelerim</button>
         <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
+        <button class="tab-btn" id="topGamesBtn">🏆 Top 250</button>
       </div>
       <button class="theme-btn" id="themeToggleApp" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
       <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>
@@ -508,6 +516,17 @@ function closeVideoModal() {
       </div>
       <div id="searchResults"></div>
       <footer class="site-footer" id="siteFooter">Contact: <a href="mailto:sahin.toper@qwerst.com" style="color:var(--accent);text-decoration:none">sahin.toper@qwerst.com</a>&nbsp;·&nbsp; Powered By Şahin 2026</footer>
+    </div>
+    <div class="view" id="topGamesView">
+      <div class="top-games-header">
+        <div>
+          <h1>TOP 250 PC GAMES</h1>
+          <p>Metacritic puanlarına göre en yüksek skorlu PC oyunları.</p>
+        </div>
+        <div class="top-games-meta" id="topGamesMeta">Veri hazırlanıyor...</div>
+      </div>
+      <div id="topGamesGrid"><div class="loading">Top 250 liste yükleniyor...</div></div>
+      <p class="top-games-note">Puanlar RAWG API üzerinden Metacritic skorlarıyla sıralanır. Liste güncellendiğinde yeniden yüklenir.</p>
     </div>
     <div class="view" id="mylistView">
       <div class="lists-layout">

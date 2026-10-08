@@ -342,6 +342,7 @@ function openRecommendationsView(type) {
 }
 async function loadRecommendationList(type) {
   var config=RECOMMENDATIONS[type]||RECOMMENDATIONS['best-2026'];
+  var RAWG_KEY=\"b1ba1bc900a14e699e5e98788646cf16\";
   var grid=document.getElementById('recommendationGrid');
   var title=document.getElementById('recommendationTitle');
   var subtitle=document.getElementById('recommendationSubtitle');
@@ -356,7 +357,7 @@ async function loadRecommendationList(type) {
   grid.innerHTML='<div class=\"loading\" style=\"grid-column:1/-1\">Liste yükleniyor...</div>';
   if(meta) meta.textContent='RAWG verileri getiriliyor...';
   try {
-    var url='https://api.rawg.io/api/games?key='+RAWG+'&platforms=4&'+config.query+'&page_size=24';
+    var url='https://api.rawg.io/api/games?key='+RAWG_KEY+'&platforms=4&'+config.query+'&page_size=24';
     var response=await fetch(url);
     if(!response.ok) throw new Error('RAWG API '+response.status);
     var data=await response.json();

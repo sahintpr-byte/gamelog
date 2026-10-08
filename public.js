@@ -239,6 +239,7 @@ async function loadBottomPCGames() {
 
 // ── GAME NEWS (RSS feeds + Turkish translation) ──
 var gameNewsLoaded = false;
+var newsTranslationBlocked = false;
 var GAME_NEWS_FEEDS = [
   {name:"PC Gamer", url:"https://www.pcgamer.com/feeds/tag/games/", limit:15},
   {name:"IGN", url:"https://www.ign.com/rss/articles/feed", limit:5},
@@ -258,12 +259,19 @@ function newsUrl(value) {
 async function translateNewsText(value) {
   var text = newsText(value).slice(0,700);
   if (!text) return "";
+  if (newsTranslationBlocked) return text;
   try {
     var target = localStorage.getItem("qwerst-lang") || "tr";
     var url = "https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=en|"+encodeURIComponent(target);
     var response = await fetch(url);
     var data = await response.json();
-    return (data.responseData && data.responseData.translatedText) || text;
+    var translated = data.responseData && data.responseData.translatedText;
+    var warning = String(translated || data.responseDetails || "").toUpperCase();
+    if (!translated || /MYMEMORY|AVAILABLE FREE TRANSLATIONS|TRANSLATED.NET/.test(warning)) {
+      newsTranslationBlocked = true;
+      return text;
+    }
+    return translated;
   } catch (e) { return text; }
 }
 async function loadGameNews() {

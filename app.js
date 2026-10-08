@@ -207,13 +207,14 @@ function switchView(v){
   if(v==='search'){
     document.getElementById('searchInput').value='';
     document.getElementById('searchResults').innerHTML='';
+    setDiscoveryVisible(true);
   }
 }
 
 /* ── SEARCH ── */
 document.getElementById('searchBtn').onclick=searchGames;
 document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter'){closeDropdown();searchGames();}});
-document.getElementById('searchInput').addEventListener('input',debounce(liveSearchGames,400));
+document.getElementById('searchInput').addEventListener('input',debounce(()=>{if(!document.getElementById('searchInput').value.trim()) setDiscoveryVisible(true); liveSearchGames();},400));
 document.getElementById('searchInput').addEventListener('blur',()=>setTimeout(closeDropdown,200));
 
 let _searchTimer=null;
@@ -255,6 +256,7 @@ async function liveSearchGames(){
 
 async function searchGames(){
   const q=document.getElementById('searchInput').value.trim(); if(!q) return;
+  setDiscoveryVisible(false);
   const res=document.getElementById('searchResults');
   res.innerHTML='<div class="loading"><div class="spinner"></div>'+t('searching')+'</div>';
   try{
@@ -271,6 +273,11 @@ async function searchGames(){
     });
     renderResults(results);
   }catch(e){res.innerHTML='<div class="loading">'+t('connErr')+'</div>';}
+}
+
+function setDiscoveryVisible(visible){
+  const section=document.getElementById('discoverySection');
+  if(section) section.style.display=visible?'':'none';
 }
 
 async function renderResults(games){

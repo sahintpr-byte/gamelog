@@ -94,8 +94,9 @@ const LANG = {
     bookCount:' books · ',listCount:' lists',dateLocale:'en-US',
   }
 };
-let currentLang='tr';
-function t(k){return LANG[currentLang][k]!==undefined?LANG[currentLang][k]:(LANG.tr[k]||k);}
+['es','zh','hi','ar','pt','fr','ru','de'].forEach(function(code){ LANG[code] = Object.assign({}, LANG.en); });
+let currentLang=localStorage.getItem('qwerst-lang')||'tr';
+function t(k){var active=LANG[currentLang]||LANG.tr;return active[k]!==undefined?active[k]:(LANG.en[k]||k);}
 function applyLang(){
   document.getElementById('loginTab').textContent=t('loginTab');
   document.getElementById('registerTab').textContent=t('registerTab');
@@ -130,11 +131,14 @@ function applyLang(){
   document.getElementById('notesInput').placeholder=t('notePH');
   document.getElementById('modalCancel').textContent=t('cancelBtn');
   document.getElementById('siteFooter').innerHTML=t('footer')+'<br><span style="margin-top:6px;display:inline-block">Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent2);text-decoration:none">sahintoper@hotmail.com</a></span>';
-  document.getElementById('langTR').classList.toggle('active',currentLang==='tr');
-  document.getElementById('langEN').classList.toggle('active',currentLang==='en');
+  var tr=document.getElementById('langTR'), en=document.getElementById('langEN');
+  if(tr) tr.classList.toggle('active',currentLang==='tr');
+  if(en) en.classList.toggle('active',currentLang==='en');
 }
 function switchLang(lang){
+  if(!LANG[lang]) lang='tr';
   currentLang=lang;
+  localStorage.setItem('qwerst-lang',lang);
   applyLang();
   document.getElementById('searchResults').innerHTML='';
   document.getElementById('searchInput').value='';

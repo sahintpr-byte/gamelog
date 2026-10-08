@@ -1,0 +1,39 @@
+(function(){
+  var languages = {
+    tr:{flag:'🇹🇷',name:'Türkçe',login:'Giriş Yap',register:'Kayıt Ol',search:'🔍 Ara',lists:'📋 Listelerim',friends:'👥 Arkadaşlar',top:'🏆 Top 250',bottom:'💀 Bottom 250',news:'📰 Oyun Haberleri',logout:'Çıkış',searchBtn:'Ara',placeholder:'Oyun adı ara...',game:'OYUNLAR',books:'KİTAPLAR',homeTitle:'OYUN <em>KEŞFİNE</em><br>DEVAM ET.',homeSub:'Popüler oyunları keşfet, listelerini yönet ve arkadaşlarınla paylaş.',popular:'SON 1 AYDA ÇIKAN EN POPÜLER OYUNLAR'},
+    en:{flag:'🇬🇧',name:'English',login:'Log In',register:'Sign Up',search:'🔍 Search',lists:'📋 My Lists',friends:'👥 Friends',top:'🏆 Top 250',bottom:'💀 Bottom 250',news:'📰 Game News',logout:'Logout',searchBtn:'Search',placeholder:'Search game title...',game:'GAMES',books:'BOOKS',homeTitle:'KEEP <em>DISCOVERING</em><br>GAMES.',homeSub:'Discover popular games, manage your lists, and share with friends.',popular:'THE MOST POPULAR GAMES OF THE LAST MONTH'},
+    es:{flag:'🇪🇸',name:'Español',login:'Iniciar sesión',register:'Registrarse',search:'🔍 Buscar',lists:'📋 Mis listas',friends:'👥 Amigos',top:'🏆 Top 250',bottom:'💀 Bottom 250',news:'📰 Noticias',logout:'Salir',searchBtn:'Buscar',placeholder:'Buscar juego...',game:'JUEGOS',books:'LIBROS',homeTitle:'SIGUE <em>DESCUBRIENDO</em><br>JUEGOS.',homeSub:'Descubre juegos populares, gestiona tus listas y compártelas.',popular:'LOS JUEGOS MÁS POPULARES DEL ÚLTIMO MES'},
+    zh:{flag:'🇨🇳',name:'中文',login:'登录',register:'注册',search:'🔍 搜索',lists:'📋 我的列表',friends:'👥 好友',top:'🏆 排名前250',bottom:'💀 最差250',news:'📰 游戏新闻',logout:'退出',searchBtn:'搜索',placeholder:'搜索游戏...',game:'游戏',books:'书籍',homeTitle:'继续<em>探索</em><br>游戏。',homeSub:'发现热门游戏，管理你的列表并与好友分享。',popular:'近一个月最热门的游戏'},
+    hi:{flag:'🇮🇳',name:'हिन्दी',login:'लॉग इन',register:'साइन अप',search:'🔍 खोजें',lists:'📋 मेरी सूचियां',friends:'👥 मित्र',top:'🏆 शीर्ष 250',bottom:'💀 निचले 250',news:'📰 गेम समाचार',logout:'लॉग आउट',searchBtn:'खोजें',placeholder:'गेम खोजें...',game:'गेम',books:'किताबें',homeTitle:'गेम्स की <em>खोज</em><br>जारी रखें।',homeSub:'लोकप्रिय गेम खोजें, सूचियां प्रबंधित करें और दोस्तों के साथ साझा करें।',popular:'पिछले महीने के सबसे लोकप्रिय गेम'},
+    ar:{flag:'🇸🇦',name:'العربية',login:'تسجيل الدخول',register:'إنشاء حساب',search:'🔍 بحث',lists:'📋 قوائمي',friends:'👥 الأصدقاء',top:'🏆 أفضل 250',bottom:'💀 أسوأ 250',news:'📰 أخبار الألعاب',logout:'خروج',searchBtn:'بحث',placeholder:'ابحث عن لعبة...',game:'الألعاب',books:'الكتب',homeTitle:'واصل <em>اكتشاف</em><br>الألعاب.',homeSub:'اكتشف الألعاب الشائعة وأدر قوائمك وشاركها مع أصدقائك.',popular:'أشهر الألعاب في الشهر الماضي'},
+    pt:{flag:'🇧🇷',name:'Português',login:'Entrar',register:'Criar conta',search:'🔍 Buscar',lists:'📋 Minhas listas',friends:'👥 Amigos',top:'🏆 Top 250',bottom:'💀 Bottom 250',news:'📰 Notícias de jogos',logout:'Sair',searchBtn:'Buscar',placeholder:'Buscar jogo...',game:'JOGOS',books:'LIVROS',homeTitle:'CONTINUE <em>DESCOBRINDO</em><br>JOGOS.',homeSub:'Descubra jogos populares, gerencie suas listas e compartilhe com amigos.',popular:'JOGOS MAIS POPULARES DO ÚLTIMO MÊS'},
+    fr:{flag:'🇫🇷',name:'Français',login:'Connexion',register:"S'inscrire",search:'🔍 Rechercher',lists:'📋 Mes listes',friends:'👥 Amis',top:'🏆 Top 250',bottom:'💀 Bottom 250',news:'📰 Actualités jeux',logout:'Déconnexion',searchBtn:'Rechercher',placeholder:'Rechercher un jeu...',game:'JEUX',books:'LIVRES',homeTitle:'CONTINUEZ À <em>DÉCOUVRIR</em><br>DES JEUX.',homeSub:'Découvrez des jeux populaires, gérez vos listes et partagez-les.',popular:'JEUX LES PLUS POPULAIRES DU DERNIER MOIS'},
+    ru:{flag:'🇷🇺',name:'Русский',login:'Войти',register:'Регистрация',search:'🔍 Поиск',lists:'📋 Мои списки',friends:'👥 Друзья',top:'🏆 Топ 250',bottom:'💀 Худшие 250',news:'📰 Новости игр',logout:'Выйти',searchBtn:'Найти',placeholder:'Найти игру...',game:'ИГРЫ',books:'КНИГИ',homeTitle:'ПРОДОЛЖАЙТЕ <em>ОТКРЫВАТЬ</em><br>ИГРЫ.',homeSub:'Находите популярные игры, управляйте списками и делитесь ими.',popular:'САМЫЕ ПОПУЛЯРНЫЕ ИГРЫ ЗА ПОСЛЕДНИЙ МЕСЯЦ'},
+    de:{flag:'🇩🇪',name:'Deutsch',login:'Anmelden',register:'Registrieren',search:'🔍 Suchen',lists:'📋 Meine Listen',friends:'👥 Freunde',top:'🏆 Top 250',bottom:'💀 Schlechteste 250',news:'📰 Spiele-News',logout:'Abmelden',searchBtn:'Suchen',placeholder:'Spiel suchen...',game:'SPIELE',books:'BÜCHER',homeTitle:'WEITER <em>SPIELE</em><br>ENTDECKEN.',homeSub:'Entdecke beliebte Spiele, verwalte deine Listen und teile sie mit Freunden.',popular:'DIE BELIEBTESTEN SPIELE DES LETZTEN MONATS'}
+  };
+  function current(){ return localStorage.getItem('qwerst-lang') || 'tr'; }
+  function picker(){
+    document.querySelectorAll('.site-language-picker').forEach(function(host){
+      if(host.querySelector('select')) return;
+      var select=document.createElement('select'); select.className='site-language-select'; select.setAttribute('aria-label','Language');
+      Object.keys(languages).forEach(function(code){ var o=document.createElement('option'); o.value=code; o.textContent=languages[code].flag+' '+languages[code].name; select.appendChild(o); });
+      select.value=current(); select.onchange=function(){ window.setQwerstLanguage(this.value); }; host.appendChild(select);
+    });
+  }
+  function text(selector,value){ document.querySelectorAll(selector).forEach(function(el){el.textContent=value;}); }
+  function html(selector,value){ document.querySelectorAll(selector).forEach(function(el){el.innerHTML=value;}); }
+  function apply(code){
+    var l=languages[code]||languages.tr; document.documentElement.lang=code; document.documentElement.dir=code==='ar'?'rtl':'ltr';
+    document.querySelectorAll('.site-language-select').forEach(function(s){s.value=code;});
+    text('.card-game .card-title',l.game); text('.card-book .card-title',l.books);
+    html('.app-home-title',l.homeTitle); text('.app-home-sub',l.homeSub); text('.app-section-head h2',l.popular);
+    text('#loginTab',l.login); text('#registerTab',l.register); text('#authBtn',l.login);
+    text('#tabSearch',l.search); text('#tabMylist',l.lists); text('#tabFriends',l.friends); text('#topGamesBtn',l.top); text('#bottomGamesBtn',l.bottom); text('#newsBtn',l.news); text('#logoutBtn',l.logout);
+    text('#searchBtn',l.searchBtn); document.querySelectorAll('#searchInput').forEach(function(el){el.placeholder=l.placeholder;});
+    document.querySelectorAll('.auth-sub').forEach(function(el){el.textContent=code==='tr'?'Oyun listeni oluştur, takip et.':code==='en'?'Build your game list, follow others.':l.homeSub;});
+  }
+  window.setQwerstLanguage=function(code){ if(!languages[code]) code='tr'; localStorage.setItem('qwerst-lang',code); if(window.switchLang) window.switchLang(code); apply(code); };
+  window.QWERST_LANGUAGES=languages;
+  var style=document.createElement('style'); style.textContent='.site-language-picker{display:inline-flex;align-items:center}.site-language-select{appearance:none;background:var(--surface,rgba(255,255,255,.08));border:1px solid var(--border,rgba(255,255,255,.2));border-radius:8px;color:var(--text,#fff);font:600 12px "DM Sans",sans-serif;padding:7px 9px;cursor:pointer;max-width:150px}.site-language-select option{background:#16161a;color:#fff}.site-language-select:focus{outline:2px solid var(--accent,#e8ff47);outline-offset:1px}'; document.head.appendChild(style);
+  document.addEventListener('DOMContentLoaded',function(){picker();apply(current());}); picker(); apply(current());
+})();

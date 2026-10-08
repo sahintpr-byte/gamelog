@@ -101,8 +101,9 @@ const LANG = {
   }
 };
 
-let currentLang = 'tr';
-function t(k){ return (LANG[currentLang][k] !== undefined ? LANG[currentLang][k] : (LANG['tr'][k] || k)); }
+['es','zh','hi','ar','pt','fr','ru','de'].forEach(function(code){ LANG[code] = Object.assign({}, LANG.en); });
+let currentLang = localStorage.getItem('qwerst-lang') || 'tr';
+function t(k){ const active=LANG[currentLang]||LANG.tr; return (active[k] !== undefined ? active[k] : (LANG['en'][k] !== undefined ? LANG['en'][k] : k)); }
 
 function applyLang(){
   const l = currentLang;
@@ -139,14 +140,16 @@ function applyLang(){
   document.getElementById('backBtn').textContent = t('backBtn');
   // Footer
   const footer = document.querySelector('.site-footer');
-  if(footer) footer.innerHTML = 'Contact: <a href="mailto:sahintoper@hotmail.com" style="color:var(--accent);text-decoration:none">sahintoper@hotmail.com</a>';
+  if(footer) footer.innerHTML = 'Contact: <a href="mailto:sahin.toper@qwerst.com" style="color:var(--accent);text-decoration:none">sahin.toper@qwerst.com</a>&nbsp;·&nbsp; Powered By Şahin 2026';
   // Lang toggle
   document.getElementById('langTR').classList.toggle('active', l === 'tr');
   document.getElementById('langEN').classList.toggle('active', l === 'en');
 }
 
 function switchLang(lang){
+  if(!LANG[lang]) lang='tr';
   currentLang = lang;
+  localStorage.setItem('qwerst-lang', lang);
   applyLang();
   // Re-render current view content that has dynamic text
   const searchRes = document.getElementById('searchResults');

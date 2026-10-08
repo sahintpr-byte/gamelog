@@ -403,10 +403,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
         <button class="tab-btn" id="tabMylist">📚 Listelerim</button>
         <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
       </div>
-      <div class="lang-toggle">
-        <button class="lang-btn active" id="langTR">TR</button>
-        <button class="lang-btn" id="langEN">EN</button>
-      </div>
+      <div class="site-language-picker"></div>
       <button class="btn-logout" id="logoutBtn">Çıkış</button>
     </div>
   </header>
@@ -537,6 +534,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="booklog-lang.js"></script>
 <script src="booklog-app.js"></script>
+<script src="site-language.js"></script>
 <script>
 (function wait(n){
   if(typeof initBooklog==='function'&&typeof supabase!=='undefined'&&typeof XLSX!=='undefined'){

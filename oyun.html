@@ -66,7 +66,7 @@ header{border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-i
 .tab-btn.active{color:var(--accent);}
 .btn-logout{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .2s;}
 .btn-logout:hover{border-color:#ff6b6b;color:#ff6b6b;}
-.lang-toggle{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-right:4px;}
+.lang-toggle{display:none;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-right:4px;}
 .lang-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;padding:5px 10px;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
 .lang-btn.active{background:var(--surface2);color:var(--accent);}
 .lang-btn:hover{color:var(--text);}
@@ -306,6 +306,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
     <a href="index.html" class="logo" style="text-decoration:none">QWERST<span class="logo-dot">.COM</span></a>
     <div style="display:flex;align-items:center;gap:10px;">
       <a href="kitap/index.html" style="color:var(--muted);text-decoration:none;font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor='#ff6b00';this.style.color='#ff6b00'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📚 Kitaplar</a>
+      <div class="site-language-picker"></div>
       <button class="theme-btn" id="themeTogglePub" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
     </div>
   </header>
@@ -495,7 +496,7 @@ function closeVideoModal() {
 <div id="appScreen" style="display:none">
   <header>
     <div class="logo" id="logoBtn">QWERST<span class="logo-dot">.COM</span></div>
-    <div class="header-right">
+      <div class="header-right">
       <div class="user-badge" id="userBadge"></div>
       <div class="header-tabs">
         <button class="tab-btn active" id="tabSearch">🔍 Ara</button>
@@ -505,6 +506,7 @@ function closeVideoModal() {
         <button class="tab-btn" id="bottomGamesBtn" type="button" onclick="openBottomGamesView()">💀 Bottom 250</button>
         <button class="tab-btn" id="newsBtn" type="button" onclick="openNewsView()">📰 Oyun Haberleri</button>
       </div>
+      <div class="site-language-picker"></div>
       <button class="theme-btn" id="themeToggleApp" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
       <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>
       <button class="btn-logout" id="logoutBtn">Çıkış</button>
@@ -663,6 +665,7 @@ function closeVideoModal() {
 <script data-cfasync="false" src="lang.js"></script>
 <script data-cfasync="false" src="public.js"></script>
 <script data-cfasync="false" src="app.js"></script>
+<script data-cfasync="false" src="site-language.js"></script>
 <script data-cfasync="false">
 // Theme
 (function(){

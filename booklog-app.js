@@ -15,8 +15,8 @@ function toast(msg){const el=document.getElementById('toast');el.textContent=msg
 function sc(s){return s<=4?'low':s<=6?'mid':'high';}
 
 /* ── LANG ── */
-document.getElementById('langTR').onclick=()=>switchLang('tr');
-document.getElementById('langEN').onclick=()=>switchLang('en');
+if(document.getElementById('langTR')) document.getElementById('langTR').onclick=()=>switchLang('tr');
+if(document.getElementById('langEN')) document.getElementById('langEN').onclick=()=>switchLang('en');
 applyLang();
 
 /* ── AUTH ── */

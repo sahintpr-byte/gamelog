@@ -342,7 +342,7 @@ function openRecommendationsView(type) {
 }
 async function loadRecommendationList(type) {
   var config=RECOMMENDATIONS[type]||RECOMMENDATIONS['best-2026'];
-  var RAWG_KEY=\"b1ba1bc900a14e699e5e98788646cf16\";
+  var RAWG_KEY="b1ba1bc900a14e699e5e98788646cf16";
   var grid=document.getElementById('recommendationGrid');
   var title=document.getElementById('recommendationTitle');
   var subtitle=document.getElementById('recommendationSubtitle');

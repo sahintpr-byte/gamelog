@@ -311,6 +311,13 @@ async function loadGameNews() {
 
 // ── RECOMMENDATIONS ──
 var recommendationCache = {};
+var PURE_HORROR_NAMES = [
+  'resident evil 2','resident evil 3','resident evil 4','resident evil 7','resident evil village',
+  'outlast','outlast 2','visage','madison','phasmophobia','signalis','amnesia','layers of fear',
+  'the mortuary assistant','tormented souls','the dark pictures','little nightmares','fatal frame',
+  'the quarry','until dawn','still wakes the deep','mouthwashing','crow country','world of horror',
+  'alan wake 2','alone in the dark','silent hill 2'
+];
 var RECOMMENDATIONS = {
   'best-2026': {
     title:"2026'NIN EN İYİ OYUNLARI",
@@ -321,8 +328,8 @@ var RECOMMENDATIONS = {
     title:'EN İYİ KORKU OYUNLARI',
     subtitle:'Korku türünün en çok öne çıkan oyunları.',
     query:'ordering=-rating',
-    filterHorror:true,
-    pages:10
+    filterPureHorror:true,
+    pages:12
   },
   'upcoming-2027': {
     title:"2027'DE ÇIKMASI BEKLENEN OYUNLAR",
@@ -364,8 +371,12 @@ async function loadRecommendationList(type) {
     pages.forEach(function(data){allGames=allGames.concat(data.results||[]);});
     var games=allGames.filter(function(game){
       if(!game.name) return false;
-      if(config.filterHorror){
-        return (game.tags||[]).some(function(tag){return tag.id===16||String(tag.name||'').toLowerCase()==='horror';});
+      if(config.filterPureHorror){
+        var released=game.released?new Date(game.released):null;
+        var name=String(game.name||'').toLowerCase();
+        var hasHorrorTag=(game.tags||[]).some(function(tag){return tag.id===16||String(tag.name||'').toLowerCase()==='horror';});
+        var isCurated=PURE_HORROR_NAMES.some(function(candidate){return name.indexOf(candidate)!==-1;});
+        return hasHorrorTag && isCurated && released && released>=new Date('2016-01-01');
       }
       return true;
     }).sort(function(a,b){return (b.rating||0)-(a.rating||0);}).slice(0,24);

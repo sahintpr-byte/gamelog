@@ -188,18 +188,20 @@ document.getElementById('tabSearch').onclick=()=>switchView('search');
 document.getElementById('tabMylist').onclick=()=>switchView('mylist');
 document.getElementById('tabFriends').onclick=()=>switchView('friends');
 document.getElementById('topGamesBtn').onclick=openTopGamesView;
+document.getElementById('bottomGamesBtn').onclick=openBottomGamesView;
 document.getElementById('backBtn').onclick=()=>switchView('friends');
 
 function switchView(v){
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
-  const views={search:'searchView',mylist:'mylistView',friends:'friendsView',profile:'profileView',topGames:'topGamesView'};
+  const views={search:'searchView',mylist:'mylistView',friends:'friendsView',profile:'profileView',topGames:'topGamesView',bottomGames:'bottomGamesView'};
   const tabs={search:'tabSearch',mylist:'tabMylist',friends:'tabFriends'};
   document.getElementById(views[v]).classList.add('active');
   if(tabs[v]) document.getElementById(tabs[v]).classList.add('active');
   if(v==='mylist') loadMyLists();
   if(v==='friends') loadFriendsTab();
   if(v==='topGames'&&typeof loadTopPCGames==='function') loadTopPCGames();
+  if(v==='bottomGames'&&typeof loadBottomPCGames==='function') loadBottomPCGames();
   if(v==='search'){
     document.getElementById('searchInput').value='';
     document.getElementById('searchResults').innerHTML='';

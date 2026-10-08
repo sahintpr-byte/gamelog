@@ -116,6 +116,8 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .top-games-meta{color:var(--muted);font-size:12px;text-align:right;white-space:nowrap;}
 #topGamesGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
 #topGamesGrid .game-card{min-width:0;}
+#bottomGamesGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+#bottomGamesGrid .game-card{min-width:0;}
 .top-games-note{color:var(--muted);font-size:12px;margin:16px 0 4px;}
 .personal-teaser{display:flex;justify-content:space-between;align-items:center;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:28px;}
 .personal-teaser h3{font-size:16px;margin-bottom:5px;}
@@ -486,6 +488,7 @@ function closeVideoModal() {
         <button class="tab-btn" id="tabMylist">📋 Listelerim</button>
         <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
         <button class="tab-btn" id="topGamesBtn" type="button" onclick="openTopGamesView()">🏆 Top 250</button>
+        <button class="tab-btn" id="bottomGamesBtn" type="button" onclick="openBottomGamesView()">💀 Bottom 250</button>
       </div>
       <button class="theme-btn" id="themeToggleApp" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
       <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>
@@ -527,6 +530,17 @@ function closeVideoModal() {
       </div>
       <div id="topGamesGrid"><div class="loading">Top 250 liste yükleniyor...</div></div>
       <p class="top-games-note">Puanlar RAWG API üzerinden Metacritic skorlarıyla sıralanır. Liste güncellendiğinde yeniden yüklenir.</p>
+    </div>
+    <div class="view" id="bottomGamesView">
+      <div class="top-games-header">
+        <div>
+          <h1 style="color:#ff6b6b">BOTTOM 250 PC GAMES</h1>
+          <p>Metacritic puanlarına göre en düşük skorlu PC oyunları.</p>
+        </div>
+        <div class="top-games-meta" id="bottomGamesMeta">Veri hazırlanıyor...</div>
+      </div>
+      <div id="bottomGamesGrid"><div class="loading">Bottom 250 liste yükleniyor...</div></div>
+      <p class="top-games-note">Puanlar RAWG API üzerinden Metacritic skorlarıyla sıralanır. Yalnızca puanı bulunan PC oyunları listelenir.</p>
     </div>
     <div class="view" id="mylistView">
       <div class="lists-layout">

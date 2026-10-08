@@ -140,6 +140,15 @@ function openTopGamesView() {
   if (button) button.classList.add("active");
   if (typeof loadTopPCGames === "function") loadTopPCGames();
 }
+function openBottomGamesView() {
+  document.querySelectorAll(".view").forEach(function(view){ view.classList.remove("active"); });
+  document.querySelectorAll(".tab-btn").forEach(function(button){ button.classList.remove("active"); });
+  var view = document.getElementById("bottomGamesView");
+  var button = document.getElementById("bottomGamesBtn");
+  if (view) view.classList.add("active");
+  if (button) button.classList.add("active");
+  if (typeof loadBottomPCGames === "function") loadBottomPCGames();
+}
 
 // ── TOP 250 PC GAMES (Metacritic scores via RAWG) ──
 var topPCGamesLoaded = false;
@@ -179,6 +188,42 @@ async function loadTopPCGames() {
     if (meta) meta.textContent = games.length+" oyun · Metacritic";
   } catch (e) {
     el.innerHTML = '<div style="color:var(--muted);grid-column:1/-1;padding:24px;text-align:center">Top 250 listesi şu anda yüklenemedi. Lütfen sayfayı yenileyin.</div>';
+    if (meta) meta.textContent = "Veri alınamadı";
+  }
+}
+
+var bottomPCGamesLoaded = false;
+async function loadBottomPCGames() {
+  var el = document.getElementById("bottomGamesGrid");
+  if (!el || bottomPCGamesLoaded) return;
+  var meta = document.getElementById("bottomGamesMeta");
+  var RAWG = "b1ba1bc900a14e699e5e98788646cf16";
+  el.innerHTML = '<div class="loading" style="grid-column:1/-1">Bottom 250 liste yükleniyor...</div>';
+  if (meta) meta.textContent = "Metacritic skorları getiriliyor...";
+  try {
+    var requests = [];
+    for (var page=1; page<=10; page++) {
+      requests.push(fetch("https://api.rawg.io/api/games?key="+RAWG+"&platforms=4&metacritic=1,69&ordering=metacritic&page_size=40&page="+page)
+        .then(function(r){ if(!r.ok) throw new Error("RAWG API "+r.status); return r.json(); }));
+    }
+    var pages = await Promise.all(requests);
+    var games = [];
+    pages.forEach(function(data){ if(data.results) games = games.concat(data.results); });
+    games = games.filter(function(g){ return g.metacritic; }).sort(function(a,b){ return a.metacritic-b.metacritic; });
+    var seen = {};
+    games = games.filter(function(g){
+      var key = topGameKey(g.name);
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    }).slice(0,250);
+    if (!games.length) throw new Error("Liste boş");
+    el.innerHTML = "";
+    games.forEach(function(g,i){ el.appendChild(buildGameCard(g,i,openTrailer)); });
+    bottomPCGamesLoaded = true;
+    if (meta) meta.textContent = games.length+" oyun · Metacritic";
+  } catch (e) {
+    el.innerHTML = '<div style="color:var(--muted);grid-column:1/-1;padding:24px;text-align:center">Bottom 250 listesi şu anda yüklenemedi. Lütfen sayfayı yenileyin.</div>';
     if (meta) meta.textContent = "Veri alınamadı";
   }
 }

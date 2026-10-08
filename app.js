@@ -29,14 +29,16 @@ function sc(s){return s<=4?'low':s<=6?'mid':'high';}
 function mcUrl(name){return 'https://www.metacritic.com/game/'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'/';}
 
 /* ── AUTH ── */
-function readSharedListPayload(){
-  const raw=location.hash.startsWith('#shared=')?location.hash.slice(8):'';
-  if(!raw)return null;
-  try{
-    const json=decodeURIComponent(escape(atob(decodeURIComponent(raw))));
-    const payload=JSON.parse(json);
-    return payload&&payload.v===1&&Array.isArray(payload.i)?payload:null;
-  }catch(e){return null;}
+function shareSlug(value){
+  return (value||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+function readSharedListPath(){
+  const marker='/oyun.html/';
+  const at=location.pathname.indexOf(marker);
+  if(at<0)return null;
+  const parts=location.pathname.slice(at+marker.length).split('/').filter(Boolean).map(decodeURIComponent);
+  return parts.length>=2?{username:parts[0],listSlug:parts[1]}:null;
 }
 function showSharedList(payload){
   document.getElementById('authScreen').style.display='none';
@@ -66,14 +68,26 @@ function showSharedList(payload){
   });
   root.append(title,desc,list); document.body.appendChild(root);
 }
-const sharedListPayload=readSharedListPayload();
-if(sharedListPayload){showSharedList(sharedListPayload);return;}
+async function loadSharedListPath(route){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appScreen').style.display='none';
+  const {data:profile}=await sb.from('profiles').select('id,username').eq('username',route.username).maybeSingle();
+  if(!profile){showSharedList({n:'Liste bulunamadı',d:'Bu paylaşım bağlantısı geçersiz veya kaldırılmış.',i:[]});return;}
+  const {data:lists,error}=await sb.from('lists').select('id,name,description,user_id,is_public').eq('user_id',profile.id).eq('is_public',true);
+  const list=(lists||[]).find(x=>shareSlug(x.name)===route.listSlug);
+  if(error||!list){showSharedList({n:'Liste bulunamadı',d:'Bu liste paylaşılmıyor veya mevcut değil.',i:[]});return;}
+  const {data:items}=await sb.from('game_lists').select('game_name,game_image,released,genres,score,notes').eq('user_id',profile.id).eq('list_id',list.id).order('added_at',{ascending:false});
+  showSharedList({n:list.name,d:list.description||profile.username+' tarafından paylaşılan liste',i:(items||[]).map(g=>({n:g.game_name,g:g.game_image,y:g.released,gn:g.genres,s:g.score,no:g.notes}))});
+}
+const sharedListPath=readSharedListPath();
+if(sharedListPath){loadSharedListPath(sharedListPath);return;}
 async function copyShareLink(list){
-  const {data:items,error}=await sb.from('game_lists').select('game_name,game_image,released,genres,score,notes').eq('user_id',currentUser.id).eq('list_id',list.id).order('added_at',{ascending:false});
-  if(error){toast('Liste paylaşım için alınamadı.');return;}
-  const payload={v:1,n:list.name,d:list.description||'',i:(items||[]).map(g=>({n:g.game_name,g:g.game_image,y:g.released,gn:g.genres,s:g.score,no:g.notes}))};
-  const encoded=encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload)))));
-  const url=location.origin+location.pathname+'#shared='+encoded;
+  const {data:profile}=await sb.from('profiles').select('username').eq('id',currentUser.id).maybeSingle();
+  const username=profile?.username||currentUser.user_metadata?.username||currentUser.email.split('@')[0];
+  const {error}=await sb.from('lists').update({is_public:true}).eq('id',list.id).eq('user_id',currentUser.id);
+  if(error){toast('Liste paylaşılabilir hale getirilemedi.');return;}
+  const base=location.origin+location.pathname.split('/oyun.html')[0]+'/oyun.html/';
+  const url=base+encodeURIComponent(shareSlug(username))+'/'+encodeURIComponent(shareSlug(list.name));
   try{await navigator.clipboard.writeText(url);toast('Paylaşım linki panoya kopyalandı.');}catch(e){window.prompt('Paylaşım linkini kopyalayın:',url);}
 }
 

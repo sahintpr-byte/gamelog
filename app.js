@@ -187,7 +187,7 @@ document.getElementById('logoBtn').onclick=()=>switchView('search');
 document.getElementById('tabSearch').onclick=()=>switchView('search');
 document.getElementById('tabMylist').onclick=()=>switchView('mylist');
 document.getElementById('tabFriends').onclick=()=>switchView('friends');
-document.getElementById('topGamesBtn').onclick=()=>switchView('topGames');
+document.getElementById('topGamesBtn').onclick=openTopGamesView;
 document.getElementById('backBtn').onclick=()=>switchView('friends');
 
 function switchView(v){

@@ -97,6 +97,7 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .scattered-card img{display:block;width:160px;height:75px;object-fit:cover;}
 .scattered-card .sc-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.85),transparent);padding:16px 8px 5px;font-size:9px;font-weight:700;color:rgba(255,255,255,.9);text-align:center;letter-spacing:.8px;text-transform:uppercase;}
 #searchResults{margin-top:32px;}
+#searchResults:empty{margin-top:0;}
 .app-home-hero{display:flex;justify-content:space-between;align-items:end;gap:24px;padding:42px 0 28px;border-bottom:1px solid var(--border);margin-bottom:26px;}
 .app-home-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,58px);letter-spacing:2px;line-height:1;}
 .app-home-title em{color:var(--accent);font-style:normal;}
@@ -528,6 +529,7 @@ function closeVideoModal() {
         <input type="text" id="searchInput" placeholder="Oyun adı ara..." autocomplete="off">
         <button class="btn-primary" id="searchBtn">Ara</button>
       </div>
+      <div id="searchResults"></div>
       <div id="discoverySection">
         <div class="app-section-head"><h2>SON 1 AYDA ÇIKAN EN POPÜLER OYUNLAR</h2><span>Güncel keşifler</span></div>
         <div id="trendingGames"><div class="loading">Popüler oyunlar yükleniyor...</div></div>
@@ -536,7 +538,6 @@ function closeVideoModal() {
           <button class="btn-secondary" id="homeListOpen2">Listelerim sayfasını aç →</button>
         </div>
       </div>
-      <div id="searchResults"></div>
       <footer class="site-footer" id="siteFooter">Contact: <a href="mailto:sahin.toper@qwerst.com" style="color:var(--accent);text-decoration:none">sahin.toper@qwerst.com</a>&nbsp;·&nbsp; Powered By Şahin 2026</footer>
     </div>
     <div class="view" id="topGamesView">

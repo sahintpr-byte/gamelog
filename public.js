@@ -315,8 +315,8 @@ var PURE_HORROR_NAMES = [
   'resident evil 2','resident evil 3','resident evil 4','resident evil 7','resident evil village',
   'outlast','outlast 2','visage','madison','phasmophobia','signalis','amnesia','layers of fear',
   'the mortuary assistant','tormented souls','the dark pictures','little nightmares','fatal frame',
-  'the quarry','until dawn','still wakes the deep','mouthwashing','crow country','world of horror',
-  'alan wake 2','alone in the dark','silent hill 2'
+  'until dawn','still wakes the deep','mouthwashing','crow country','world of horror',
+  'alone in the dark','silent hill 2'
 ];
 var RECOMMENDATIONS = {
   'best-2026': {
@@ -369,15 +369,28 @@ async function loadRecommendationList(type) {
     var pages=await Promise.all(requests);
     var allGames=[];
     pages.forEach(function(data){allGames=allGames.concat(data.results||[]);});
+    if(config.filterPureHorror){
+      var candidateRequests=PURE_HORROR_NAMES.map(function(candidate){
+        var searchUrl='https://api.rawg.io/api/games?key='+RAWG_KEY+'&platforms=4&search='+encodeURIComponent(candidate)+'&search_precise=true&page_size=1';
+        return fetch(searchUrl).then(function(response){return response.ok?response.json():{results:[]};}).catch(function(){return {results:[]};});
+      });
+      var candidatePages=await Promise.all(candidateRequests);
+      candidatePages.forEach(function(data){
+        var candidateGame=(data.results||[])[0];
+        if(candidateGame){candidateGame.__curatedHorror=true; allGames.push(candidateGame);}
+      });
+    }
+    var seenGames={};
     var games=allGames.filter(function(game){
       if(!game.name) return false;
       if(config.filterPureHorror){
         var released=game.released?new Date(game.released):null;
-        var name=String(game.name||'').toLowerCase();
-        var hasHorrorTag=(game.tags||[]).some(function(tag){return tag.id===16||String(tag.name||'').toLowerCase()==='horror';});
-        var isCurated=PURE_HORROR_NAMES.some(function(candidate){return name.indexOf(candidate)!==-1;});
-        return hasHorrorTag && isCurated && released && released>=new Date('2016-01-01');
+        return game.__curatedHorror && released && released>=new Date('2016-01-01');
       }
+      return true;
+    }).filter(function(game){
+      if(seenGames[game.id]) return false;
+      seenGames[game.id]=true;
       return true;
     }).sort(function(a,b){return (b.rating||0)-(a.rating||0);}).slice(0,24);
     if(!games.length) throw new Error('Liste boş');

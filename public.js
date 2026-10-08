@@ -259,7 +259,8 @@ async function translateNewsText(value) {
   var text = newsText(value).slice(0,700);
   if (!text) return "";
   try {
-    var url = "https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=en|tr";
+    var target = localStorage.getItem("qwerst-lang") || "tr";
+    var url = "https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=en|"+encodeURIComponent(target);
     var response = await fetch(url);
     var data = await response.json();
     return (data.responseData && data.responseData.translatedText) || text;
@@ -269,7 +270,7 @@ async function loadGameNews() {
   var el = document.getElementById("newsGrid");
   if (!el || gameNewsLoaded) return;
   var status = document.getElementById("newsStatus");
-  el.innerHTML = '<div class="loading" style="grid-column:1/-1">Oyun haberleri yükleniyor...</div>';
+  el.innerHTML = '<div class="loading" style="grid-column:1/-1">'+(window.qwerstText?window.qwerstText('newsLoading'):'Oyun haberleri yükleniyor...')+'</div>';
   try {
     var feeds = await Promise.all(GAME_NEWS_FEEDS.map(function(feed){
       var url = "https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed.url);
@@ -290,7 +291,7 @@ async function loadGameNews() {
       card.innerHTML = (item.image && newsUrl(item.image) !== "#" ? '<img src="'+newsHtml(item.image)+'" alt="" loading="lazy">' : '')
         + '<div class="news-card-body"><div class="news-source">'+newsHtml(item.source)+'</div>'
         + '<h2>'+newsHtml(translatedTitle)+'</h2><p>'+newsHtml(translatedSummary)+'</p>'
-        + '<div class="news-card-footer"><span>'+new Date(item.date||Date.now()).toLocaleDateString("tr-TR")+'</span><a href="'+newsHtml(newsUrl(item.link))+'" target="_blank" rel="noopener">Habere git →</a></div></div>';
+        + '<div class="news-card-footer"><span>'+new Date(item.date||Date.now()).toLocaleDateString()+'</span><a href="'+newsHtml(newsUrl(item.link))+'" target="_blank" rel="noopener">'+(window.qwerstText?window.qwerstText('goNews'):'Habere git →')+'</a></div></div>';
       el.appendChild(card);
     }
     gameNewsLoaded = true;

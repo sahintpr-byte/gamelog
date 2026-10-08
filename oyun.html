@@ -485,7 +485,7 @@ function closeVideoModal() {
         <button class="tab-btn active" id="tabSearch">🔍 Ara</button>
         <button class="tab-btn" id="tabMylist">📋 Listelerim</button>
         <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
-        <button class="tab-btn" id="topGamesBtn">🏆 Top 250</button>
+        <button class="tab-btn" id="topGamesBtn" type="button" onclick="openTopGamesView()">🏆 Top 250</button>
       </div>
       <button class="theme-btn" id="themeToggleApp" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
       <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>

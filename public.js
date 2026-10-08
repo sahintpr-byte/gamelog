@@ -130,6 +130,17 @@ async function loadTrendingGames() {
   }
 }
 
+// Keep the ranking button usable even if the app navigation is initialized late.
+function openTopGamesView() {
+  document.querySelectorAll(".view").forEach(function(view){ view.classList.remove("active"); });
+  document.querySelectorAll(".tab-btn").forEach(function(button){ button.classList.remove("active"); });
+  var view = document.getElementById("topGamesView");
+  var button = document.getElementById("topGamesBtn");
+  if (view) view.classList.add("active");
+  if (button) button.classList.add("active");
+  if (typeof loadTopPCGames === "function") loadTopPCGames();
+}
+
 // ── TOP 250 PC GAMES (Metacritic scores via RAWG) ──
 var topPCGamesLoaded = false;
 async function loadTopPCGames() {

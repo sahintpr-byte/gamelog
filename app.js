@@ -94,6 +94,20 @@ async function copyShareLink(list){
   try{await navigator.clipboard.writeText(url);toast('Paylaşım linki panoya kopyalandı.');}catch(e){window.prompt('Paylaşım linkini kopyalayın:',url);}
 }
 
+function showPublicLogin(){
+  const screen=document.getElementById('authScreen');
+  if(screen) screen.classList.remove('public-home');
+  setAuthMode('login');
+  setTimeout(()=>document.getElementById('authEmail')?.focus(),50);
+}
+function showPublicHome(){
+  const screen=document.getElementById('authScreen');
+  if(screen) screen.classList.add('public-home');
+  document.getElementById('authError').style.display='none';
+  document.getElementById('authSuccess').style.display='none';
+}
+document.getElementById('publicListsBtn').onclick=showPublicLogin;
+document.getElementById('publicBackBtn').onclick=showPublicHome;
 document.getElementById('loginTab').onclick=()=>setAuthMode('login');
 document.getElementById('registerTab').onclick=()=>setAuthMode('register');
 document.getElementById('authBtn').onclick=doAuth;
@@ -142,6 +156,7 @@ document.getElementById('logoutBtn').onclick=async()=>{
   currentUser=null; myLists=[]; activeListId=null;
   document.getElementById('appScreen').style.display='none';
   document.getElementById('authScreen').style.display='block';
+  showPublicHome();
 };
 
 function showApp(){
@@ -179,6 +194,7 @@ sb.auth.onAuthStateChange((event,session)=>{
     currentUser=null; myLists=[]; activeListId=null;
     document.getElementById('appScreen').style.display='none';
     document.getElementById('authScreen').style.display='block';
+    showPublicHome();
   }
 });
 

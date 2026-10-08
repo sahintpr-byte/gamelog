@@ -335,8 +335,29 @@ var RECOMMENDATIONS = {
     title:"2027'DE ÇIKMASI BEKLENEN OYUNLAR",
     subtitle:'2027 çıkış tarihine sahip, merakla beklenen yapımlar.',
     query:'dates=2027-01-01,2027-12-31&ordering=-added'
+  },
+  'gamespot-horror-wishlist': {
+    title:'STEAM İSTEK LİSTESİNE EKLENMESİ GEREKEN 14 KORKU OYUNU',
+    subtitle:'GameSpot’un Horror Game Awards showcase seçkisinden, Türkçe özetlerle.',
+    staticList:true
   }
 };
+var GAMESPOT_HORROR_WISHLIST = [
+  {name:'Confronted',url:'https://store.steampowered.com/app/2882610/Confronted/',description:'Amnesia: The Dark Descent havasını temel inşa mekanikleriyle birleştiren korku oyunu. Oyun çıktı ve denemek isteyenler için ücretsiz demosu bulunuyor.'},
+  {name:'Signal Veil',url:'https://store.steampowered.com/app/4528010/Signal_Veil/',description:'Terk edilmiş okulunu araştıran bir genç, kapaklı telefonunu hem silah hem de bulmaca çözme aracı olarak kullanıyor. Silent Hill esintili psikolojik korku.'},
+  {name:'The Road of Dust and Sorrow',url:'https://store.steampowered.com/app/3895110/The_Road_of_Dust_and_Sorrow/',description:'Klasiklerden ilham alan 2D piksel korku oyunu. Oyuncu, ölülerle dolu bir dünyada kızını korumaya çalışıyor.'},
+  {name:'The Pines',url:'https://store.steampowered.com/app/4271520/The_Pines/',description:'Seçimlerin hikâyeyi etkilediği üçüncü şahıs korku RPG’si. Yeni bir stüdyodan gelen iddialı ve takip edilmeye değer bir yapım.'},
+  {name:'Sombras: Negative Frames',url:'https://store.steampowered.com/app/4553370/SOMBRAS_negative_frames/',description:'Japon-İspanyol bir öğrencinin memleketinin karanlık bir yansımasında kaybolduğu, korkudan çok atmosfer ve keşfe odaklanan gizemli bir macera.'},
+  {name:'Nightmare House',url:'https://store.steampowered.com/app/2744430/Nightmare_House/',description:'Half-Life 2 moduyla tanınan Nightmare House’un, baştan geliştirilen bağımsız sürümü. Klasik bir korku deneyimini modern bir oyun olarak yeniden sunuyor.'},
+  {name:'I Shall Name The Dead',url:'https://store.steampowered.com/app/4881350/I_SHALL_NAME_THE_DEAD/',description:'Mezarlığı mesai saatleri dışında keşfetmeyi konu alan, mavi ve turuncu renkleriyle öne çıkan stilize bir korku-macera.'},
+  {name:'Human.exe',url:'https://store.steampowered.com/app/4016270/Humanexe/',description:'Bir yapay zekânın etik ikilemlerini ve dünya görüşünü şekillendirdiğiniz felsefi bir korku oyunu. Verdiğiniz kararlar sonuçları değiştiriyor.'},
+  {name:'Sparrow',url:'https://store.steampowered.com/app/2983920/SPARROW/',description:'Kayıp yavrularını arayan bir kuşu yönettiğiniz sıra dışı bir korku fikri. Basit görünen bu hikâye, alışılmadık atmosferiyle merak uyandırıyor.'},
+  {name:'Solace Creek',url:'https://store.steampowered.com/app/3004130/Solace_Creek/',description:'Rüya gibi fragmanı, PSX tarzı görselleri ve tekinsiz ama huzur verici atmosferiyle öne çıkan bağımsız korku deneyimi.'},
+  {name:'Mayfly',url:'https://store.steampowered.com/app/4057470/Mayfly/',description:'İngiltere’de bir teknede uyanan ve kayıp eşini ararken sürekli değişen bir gerçekliğe sürüklenen karakterin psikolojik korku hikâyesi.'},
+  {name:'Echograph',url:'https://store.steampowered.com/app/3460960/Echograph/',description:'Fatal Frame serisinden ilham alan yapımda, hayaletleri kamerayla görüntüleyerek ve fotoğraf çekerek ilerliyorsunuz.'},
+  {name:'Shutter Story',url:'https://store.steampowered.com/app/3798860/Shutter_Story/',description:'Fotoğrafları inceleyerek paranormal izleri bulduğunuz, Sinister benzeri fikriyle dikkat çeken atmosferik bir korku oyunu.'},
+  {name:'Dead of Darkness 2',url:'https://strangesignals-co-dot-yamm-track.appspot.com/2lHOiMPpgD5MYj',description:'Retro anime ara sahneleri ve klasik hayatta kalma-korku yaklaşımıyla gelen devam oyunu. Serinin ilk oyununu da radarınıza alabilirsiniz.'}
+];
 function openRecommendationsView(type) {
   document.querySelectorAll('.view').forEach(function(view){ view.classList.remove('active'); });
   document.querySelectorAll('.tab-btn').forEach(function(button){ button.classList.remove('active'); });
@@ -354,6 +375,10 @@ async function loadRecommendationList(type) {
   if(!grid) return;
   title.textContent=config.title;
   subtitle.textContent=config.subtitle;
+  if(config.staticList){
+    renderGamespotHorrorWishlist(meta);
+    return;
+  }
   if(recommendationCache[type]){
     renderRecommendationGames(recommendationCache[type],meta);
     return;
@@ -403,9 +428,19 @@ async function loadRecommendationList(type) {
 }
 function renderRecommendationGames(games,meta) {
   var grid=document.getElementById('recommendationGrid');
+  grid.className='';
   grid.innerHTML='';
   games.forEach(function(game,index){ grid.appendChild(buildGameCard(game,index,openTrailer)); });
   if(meta) meta.textContent=games.length+' oyun · RAWG / Metacritic';
+}
+function renderGamespotHorrorWishlist(meta) {
+  var grid=document.getElementById('recommendationGrid');
+  if(!grid) return;
+  grid.className='recommendation-article-grid';
+  grid.innerHTML=GAMESPOT_HORROR_WISHLIST.map(function(game,index){
+    return '<article class="recommendation-article-card"><div class="recommendation-article-number">'+String(index+1).padStart(2,'0')+'</div><h3>'+game.name+'</h3><p>'+game.description+'</p><a class="btn-secondary recommendation-steam-link" href="'+game.url+'" target="_blank" rel="noopener">Steam’de incele →</a></article>';
+  }).join('')+'<div class="recommendation-source">Kaynak: <a href="https://www.gamespot.com/articles/14-new-horror-games-it-would-be-terrifying-not-to-wishlist-on-steam/" target="_blank" rel="noopener">GameSpot – 14 Horror Games It Would Be Terrifying Not To Wishlist</a></div>';
+  if(meta) meta.textContent='14 oyun · GameSpot seçkisi';
 }
 
 // ── MOST ADDED (Supabase, polls until ready) ──

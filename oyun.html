@@ -152,6 +152,14 @@ main{max-width:1200px;margin:0 auto;padding:32px 24px;}
 .recommend-meta{color:var(--muted);font-size:12px;white-space:nowrap;}
 #recommendationGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
 #recommendationGrid .game-card{min-width:0;}
+.recommendation-article-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.recommendation-article-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;min-height:230px;box-shadow:0 8px 24px rgba(0,0,0,.08);}
+.recommendation-article-number{color:var(--accent);font:700 13px/1 var(--font-mono,monospace);letter-spacing:.12em;margin-bottom:18px;}
+.recommendation-article-card h3{margin:0 0 10px;font-size:20px;line-height:1.15;color:var(--text);}
+.recommendation-article-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.65;}
+.recommendation-steam-link{display:inline-block;margin-top:18px;text-decoration:none;}
+.recommendation-source{grid-column:1/-1;color:var(--muted);font-size:13px;padding:8px 2px 18px;}
+.recommendation-source a{color:var(--accent);}
 .top-games-note{color:var(--muted);font-size:12px;margin:16px 0 4px;}
 .personal-teaser{display:flex;justify-content:space-between;align-items:center;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:28px;}
 .personal-teaser h3{font-size:16px;margin-bottom:5px;}
@@ -533,6 +541,7 @@ function closeVideoModal() {
             <button type="button" onclick="openRecommendationsView('best-2026')">2026'nın en iyi oyunları</button>
             <button type="button" onclick="openRecommendationsView('best-horror')">En iyi korku oyunları</button>
             <button type="button" onclick="openRecommendationsView('upcoming-2027')">2027'de çıkması beklenen oyunlar</button>
+            <button type="button" onclick="openRecommendationsView('gamespot-horror-wishlist')">Steam’e eklenecek 14 korku oyunu</button>
           </div>
         </div>
       </div>

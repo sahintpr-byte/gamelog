@@ -240,9 +240,9 @@ async function loadBottomPCGames() {
 // ── GAME NEWS (RSS feeds + Turkish translation) ──
 var gameNewsLoaded = false;
 var GAME_NEWS_FEEDS = [
-  {name:"IGN", url:"https://www.ign.com/rss/articles/feed"},
-  {name:"PC Gamer", url:"https://www.pcgamer.com/rss/"},
-  {name:"GameSpot", url:"https://www.gamespot.com/feeds/game-news/"}
+  {name:"PC Gamer", url:"https://www.pcgamer.com/feeds/tag/games/", limit:15},
+  {name:"IGN", url:"https://www.ign.com/rss/articles/feed", limit:5},
+  {name:"GameSpot", url:"https://www.gamespot.com/feeds/game-news/", limit:5}
 ];
 function newsText(value) {
   var div = document.createElement("div");
@@ -274,13 +274,12 @@ async function loadGameNews() {
     var feeds = await Promise.all(GAME_NEWS_FEEDS.map(function(feed){
       var url = "https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed.url);
       return fetch(url).then(function(r){return r.json();}).then(function(data){
-        return (data.items||[]).slice(0,6).map(function(item){ return {source:feed.name,title:item.title,description:item.description,link:item.link,date:item.pubDate,image:item.thumbnail||(item.enclosure&&item.enclosure.link)}; });
+        return (data.items||[]).slice(0,feed.limit).map(function(item){ return {source:feed.name,title:item.title,description:item.description,link:item.link,date:item.pubDate,image:item.thumbnail||(item.enclosure&&item.enclosure.link)}; });
       }).catch(function(){ return []; });
     }));
-    var items = feeds.reduce(function(all, list){ return all.concat(list); },[])
-      .sort(function(a,b){ return new Date(b.date||0)-new Date(a.date||0); }).slice(0,12);
+    var items = (feeds[0]||[]).concat(feeds.slice(1).reduce(function(all, list){ return all.concat(list); },[])).slice(0,15);
     if (!items.length) throw new Error("Haber bulunamadı");
-    if (status) status.textContent = items.length+" haber · 3 kaynak";
+    if (status) status.textContent = items.length+" haber · PC Gamer öncelikli";
     el.innerHTML = "";
     for (var i=0; i<items.length; i++) {
       var item = items[i];

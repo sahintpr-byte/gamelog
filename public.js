@@ -149,6 +149,15 @@ function openBottomGamesView() {
   if (button) button.classList.add("active");
   if (typeof loadBottomPCGames === "function") loadBottomPCGames();
 }
+function openNewsView() {
+  document.querySelectorAll(".view").forEach(function(view){ view.classList.remove("active"); });
+  document.querySelectorAll(".tab-btn").forEach(function(button){ button.classList.remove("active"); });
+  var view = document.getElementById("newsView");
+  var button = document.getElementById("newsBtn");
+  if (view) view.classList.add("active");
+  if (button) button.classList.add("active");
+  if (typeof loadGameNews === "function") loadGameNews();
+}
 
 // ── TOP 250 PC GAMES (Metacritic scores via RAWG) ──
 var topPCGamesLoaded = false;
@@ -225,6 +234,70 @@ async function loadBottomPCGames() {
   } catch (e) {
     el.innerHTML = '<div style="color:var(--muted);grid-column:1/-1;padding:24px;text-align:center">Bottom 250 listesi şu anda yüklenemedi. Lütfen sayfayı yenileyin.</div>';
     if (meta) meta.textContent = "Veri alınamadı";
+  }
+}
+
+// ── GAME NEWS (RSS feeds + Turkish translation) ──
+var gameNewsLoaded = false;
+var GAME_NEWS_FEEDS = [
+  {name:"IGN", url:"https://www.ign.com/rss/articles/feed"},
+  {name:"PC Gamer", url:"https://www.pcgamer.com/rss/"},
+  {name:"GameSpot", url:"https://www.gamespot.com/feeds/game-news/"}
+];
+function newsText(value) {
+  var div = document.createElement("div");
+  div.innerHTML = value || "";
+  return (div.textContent || div.innerText || "").replace(/\s+/g," ").trim();
+}
+function newsHtml(value) {
+  return String(value || "").replace(/[&<>\"']/g, function(ch){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]; });
+}
+function newsUrl(value) {
+  return /^https?:\/\//i.test(String(value || "")) ? String(value) : "#";
+}
+async function translateNewsText(value) {
+  var text = newsText(value).slice(0,700);
+  if (!text) return "";
+  try {
+    var url = "https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=en|tr";
+    var response = await fetch(url);
+    var data = await response.json();
+    return (data.responseData && data.responseData.translatedText) || text;
+  } catch (e) { return text; }
+}
+async function loadGameNews() {
+  var el = document.getElementById("newsGrid");
+  if (!el || gameNewsLoaded) return;
+  var status = document.getElementById("newsStatus");
+  el.innerHTML = '<div class="loading" style="grid-column:1/-1">Oyun haberleri yükleniyor...</div>';
+  try {
+    var feeds = await Promise.all(GAME_NEWS_FEEDS.map(function(feed){
+      var url = "https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed.url);
+      return fetch(url).then(function(r){return r.json();}).then(function(data){
+        return (data.items||[]).slice(0,6).map(function(item){ return {source:feed.name,title:item.title,description:item.description,link:item.link,date:item.pubDate,image:item.thumbnail||(item.enclosure&&item.enclosure.link)}; });
+      }).catch(function(){ return []; });
+    }));
+    var items = feeds.reduce(function(all, list){ return all.concat(list); },[])
+      .sort(function(a,b){ return new Date(b.date||0)-new Date(a.date||0); }).slice(0,12);
+    if (!items.length) throw new Error("Haber bulunamadı");
+    if (status) status.textContent = items.length+" haber · 3 kaynak";
+    el.innerHTML = "";
+    for (var i=0; i<items.length; i++) {
+      var item = items[i];
+      var translatedTitle = await translateNewsText(item.title);
+      var translatedSummary = await translateNewsText(item.description);
+      var card = document.createElement("article");
+      card.className = "news-card";
+      card.innerHTML = (item.image && newsUrl(item.image) !== "#" ? '<img src="'+newsHtml(item.image)+'" alt="" loading="lazy">' : '')
+        + '<div class="news-card-body"><div class="news-source">'+newsHtml(item.source)+'</div>'
+        + '<h2>'+newsHtml(translatedTitle)+'</h2><p>'+newsHtml(translatedSummary)+'</p>'
+        + '<div class="news-card-footer"><span>'+new Date(item.date||Date.now()).toLocaleDateString("tr-TR")+'</span><a href="'+newsHtml(newsUrl(item.link))+'" target="_blank" rel="noopener">Habere git →</a></div></div>';
+      el.appendChild(card);
+    }
+    gameNewsLoaded = true;
+  } catch (e) {
+    if (status) status.textContent = "Haberler alınamadı";
+    el.innerHTML = '<div style="color:var(--muted);grid-column:1/-1;padding:24px;text-align:center">Haberler şu anda yüklenemedi. Lütfen sayfayı yenileyin.</div>';
   }
 }
 

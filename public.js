@@ -320,12 +320,9 @@ var RECOMMENDATIONS = {
   'best-horror': {
     title:'EN İYİ KORKU OYUNLARI',
     subtitle:'Korku türünün en çok öne çıkan oyunları.',
-    query:'genres=4&ordering=-rating&metacritic=70,100'
-  },
-  'horror-2026': {
-    title:"2026'DA OYNANACAK EN İYİ KORKU OYUNLARI",
-    subtitle:'Son yıllardan seçilmiş, bugün oynanabilecek güçlü korku oyunları.',
-    query:'genres=4&dates=2020-01-01,2026-12-31&ordering=-rating'
+    query:'ordering=-rating',
+    filterHorror:true,
+    pages:10
   },
   'upcoming-2027': {
     title:"2027'DE ÇIKMASI BEKLENEN OYUNLAR",
@@ -357,11 +354,21 @@ async function loadRecommendationList(type) {
   grid.innerHTML='<div class=\"loading\" style=\"grid-column:1/-1\">Liste yükleniyor...</div>';
   if(meta) meta.textContent='RAWG verileri getiriliyor...';
   try {
-    var url='https://api.rawg.io/api/games?key='+RAWG_KEY+'&platforms=4&'+config.query+'&page_size=24';
-    var response=await fetch(url);
-    if(!response.ok) throw new Error('RAWG API '+response.status);
-    var data=await response.json();
-    var games=(data.results||[]).filter(function(game){return game.name;}).slice(0,24);
+    var requests=[];
+    for(var page=1;page<=(config.pages||1);page++){
+      var url='https://api.rawg.io/api/games?key='+RAWG_KEY+'&platforms=4&'+config.query+'&page_size=40&page='+page;
+      requests.push(fetch(url).then(function(response){if(!response.ok) throw new Error('RAWG API '+response.status);return response.json();}));
+    }
+    var pages=await Promise.all(requests);
+    var allGames=[];
+    pages.forEach(function(data){allGames=allGames.concat(data.results||[]);});
+    var games=allGames.filter(function(game){
+      if(!game.name) return false;
+      if(config.filterHorror){
+        return (game.tags||[]).some(function(tag){return tag.id===16||String(tag.name||'').toLowerCase()==='horror';});
+      }
+      return true;
+    }).sort(function(a,b){return (b.rating||0)-(a.rating||0);}).slice(0,24);
     if(!games.length) throw new Error('Liste boş');
     recommendationCache[type]=games;
     renderRecommendationGames(games,meta);

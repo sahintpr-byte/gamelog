@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oyun Listesi Oluştur ve Yeni Oyunlar Keşfet | QWERST</title>
+<meta name="description" content="Yeni ve popüler oyunları keşfet, oyunlarını puanla ve QWERST üzerinde kişisel listelerini oluşturup paylaş.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.qwerst.com/oyun.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="QWERST.COM">
+<meta property="og:title" content="Oyun Listesi Oluştur ve Yeni Oyunlar Keşfet | QWERST">
+<meta property="og:description" content="Popüler oyunları keşfet, puanla, listene ekle ve arkadaşlarınla paylaş.">
+<meta property="og:url" content="https://www.qwerst.com/oyun.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Oyun Listesi Oluştur ve Yeni Oyunlar Keşfet | QWERST">
+<meta name="twitter:description" content="Oyun keşfi ve kişisel oyun listeleri için QWERST.">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"QWERST Oyun Listeleri",
+  "url":"https://www.qwerst.com/oyun.html",
+  "applicationCategory":"EntertainmentApplication",
+  "operatingSystem":"Web",
+  "description":"Oyunları keşfetmek, puanlamak ve kişisel listelerde takip etmek için web uygulaması.",
+  "inLanguage":"tr-TR",
+  "isPartOf":{"@type":"WebSite","name":"QWERST.COM","url":"https://www.qwerst.com/"}
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d0f;--surface:#16161a;--surface2:#1e1e24;--border:#2a2a32;--accent:#e8ff47;--text:#f0f0f5;--muted:#666677;--radius:10px;}
+:root.light{--bg:#f0f0eb;--surface:#ffffff;--surface2:#e8e8e0;--border:#d0d0c8;--accent:#b8a000;--text:#1a1a1a;--muted:#777770;}
+body,div,header,main,input,button,select,textarea{transition:background-color .25s,border-color .25s;}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:15px;cursor:pointer;padding:4px 10px;line-height:1.4;transition:all .2s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--text);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:400px;animation:slideUp .3s ease;}
+.public-lists-btn{background:var(--accent);border:none;color:#0d0d0f;border-radius:8px;font:600 13px 'DM Sans',sans-serif;padding:8px 14px;cursor:pointer;}
+.public-lists-btn:hover{opacity:.88;}
+#authScreen.public-home #loginColumn{display:none;}
+#authScreen.public-home #loginTwoCol{grid-template-columns:1fr!important;max-width:1200px;}
+#publicBackBtn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;font:500 13px 'DM Sans',sans-serif;padding:8px 14px;cursor:pointer;margin-bottom:12px;}
+#publicBackBtn:hover{border-color:var(--accent);color:var(--accent);}
+.auth-logo{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px;color:var(--accent);text-align:center;margin-bottom:4px;}
+.auth-sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:32px;}
+.auth-tabs{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.auth-tab{flex:1;background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:10px;cursor:pointer;transition:all .2s;}
+.auth-tab.active{background:var(--surface2);color:var(--accent);}
+.auth-field{margin-bottom:14px;}
+.auth-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.auth-field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;padding:12px 14px;outline:none;transition:border-color .2s;}
+.auth-field input:focus{border-color:var(--accent);}
+.btn-auth{width:100%;background:var(--accent);border:none;border-radius:8px;color:#0d0d0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:14px;cursor:pointer;margin-top:8px;transition:opacity .2s;}
+.btn-auth:hover{opacity:.88;}.btn-auth:disabled{opacity:.5;cursor:not-allowed;}
+.auth-msg{border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
+.auth-msg.error{background:#2a1a1a;border:1px solid #5a2a2a;color:#ff8080;}
+.auth-msg.success{background:#1a2a1a;border:1px solid #2a5a2a;color:#80c080;}
+header{border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;background:rgba(13,13,15,.95);backdrop-filter:blur(12px);z-index:100;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent);cursor:pointer;}
+.logo span{color:var(--muted);font-size:13px;font-family:'DM Sans',sans-serif;margin-left:10px;font-weight:300;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.user-badge{font-size:13px;color:var(--muted);padding:5px 12px;background:var(--surface2);border-radius:20px;border:1px solid var(--border);}
+.user-badge strong{color:var(--accent);}
+.header-tabs{display:flex;gap:4px;}
+.tab-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.tab-btn.active,.tab-btn:hover{background:var(--surface2);color:var(--text);}
+.tab-btn.active{color:var(--accent);}
+.btn-logout{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.btn-logout:hover{border-color:#ff6b6b;color:#ff6b6b;}
+.lang-toggle{display:none;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-right:4px;}
+.lang-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;padding:5px 10px;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
+.lang-btn.active{background:var(--surface2);color:var(--accent);}
+.lang-btn:hover{color:var(--text);}
+
+main{max-width:1200px;margin:0 auto;padding:32px 24px;}
+.view{display:none;}.view.active{display:block;}
+.hero-layout{display:grid;grid-template-columns:180px 1fr 180px;gap:24px;align-items:center;padding:48px 0 40px;min-height:360px;}
+.hero-col{display:flex;flex-direction:column;gap:14px;}
+.hero-col.right{align-items:flex-end;}
+.search-hero{text-align:center;}
+.search-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);letter-spacing:4px;line-height:1;margin-bottom:8px;}
+.search-hero h1 em{color:var(--accent);font-style:normal;}
+.search-hero p{color:var(--muted);font-size:15px;margin-bottom:32px;}
+.search-bar{display:flex;gap:10px;max-width:600px;margin:0 auto;}
+.search-bar input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;padding:14px 18px;outline:none;transition:border-color .2s;}
+.search-bar input:focus{border-color:var(--accent);}
+.search-bar input::placeholder{color:var(--muted);}
+.btn-primary{background:var(--accent);color:#0d0d0f;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:14px 24px;cursor:pointer;white-space:nowrap;}
+.btn-primary:hover{opacity:.88;}
+.scattered-card{border-radius:10px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.08);position:relative;transition:transform .25s;width:160px;}
+.hero-col.left .scattered-card:nth-child(1){transform:rotate(-4deg) translateX(-6px);}
+.hero-col.left .scattered-card:nth-child(2){transform:rotate(3deg) translateX(8px);}
+.hero-col.left .scattered-card:nth-child(3){transform:rotate(-2deg) translateX(-4px);}
+.hero-col.right .scattered-card:nth-child(1){transform:rotate(4deg) translateX(6px);}
+.hero-col.right .scattered-card:nth-child(2){transform:rotate(-3deg) translateX(-8px);}
+.hero-col.right .scattered-card:nth-child(3){transform:rotate(2deg) translateX(4px);}
+.scattered-card:hover{transform:rotate(0deg) scale(1.05)!important;z-index:5;}
+.scattered-card img{display:block;width:160px;height:75px;object-fit:cover;}
+.scattered-card .sc-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,.85),transparent);padding:16px 8px 5px;font-size:9px;font-weight:700;color:rgba(255,255,255,.9);text-align:center;letter-spacing:.8px;text-transform:uppercase;}
+#searchResults{margin-top:32px;}
+#searchResults:empty{margin-top:0;}
+.app-home-hero{display:flex;justify-content:space-between;align-items:end;gap:24px;padding:42px 0 28px;border-bottom:1px solid var(--border);margin-bottom:26px;}
+.app-home-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,58px);letter-spacing:2px;line-height:1;}
+.app-home-title em{color:var(--accent);font-style:normal;}
+.app-home-sub{color:var(--muted);font-size:14px;margin-top:9px;}
+  .app-home-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .app-home-actions .btn-primary{padding:11px 18px;}
+  .app-home-actions .btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:11px 14px;cursor:pointer;}
+  .app-home-actions .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.app-section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:26px 0 14px;}
+.app-section-head h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;}
+.app-section-head span{font-size:12px;color:var(--muted);}
+#trendingGames{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+#trendingGames .game-card{min-width:0;}
+.top-games-header{display:flex;justify-content:space-between;align-items:end;gap:20px;padding:28px 0 18px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.top-games-header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,56px);letter-spacing:2px;line-height:1;color:var(--accent);}
+.top-games-header p{color:var(--muted);font-size:13px;margin-top:8px;}
+.top-games-meta{color:var(--muted);font-size:12px;text-align:right;white-space:nowrap;}
+#topGamesGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+#topGamesGrid .game-card{min-width:0;}
+#bottomGamesGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+#bottomGamesGrid .game-card{min-width:0;}
+.news-toolbar{display:flex;justify-content:space-between;align-items:end;gap:18px;padding:28px 0 18px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.news-toolbar h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,56px);letter-spacing:2px;line-height:1;color:var(--accent);}
+.news-toolbar p{color:var(--muted);font-size:13px;margin-top:8px;}
+.news-status{color:var(--muted);font-size:12px;white-space:nowrap;}
+#newsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.news-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-height:280px;transition:transform .2s,border-color .2s;}
+.news-card:hover{transform:translateY(-3px);border-color:var(--accent);}
+.news-card img{width:100%;height:145px;object-fit:cover;background:var(--surface2);}
+.news-card-body{display:flex;flex:1;flex-direction:column;padding:15px;}
+.news-source{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.news-card h2{font-size:16px;line-height:1.35;margin-bottom:8px;}
+.news-card p{font-size:13px;color:var(--muted);line-height:1.5;}
+.news-card-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:14px;font-size:11px;color:var(--muted);}
+.news-card-footer a{color:var(--accent);text-decoration:none;font-weight:600;}
+.recommend-menu{position:relative;display:inline-flex;}
+.recommend-menu>button{background:none;border:none;color:var(--muted);font:500 14px 'DM Sans',sans-serif;padding:6px 12px;border-radius:6px;cursor:pointer;}
+.recommend-menu>button:hover,.recommend-menu:focus-within>button{background:var(--surface2);color:var(--text);}
+.recommend-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:285px;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.3);padding:6px;z-index:600;}
+.recommend-menu:hover .recommend-dropdown,.recommend-menu:focus-within .recommend-dropdown{display:block;}
+.recommend-dropdown button{display:block;width:100%;background:none;border:none;color:var(--text);font:500 13px 'DM Sans',sans-serif;text-align:left;padding:10px 12px;border-radius:7px;cursor:pointer;}
+.recommend-dropdown button:hover{background:var(--surface2);color:var(--accent);}
+.recommend-toolbar{display:flex;justify-content:space-between;align-items:end;gap:18px;padding:28px 0 18px;border-bottom:1px solid var(--border);margin-bottom:18px;}
+.recommend-toolbar h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,5vw,56px);letter-spacing:2px;line-height:1;color:var(--accent);}
+.recommend-toolbar p{color:var(--muted);font-size:13px;margin-top:8px;}
+.recommend-meta{color:var(--muted);font-size:12px;white-space:nowrap;}
+#recommendationGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+#recommendationGrid .game-card{min-width:0;}
+.recommendation-article-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.recommendation-article-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;min-height:230px;box-shadow:0 8px 24px rgba(0,0,0,.08);}
+.recommendation-article-image{display:block;width:calc(100% + 44px);height:150px;object-fit:cover;margin:-22px -22px 20px;border-radius:16px 16px 0 0;background:var(--surface);}
+.recommendation-article-number{color:var(--accent);font:700 13px/1 var(--font-mono,monospace);letter-spacing:.12em;margin-bottom:18px;}
+.recommendation-article-card h3{margin:0 0 10px;font-size:20px;line-height:1.15;color:var(--text);}
+.recommendation-article-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.65;}
+.recommendation-steam-link{display:inline-block;margin-top:18px;text-decoration:none;}
+.recommendation-source{grid-column:1/-1;color:var(--muted);font-size:13px;padding:8px 2px 18px;}
+.recommendation-source a{color:var(--accent);}
+.top-games-note{color:var(--muted);font-size:12px;margin:16px 0 4px;}
+.personal-teaser{display:flex;justify-content:space-between;align-items:center;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:28px;}
+.personal-teaser h3{font-size:16px;margin-bottom:5px;}
+.personal-teaser p{font-size:13px;color:var(--muted);}
+.personal-teaser .btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:10px 14px;cursor:pointer;white-space:nowrap;}
+.personal-teaser .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.lists-layout{min-height:620px;}
+.lists-sidebar{position:sticky;top:84px;}
+.lists-sidebar-header{background:var(--surface);}
+.list-content-title{font-size:34px;}
+.list-stats{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;}
+.list-stats .stat-val{font-size:30px;}
+.view#mylistView{padding-top:18px;}
+.view#mylistView:before{content:'Listelerini düzenle, puanlarını takip et ve arkadaşlarınla paylaş.';display:block;color:var(--muted);font-size:14px;margin:0 0 20px;}
+@media(max-width:800px){.app-home-hero{display:block;padding-top:28px}.app-home-actions{margin-top:18px}.personal-teaser{align-items:flex-start;flex-direction:column}.lists-sidebar{position:static}.list-stats{margin-top:14px}.top-games-header{display:block}.top-games-meta{text-align:left;margin-top:12px}}
+.results-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.game-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s;}
+.game-card:hover{transform:translateY(-3px);border-color:var(--accent);}
+.game-card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--surface2);}
+.game-card-img-placeholder{width:100%;aspect-ratio:16/9;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:32px;}
+.game-card-body{padding:12px 14px 14px;}
+.game-card-title{font-size:14px;font-weight:600;line-height:1.35;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.game-card-meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.btn-add{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:8px;cursor:pointer;transition:all .2s;}
+.btn-add:hover{background:var(--accent);color:#0d0d0f;border-color:var(--accent);}
+.btn-add.added{background:#1a2e1a;color:#6fcf6f;border-color:#3a5c3a;cursor:default;}
+.loading{text-align:center;padding:48px;color:var(--muted);font-size:14px;}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:slideUp .25s ease;}
+.modal-header{display:flex;gap:16px;padding:20px;border-bottom:1px solid var(--border);}
+.modal-img{width:100px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;background:var(--surface2);}
+.modal-info{flex:1;min-width:0;}
+.modal-title{font-size:17px;font-weight:600;margin-bottom:4px;line-height:1.3;}
+.modal-meta{font-size:12px;color:var(--muted);}
+.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:0 4px;line-height:1;align-self:flex-start;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:20px;}
+.modal-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.score-picker{margin-bottom:20px;}
+.score-display{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--accent);letter-spacing:2px;line-height:1;margin-bottom:12px;}
+.score-display span{color:var(--muted);font-size:28px;}
+.score-slider{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--border);outline:none;margin-bottom:8px;}
+.score-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.score-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+.notes-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:12px;resize:vertical;min-height:80px;outline:none;margin-bottom:16px;transition:border-color .2s;}
+.notes-input:focus{border-color:var(--accent);}
+.list-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 14px;outline:none;margin-bottom:16px;cursor:pointer;}
+.modal-actions{display:flex;gap:10px;}
+.btn-cancel{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:12px;cursor:pointer;}
+.btn-cancel:hover{background:var(--border);}
+.btn-save{flex:2;background:var(--accent);border:none;color:#0d0d0f;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:12px;cursor:pointer;}
+.btn-save:hover{opacity:.88;}
+.lists-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start;}
+.lists-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.lists-sidebar-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.lists-sidebar-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--muted);}
+.btn-new-list{background:var(--accent);border:none;color:#0d0d0f;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;padding:5px 10px;cursor:pointer;}
+.list-nav-item{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);gap:8px;}
+.list-nav-item:last-child{border-bottom:none;}
+.list-nav-item:hover{background:var(--surface2);}
+.list-nav-item.active{background:var(--surface2);border-left:3px solid var(--accent);}
+.list-nav-name{font-size:14px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.list-nav-count{font-size:11px;color:var(--muted);flex-shrink:0;}
+.list-nav-actions{display:flex;gap:4px;opacity:0;transition:opacity .2s;}
+.list-nav-item:hover .list-nav-actions{opacity:1;}
+.list-nav-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 4px;border-radius:4px;}
+.list-nav-btn:hover{color:var(--text);}
+.list-nav-btn.del:hover{color:#ff6b6b;}
+.list-content-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;}
+.list-content-desc{font-size:13px;color:var(--muted);margin-top:2px;}
+.list-stats{display:flex;gap:20px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);letter-spacing:1px;}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.list-sort{display:flex;gap:6px;flex-wrap:wrap;}
+.sort-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 14px;cursor:pointer;transition:all .2s;}
+.sort-btn.active,.sort-btn:hover{background:var(--surface2);border-color:var(--accent);color:var(--accent);}
+.view-toggle{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.view-toggle-btn{background:none;border:none;color:var(--muted);font-size:16px;padding:5px 10px;cursor:pointer;transition:all .2s;}
+.view-toggle-btn.active{background:var(--surface2);color:var(--accent);}
+.tool-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:5px 12px;cursor:pointer;}
+.export-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px;z-index:50;min-width:140px;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.export-menu-item{padding:8px 12px;font-size:13px;cursor:pointer;border-radius:5px;}
+.export-menu-item:hover{background:var(--surface2);}
+.list-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.list-item-img{width:140px;height:88px;object-fit:cover;border-radius:8px;background:var(--surface2);}
+.list-item-title{font-size:17px;font-weight:700;margin-bottom:4px;}
+.list-item-meta{font-size:13px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;}
+.list-item-note{font-size:13px;color:var(--muted);margin-top:6px;font-style:italic;}
+.score-badge{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;}
+.score-badge.low{color:#ff6b6b;}.score-badge.mid{color:#ffd166;}.score-badge.high{color:var(--accent);}
+.score-badge span{color:var(--muted);font-size:13px;}
+.item-actions{display:flex;gap:6px;}
+.icon-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:6px;width:30px;height:30px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.icon-btn:hover{background:var(--border);color:var(--text);}
+.icon-btn.del:hover{background:#3a1a1a;color:#ff6b6b;border-color:#5a2a2a;}
+.game-table{width:100%;border-collapse:collapse;font-size:13px;}
+.game-table th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--surface);}
+.game-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.game-table tr:hover td{background:var(--surface2);}
+.tbl-img{width:56px;height:32px;object-fit:cover;border-radius:4px;background:var(--surface2);}
+.tbl-score{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;}
+.pagination{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:24px;flex-wrap:wrap;}
+.page-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;min-width:34px;height:34px;padding:0 10px;cursor:pointer;transition:all .2s;}
+.page-btn:hover{background:var(--surface2);color:var(--text);}
+.page-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0f;font-weight:700;}
+.page-btn:disabled{opacity:.3;cursor:default;}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.4;}
+.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--text);margin-bottom:8px;}
+.text-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 14px;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.text-input:focus{border-color:var(--accent);}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.user-search-bar{display:flex;gap:10px;margin-bottom:24px;}
+.user-search-bar input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 16px;outline:none;transition:border-color .2s;}
+.user-search-bar input:focus{border-color:var(--accent);}
+.user-card{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;}
+.user-avatar{width:38px;height:38px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent);border:1px solid var(--border);}
+.user-card-name{font-weight:600;font-size:15px;}
+.btn-follow{background:var(--accent);border:none;color:#0d0d0f;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:7px 16px;cursor:pointer;}
+.btn-follow.following{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.btn-follow.following:hover{background:#3a1a1a;color:#ff6b6b;border-color:#5a2a2a;}
+.btn-view-list{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 14px;cursor:pointer;margin-right:6px;}
+.btn-view-list:hover{border-color:var(--accent);color:var(--accent);}
+.friends-tabs,.profile-lists-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.friends-tab,.profile-list-tab{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 16px;cursor:pointer;transition:all .2s;}
+.friends-tab.active,.profile-list-tab.active{background:var(--surface2);border-color:var(--accent);color:var(--accent);}
+.profile-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.profile-avatar{width:56px;height:56px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);border:2px solid var(--border);}
+.profile-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;}
+.profile-stats{font-size:13px;color:var(--muted);}
+.btn-back{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 14px;cursor:pointer;}
+.comment-section{margin-top:8px;}
+.comment-toggle{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;padding:4px 0;}
+.comment-toggle:hover{color:var(--accent);}
+.comment-box{background:var(--surface2);border-radius:8px;padding:12px;margin-top:8px;display:none;}
+.comment-box.open{display:block;}
+.comment-item{display:flex;gap:10px;margin-bottom:10px;}
+.comment-avatar{width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.comment-author{font-size:12px;font-weight:600;color:var(--accent);margin-bottom:2px;}
+.comment-text{font-size:13px;}
+.comment-date{font-size:11px;color:var(--muted);}
+.comment-input-row{display:flex;gap:8px;margin-top:10px;}
+.comment-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;outline:none;}
+.comment-input:focus{border-color:var(--accent);}
+.btn-comment{background:var(--accent);border:none;color:#0d0d0f;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:8px 14px;cursor:pointer;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--accent);color:var(--text);padding:12px 20px;border-radius:8px;font-size:14px;font-weight:500;z-index:300;transform:translateY(80px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.site-footer{text-align:center;margin-top:48px;padding:20px;font-size:13px;color:var(--muted);border-top:1px solid var(--border);}
+@media(max-width:800px){.lists-layout{grid-template-columns:1fr;}.hero-layout{grid-template-columns:1fr;}.hero-col{display:none;}header{padding:0 16px;}main{padding:24px 16px;}.user-badge{display:none;}}
+@media(max-width:760px){#loginTwoCol{grid-template-columns:1fr!important;}#loginTwoCol .auth-sticky{position:static!important;}}
+.steam-link{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+  border-radius:5px;background:rgba(23,26,33,.9);border:1px solid rgba(102,192,244,.2);
+  text-decoration:none;flex-shrink:0;transition:all .2s;}
+.steam-link:hover{background:#1b2838;border-color:#66c0f4;transform:scale(1.1);}
+</style>
+
+<script data-cfasync="false" src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script data-cfasync="false" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style id="qw-skin">
+:root{--qw-leg:#ffb800;--qw-epi:#b36bff;--qw-rar:#3ec1ff;--qw-com:#8b8b9e}
+body:before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:56px 56px;opacity:.25;-webkit-mask-image:radial-gradient(ellipse at 50% 0,#000,transparent 75%);mask-image:radial-gradient(ellipse at 50% 0,#000,transparent 75%)}
+.qw-spot{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(420px circle at var(--cx,50%) var(--cy,25%),color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%)}
+/* açılış */
+#qwBoot{position:fixed;inset:0;z-index:99999;background:#000;color:#e8ff47;font:24px/1.35 'VT323',monospace;display:flex;flex-direction:column;justify-content:center;padding:8vw;transition:opacity .6s,visibility .6s;cursor:pointer}
+#qwBoot.off{opacity:0;visibility:hidden;pointer-events:none}
+#qwBoot .bar{height:8px;border:1px solid #e8ff47;margin-top:18px;max-width:420px}
+#qwBoot .bar i{display:block;height:100%;width:0;background:#e8ff47;animation:qwfill 1.9s steps(24) forwards}
+#qwBoot small{opacity:.6;margin-top:14px;font-size:18px}
+#qwBoot:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 1px,transparent 1px 3px);pointer-events:none}
+#qwBoot .cur{display:inline-block;width:10px;height:18px;background:#e8ff47;vertical-align:-2px;animation:qwbl 1s steps(1) infinite}
+@keyframes qwfill{to{width:100%}}@keyframes qwbl{50%{opacity:0}}
+/* header + menü */
+header{background:color-mix(in srgb,var(--bg) 78%,transparent)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.logo{text-shadow:0 0 18px color-mix(in srgb,var(--accent) 30%,transparent)}
+.tab-btn[data-k]:before{content:attr(data-k);font:600 10px 'DM Sans',sans-serif;border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:0 5px;margin-right:7px;color:var(--muted);vertical-align:1px}
+.tab-btn{position:relative}
+.tab-btn.active:after{content:"";position:absolute;left:30%;right:30%;bottom:2px;height:2px;border-radius:2px;background:var(--accent)}
+/* genel sayfa kahramanı */
+#authScreen:not(.public-home) #qwHero{display:none}
+#qwHero{max-width:1100px;margin:0 auto;padding:46px 24px 0;display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}
+.qwchip{display:inline-flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:5px 12px;margin-bottom:16px}
+.qwchip i{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:qwpl 2s infinite}
+@keyframes qwpl{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 50%,transparent)}70%{box-shadow:0 0 0 9px transparent}}
+#qwHero h1,.qwbig{font:clamp(48px,8vw,96px)/.9 'Bebas Neue',sans-serif;letter-spacing:2px;font-weight:400}
+#qwHero h1 span{display:block;color:transparent;-webkit-text-stroke:1.5px var(--accent)}
+#qwHero .qwsub{color:var(--muted);margin:16px 0 22px;max-width:470px;line-height:1.6}
+.qwbtns{display:flex;gap:10px;flex-wrap:wrap}
+.qwbtns button{border:0;border-radius:10px;font:700 14px 'DM Sans',sans-serif;padding:12px 22px;cursor:pointer;transition:transform .15s,box-shadow .2s;background:var(--accent);color:#0d0d0f}
+.qwbtns button.g{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.qwbtns button:hover{transform:translateY(-2px);box-shadow:0 8px 26px color-mix(in srgb,var(--accent) 25%,transparent)}
+.qwboss{position:relative;border-radius:22px;padding:2px;background:conic-gradient(from var(--a,0deg),var(--qw-leg),var(--qw-epi),var(--qw-rar),var(--qw-leg));animation:qwrot 6s linear infinite;min-height:300px}
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes qwrot{to{--a:360deg}}
+.qwboss>div{border-radius:20px;background:var(--surface);overflow:hidden;height:100%}
+.qwboss .cv{height:210px;position:relative;background:var(--surface2) center/cover no-repeat;transition:background-image .6s}
+.qwboss .cv:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--surface),transparent 70%)}
+.qwboss .tag{position:absolute;z-index:2;top:14px;left:14px;font:600 11px 'DM Sans',sans-serif;letter-spacing:1px;background:rgba(0,0,0,.65);color:var(--qw-leg);border:1px solid var(--qw-leg);border-radius:6px;padding:4px 9px}
+.qwboss .bi{padding:0 22px 22px;margin-top:-34px;position:relative;z-index:2}
+.qwboss h3{font:38px 'Bebas Neue',sans-serif;letter-spacing:1.5px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qwboss p{color:var(--muted);font-size:13px;margin:4px 0 14px}
+.qwboss button{background:var(--accent);color:#0d0d0f;border:0;border-radius:10px;font:700 14px 'DM Sans',sans-serif;padding:11px 20px;cursor:pointer}
+/* giriş kutusu */
+.auth-box{border:1px solid transparent!important;background:linear-gradient(var(--surface),var(--surface)) padding-box,conic-gradient(from var(--a,0deg),var(--border),var(--accent),var(--border) 40%) border-box!important;animation:slideUp .3s ease,qwrot 7s linear infinite!important}
+.auth-field input:focus,.search-bar input:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+/* liderlik satırları (giriş öncesi) */
+#loginTrendingGames>div[id^=trow-]{--tc:var(--qw-com);box-shadow:inset 4px 0 0 var(--tc)!important}
+#loginTrendingGames>div.t-leg{--tc:var(--qw-leg)}#loginTrendingGames>div.t-epi{--tc:var(--qw-epi)}#loginTrendingGames>div.t-rar{--tc:var(--qw-rar)}
+#loginTrendingGames>div[id^=trow-]:nth-child(-n+3)>div:first-child{color:var(--accent)!important}
+/* oyuncu kartı */
+#qwHud{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px 20px;margin:0 0 18px}
+#qwHud .av{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--qw-epi));display:grid;place-items:center;font:28px 'Bebas Neue',sans-serif;color:#0b0b0e}
+#qwHud .lv{font:30px 'Bebas Neue',sans-serif;letter-spacing:1px;line-height:1}#qwHud .lv small{font:500 12px 'DM Sans',sans-serif;color:var(--muted);letter-spacing:0;margin-left:6px}
+#qwHud .mid{flex:1;min-width:220px}
+#qwHud .xp{height:12px;border-radius:99px;background:var(--surface2);overflow:hidden;margin:8px 0 5px}
+#qwHud .xp i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--accent),#9dff6b);transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+#qwHud .xpt{font-size:12px;color:var(--muted)}
+#qwHud .st{display:flex;gap:10px}#qwHud .st div{background:var(--surface2);border-radius:12px;padding:8px 16px;text-align:center}
+#qwHud .st b{display:block;font:26px 'Bebas Neue',sans-serif;color:var(--accent);font-weight:400}#qwHud .st small{font-size:11px;color:var(--muted)}
+/* nadirlik filtresi */
+#qwFilter{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 6px}
+.qwfl{--tc:var(--qw-com);display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:7px 14px;font:600 13px 'DM Sans',sans-serif;cursor:pointer;transition:.2s}
+.qwfl:before{content:"";width:10px;height:10px;border-radius:3px;background:var(--tc);box-shadow:0 0 10px var(--tc)}
+.qwfl small{color:var(--muted);font-weight:500}.qwfl.on,.qwfl:hover{border-color:var(--tc)}.qwfl.on{background:var(--surface2)}
+.qwfl[data-f=leg]{--tc:var(--qw-leg)}.qwfl[data-f=epi]{--tc:var(--qw-epi)}.qwfl[data-f=rar]{--tc:var(--qw-rar)}
+.qwhint{font-size:12px;color:var(--muted);margin:0 0 14px}
+.app-section-head h2{display:flex;gap:12px;align-items:center}.app-section-head h2:before{content:"";width:4px;height:22px;background:var(--accent);border-radius:2px}
+/* kartlar: koleksiyon kartı */
+.game-card.qw{--tc:var(--qw-com);--rx:0deg;--ry:0deg;--mx:50%;--my:50%;--ty:0px;position:relative;border-color:color-mix(in srgb,var(--tc) 45%,var(--border));transform:perspective(800px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--ty));transition:transform .35s,box-shadow .3s,border-color .25s}
+.game-card.qw.mv{transition:transform .06s,box-shadow .3s}
+.game-card.qw.t-leg{--tc:var(--qw-leg)}.game-card.qw.t-epi{--tc:var(--qw-epi)}.game-card.qw.t-rar{--tc:var(--qw-rar)}
+.game-card.qw:hover{--ty:-4px;border-color:var(--tc);box-shadow:0 18px 40px rgba(0,0,0,.4),0 0 26px color-mix(in srgb,var(--tc) 38%,transparent)}
+.game-card.qw .game-card-img{transition:transform .5s}.game-card.qw:hover .game-card-img{transform:scale(1.08)}
+.game-card.qw>a{display:block;overflow:hidden}
+.game-card.qw .rib{position:absolute;z-index:2;top:10px;left:10px;font:600 10px 'DM Sans',sans-serif;letter-spacing:1px;color:var(--tc);background:rgba(0,0,0,.68);border:1px solid var(--tc);border-radius:6px;padding:3px 8px;pointer-events:none}
+.game-card.qw .sc{position:absolute;z-index:2;right:10px;top:6px;font:38px/1 'Bebas Neue',sans-serif;color:var(--tc);text-shadow:0 0 16px color-mix(in srgb,var(--tc) 60%,#000),0 2px 6px rgba(0,0,0,.7);pointer-events:none}
+.game-card.qw .foil{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;mix-blend-mode:color-dodge;border-radius:inherit;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.5),transparent 42%),linear-gradient(115deg,transparent 15%,rgba(255,60,170,.35) 35%,rgba(60,255,220,.35) 50%,rgba(255,240,60,.35) 65%,transparent 85%) calc(var(--mx)*-1) 0/220% 100%}
+.game-card.qw.t-leg:hover .foil,.game-card.qw.t-epi:hover .foil{opacity:.5}
+.game-card.qw .btn-add:not(.added){transition:.2s}.game-card.qw:hover .btn-add:not(.added){background:var(--tc);color:#0d0d0f;border-color:var(--tc)}
+.game-card.qwhide{display:none}
+html.qw-secret{--accent:#ff3df2}
+@media(max-width:860px){#qwHero{grid-template-columns:1fr}.tab-btn[data-k]:before{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#qwBoot{display:none}#qwHud .xp i{transition:none}}
+</style>
+</head>
+<body>
+<div id="qwBoot"><div>QWERST OS v26.10</div><div>&gt; kütüphane yükleniyor ........ OK</div><div>&gt; puanlar nadirliğe çevriliyor .. OK</div><div>&gt; oyuncu bulundu<span class="cur"></span></div><div class="bar"><i></i></div><small>Atlamak için tıkla ya da bir tuşa bas</small></div>
+<div class="qw-spot"></div>
+
+<!-- LOGIN + TRENDING PAGE -->
+<div id="authScreen" class="public-home" style="display:block;min-height:100vh;background:var(--bg);">
+
+  <!-- Header -->
+  <header style="border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;background:rgba(13,13,15,.95);backdrop-filter:blur(12px);z-index:100;">
+    <a href="index.html" class="logo" style="text-decoration:none">QWERST<span class="logo-dot">.COM</span></a>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="kitap/index.html" style="color:var(--muted);text-decoration:none;font-size:13px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor='#ff6b00';this.style.color='#ff6b00'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📚 Kitaplar</a>
+      <button class="public-lists-btn" id="publicListsBtn" type="button">📋 Listelerim</button>
+      <div class="site-language-picker"></div>
+      <button class="theme-btn" id="themeTogglePub" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+<section id="qwHero">
+<div><div class="qwchip"><i></i>Bu ayın en çok eklenenleri</div>
+<h1>Oyunlarını kaydet.<span>Seviye atla.</span></h1>
+<p class="qwsub">Her oyuna puan ver, listene ekle. Puanı yükseldikçe kartı nadirleşir; kütüphanen büyüdükçe sen seviye atlarsın.</p>
+<div class="qwbtns"><button type="button" id="qwStart">Yeni oyunla başla</button><button type="button" class="g" id="qwCont">Kaydına devam et</button></div></div>
+<div class="qwboss" id="qwBoss"><div><div class="cv" id="qwBossImg"><span class="tag">EN ÇOK EKLENEN</span></div><div class="bi"><h3 id="qwBossName">&nbsp;</h3><p id="qwBossMeta">&nbsp;</p><button type="button" id="qwBossBtn">▶ Fragmanı izle</button></div></div></div>
+</section>
+
+<!-- Two-column layout -->
+  <div id="loginTwoCol" style="max-width:1100px;margin:0 auto;padding:48px 24px;display:grid;grid-template-columns:380px 1fr;gap:48px;align-items:start;">
+
+    <!-- LEFT: Login Box -->
+    <div id="loginColumn" style="position:sticky;top:80px;">
+      <button id="publicBackBtn" type="button">← Oyunlara dön</button>
+      <div class="auth-box" style="margin:0;">
+        <div class="auth-logo">QWERST<span style="color:#e8ff47">.COM</span></div>
+        <div class="auth-sub">Oyun listeni oluştur, takip et.</div>
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="loginTab">Giriş Yap</button>
+          <button class="auth-tab" id="registerTab">Kayıt Ol</button>
+        </div>
+        <form onsubmit="event.preventDefault();" autocomplete="on">
+        <div class="auth-field"><label>E-posta</label><input type="email" id="authEmail" placeholder="ornek@mail.com" autocomplete="email"></div>
+        <div class="auth-field"><label>Şifre</label><input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password"></div>
+        <div class="auth-field" id="usernameField" style="display:none"><label>Kullanıcı Adı</label><input type="text" id="authUsername" placeholder="oyunsever42" autocomplete="username"></div>
+        <button type="submit" class="btn-auth" id="authBtn">Giriş Yap</button>
+        </form>
+        <div class="auth-msg error" id="authError"></div>
+        <div class="auth-msg success" id="authSuccess"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Trending Games -->
+    <div>
+      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px;">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--accent)">SON 1 AYDA ÇIKAN EN POPÜLER OYUNLAR</h2>
+      </div>
+      <div id="loginTrendingGames" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="text-align:center;padding:40px;color:var(--muted)">
+          <div style="width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px"></div>
+          Yükleniyor...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Video Modal -->
+<div id="videoModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closeVideoModal()">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;width:100%;max-width:860px;position:relative;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);">
+      <div id="videoModalTitle" style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--accent)"></div>
+      <button onclick="closeVideoModal()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;">✕</button>
+    </div>
+    <div id="videoModalBody" style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
+      <!-- iframe or video injected here -->
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false">
+// Load trending games for login page
+(function loadLoginTrending() {
+  var RAWG = 'b1ba1bc900a14e699e5e98788646cf16';
+  var today = new Date();
+  var from = new Date(today); from.setDate(from.getDate() - 30);
+  var fmt = function(d){ return d.toISOString().slice(0,10); };
+  var url = 'https://api.rawg.io/api/games?key='+RAWG+'&dates='+fmt(from)+','+fmt(today)+'&ordering=-added&page_size=10';
+  fetch(url).then(function(r){return r.json();}).then(function(data){
+    var el = document.getElementById('loginTrendingGames');
+    if(!el) return;
+    var games = (data.results||[]).slice(0,10);
+window.__qwGames=games; if(window.qwBoss) window.qwBoss();
+    if(!games.length){ el.innerHTML='<div style="color:var(--muted);padding:20px">Oyun bulunamadı.</div>'; return; }
+    el.innerHTML = '';
+
+    // Build rows first, then fetch metacritic for each
+    games.forEach(function(g, i){
+      var genres = (g.genres||[]).slice(0,2).map(function(x){return x.name;}).join(' · ');
+      var released = g.released ? g.released.slice(0,7).replace(/-/g,'/') : '';
+      var row = document.createElement('div');
+      row.id = 'trow-'+i;
+      row.style.cssText = 'display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;cursor:pointer;transition:all .25s;';
+      row.onmouseover = function(){ this.style.borderColor='var(--accent)'; this.style.transform='translateX(5px)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,.3)'; };
+      row.onmouseout = function(){ this.style.borderColor='var(--border)'; this.style.transform=''; this.style.boxShadow=''; };
+      row.innerHTML =
+        '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:24px;color:var(--muted);min-width:32px;text-align:right;line-height:1;">'+(i+1)+'</div>'+
+        '<img src="'+(g.background_image||'')+'" onerror="this.style.display=\'none\'" style="width:110px;height:70px;object-fit:cover;border-radius:10px;flex-shrink:0;">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;">'+g.name+'</div>'+
+          '<div style="font-size:11px;color:var(--muted);">'+genres+(genres&&released?' · ':'')+released+'</div>'+
+        '</div>'+
+        '<div id="mc-'+i+'" style="background:var(--surface2);color:var(--muted);font-size:11px;padding:4px 10px;border-radius:8px;min-width:44px;text-align:center;flex-shrink:0;">...</div>'+
+        '<div style="font-size:11px;color:var(--accent);white-space:nowrap;font-weight:600;">▶ Fragman</div>';
+      row.onclick = function(){ openLoginTrailer(g); };
+      el.appendChild(row);
+
+      // Fetch individual game details for metacritic score
+      (function(idx, slug){
+        fetch('https://api.rawg.io/api/games/'+slug+'?key='+RAWG)
+          .then(function(r){ return r.json(); })
+          .then(function(detail){
+            var mc = detail.metacritic;
+            var badge = document.getElementById('mc-'+idx);
+            if(!badge) return;
+            if(mc) {
+              var bg = mc>=75?'#3d8b3d':mc>=50?'#b87d00':'#8b2020';
+              badge.style.background = bg;
+              badge.style.color = '#fff';
+              badge.style.fontFamily = "'Bebas Neue',sans-serif";
+              badge.style.fontSize = '18px';
+              badge.style.fontWeight = '700';
+              badge.textContent = mc;
+            } else {
+              badge.textContent = 'N/A';
+            }
+          }).catch(function(){ 
+            var badge = document.getElementById('mc-'+idx);
+            if(badge) badge.textContent = 'N/A';
+          });
+      })(i, g.slug);
+    });
+  }).catch(function(){ document.getElementById('loginTrendingGames').innerHTML='<div style="color:var(--muted);padding:20px">Yüklenemedi.</div>'; });
+
+  function mcColor(s){ if(s>=75) return '3d8b3d'; if(s>=50) return 'b87d00'; return '8b2020'; }
+})();
+
+function openLoginTrailer(game) {
+  var modal = document.getElementById('videoModal');
+  var title = document.getElementById('videoModalTitle');
+  var body = document.getElementById('videoModalBody');
+  title.textContent = game.name;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  // 1. RAWG clip field (comes with game list, no extra request)
+  if (game.clip && game.clip.clip) {
+    body.innerHTML = '<video src="'+game.clip.clip+'" controls autoplay poster="'+(game.clip.preview||'')+'" style="position:absolute;inset:0;width:100%;height:100%;background:#000;"></video>';
+    return;
+  }
+
+  // 2. RAWG /movies endpoint
+  body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);"><div style="width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;"></div></div>';
+
+  var RAWG = 'b1ba1bc900a14e699e5e98788646cf16';
+  fetch('https://api.rawg.io/api/games/'+game.slug+'/movies?key='+RAWG)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var clip = (d.results||[])[0];
+      if(clip && clip.data && (clip.data.max||clip.data['480'])) {
+        var src = clip.data.max || clip.data['480'];
+        body.innerHTML = '<video src="'+src+'" controls autoplay style="position:absolute;inset:0;width:100%;height:100%;background:#000;"></video>';
+      } else {
+        showYoutubeButton(game.name);
+      }
+    }).catch(function(){ showYoutubeButton(game.name); });
+
+  function showYoutubeButton(name) {
+    var YT_KEY = 'AIzaSyC8N43du5BdPiXeomeRE-E6NWwfm_tx2XQ';
+    var q = encodeURIComponent(name + ' official trailer');
+    body.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:28px;height:28px;border:2px solid #333;border-top-color:#e8ff47;border-radius:50%;animation:spin .7s linear infinite;"></div></div>';
+    fetch('https://www.googleapis.com/youtube/v3/search?part=snippet&q='+q+'&type=video&maxResults=1&key='+YT_KEY)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var item = d.items && d.items[0];
+        if (item && item.id && item.id.videoId) {
+          body.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/'+item.id.videoId+'?autoplay=1" '+
+            'style="position:absolute;inset:0;width:100%;height:100%;border:none;" '+
+            'allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>';
+        } else {
+          var eq = encodeURIComponent(name + ' official trailer');
+          body.innerHTML = '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">'+
+            '<div style="font-size:13px;color:#888;">Video bulunamadı.</div>'+
+            '<a href="https://www.youtube.com/results?search_query='+eq+'" target="_blank" style="background:#ff0000;color:#fff;padding:10px 22px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">▶ YouTube&#39;da Ara</a></div>';
+        }
+      }).catch(function(){
+        var eq = encodeURIComponent(name + ' official trailer');
+        body.innerHTML = '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">'+
+          '<div style="font-size:13px;color:#888;">Yüklenemedi.</div>'+
+          '<a href="https://www.youtube.com/results?search_query='+eq+'" target="_blank" style="background:#ff0000;color:#fff;padding:10px 22px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">▶ YouTube&#39;da Ara</a></div>';
+      });
+  }
+}
+
+function closeVideoModal() {
+  var modal = document.getElementById('videoModal');
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('videoModalBody').innerHTML = '';
+}
+</script>
+
+<div id="appScreen" style="display:none">
+  <header>
+    <div class="logo" id="logoBtn">QWERST<span class="logo-dot">.COM</span></div>
+      <div class="header-right">
+      <div class="user-badge" id="userBadge"></div>
+      <div class="header-tabs">
+        <button class="tab-btn active" id="tabSearch">🔍 Ara</button>
+        <button class="tab-btn" id="tabMylist">📋 Listelerim</button>
+        <button class="tab-btn" id="tabFriends">👥 Arkadaşlar</button>
+        <button class="tab-btn" id="topGamesBtn" type="button" onclick="openTopGamesView()">🏆 Top 250</button>
+        <button class="tab-btn" id="bottomGamesBtn" type="button" onclick="openBottomGamesView()">💀 Bottom 250</button>
+        <button class="tab-btn" id="newsBtn" type="button" onclick="openNewsView()">📰 Oyun Haberleri</button>
+        <div class="recommend-menu">
+          <button type="button">💡 Tavsiye ▾</button>
+          <div class="recommend-dropdown">
+            <button type="button" onclick="openRecommendationsView('best-2026')">2026'nın en iyi oyunları</button>
+            <button type="button" onclick="openRecommendationsView('best-horror')">En iyi korku oyunları</button>
+            <button type="button" onclick="openRecommendationsView('upcoming-2027')">2027'de çıkması beklenen oyunlar</button>
+            <button type="button" onclick="openRecommendationsView('gamespot-horror-wishlist')">Steam’e eklenecek 14 korku oyunu</button>
+          </div>
+        </div>
+      </div>
+      <div class="site-language-picker"></div>
+      <button class="theme-btn" id="themeToggleApp" onclick="var r=document.documentElement;if(r.classList.contains('light')){r.classList.remove('light');this.innerHTML='&#127769;';localStorage.setItem('qwerst-theme','dark');}else{r.classList.add('light');this.innerHTML='&#9728;';localStorage.setItem('qwerst-theme','light');}">&#127769;</button>
+      <div class="lang-toggle"><button class="lang-btn active" id="langTR">TR</button><button class="lang-btn" id="langEN">EN</button></div>
+      <button class="btn-logout" id="logoutBtn">Çıkış</button>
+    </div>
+  </header>
+  <main>
+    <div class="view active" id="searchView">
+      <div class="app-home-hero">
+        <div>
+          <div class="app-home-title">OYUN <em>KEŞFİNE</em><br>DEVAM ET.</div>
+          <p class="app-home-sub">Popüler oyunları keşfet, listelerini yönet ve arkadaşlarınla paylaş.</p>
+        </div>
+        <div class="app-home-actions">
+          <button class="btn-primary" id="homeSearchFocus">⌕ Yeni oyun ara</button>
+          <button class="btn-secondary" id="homeListOpen">📋 Listelerim</button>
+        </div>
+      </div>
+      <div id="qwHud" style="display:none"><div class="av" id="qwAv">?</div><div class="mid"><div class="lv" id="qwLv"></div><div class="xp"><i id="qwXp"></i></div><div class="xpt" id="qwXpT"></div></div><div class="st"><div><b id="qwN">0</b><small>oyun</small></div><div><b id="qwL">0</b><small>liste</small></div></div></div>
+<div class="search-bar" style="max-width:720px;margin:0 0 18px;">
+        <input type="text" id="searchInput" placeholder="Oyun adı ara..." autocomplete="off">
+        <button class="btn-primary" id="searchBtn">Ara</button>
+      </div>
+      <div id="searchResults"></div>
+      <div id="discoverySection">
+        <div class="app-section-head"><h2>SON 1 AYDA ÇIKAN EN POPÜLER OYUNLAR</h2><span>Güncel keşifler</span></div>
+        <div id="qwFilter"><button type="button" class="qwfl on" data-f="all">Tümü <small>0</small></button><button type="button" class="qwfl" data-f="leg">Efsanevi 90+ <small>0</small></button><button type="button" class="qwfl" data-f="epi">Epik 75+ <small>0</small></button><button type="button" class="qwfl" data-f="rar">Nadir 50+ <small>0</small></button><button type="button" class="qwfl" data-f="com">Sıradan <small>0</small></button></div>
+<p class="qwhint">Kartın rengi Metacritic puanından gelir. Üzerine gel, kart ışığı yakalar.</p>
+<div id="trendingGames"><div class="loading">Popüler oyunlar yükleniyor...</div></div>
+        <div class="personal-teaser">
+          <div><h3>Kişisel alanın hazır</h3><p>Listelerini düzenle, puanlarını takip et ve seçili listeyi paylaş.</p></div>
+          <button class="btn-secondary" id="homeListOpen2">Listelerim sayfasını aç →</button>
+        </div>
+      </div>
+      <footer class="site-footer" id="siteFooter">Contact: <a href="mailto:sahin.toper@qwerst.com" style="color:var(--accent);text-decoration:none">sahin.toper@qwerst.com</a>&nbsp;·&nbsp; Powered By Şahin 2026</footer>
+    </div>
+    <div class="view" id="topGamesView">
+      <div class="top-games-header">
+        <div>
+          <h1>TOP 250 PC GAMES</h1>
+          <p>Metacritic puanlarına göre en yüksek skorlu PC oyunları.</p>
+        </div>
+        <div class="top-games-meta" id="topGamesMeta">Veri hazırlanıyor...</div>
+      </div>
+      <div id="topGamesGrid"><div class="loading">Top 250 liste yükleniyor...</div></div>
+      <p class="top-games-note">Puanlar RAWG API üzerinden Metacritic skorlarıyla sıralanır. Liste güncellendiğinde yeniden yüklenir.</p>
+    </div>
+    <div class="view" id="bottomGamesView">
+      <div class="top-games-header">
+        <div>
+          <h1 style="color:#ff6b6b">BOTTOM 250 PC GAMES</h1>
+          <p>Metacritic puanlarına göre en düşük skorlu PC oyunları.</p>
+        </div>
+        <div class="top-games-meta" id="bottomGamesMeta">Veri hazırlanıyor...</div>
+      </div>
+      <div id="bottomGamesGrid"><div class="loading">Bottom 250 liste yükleniyor...</div></div>
+      <p class="top-games-note">Puanlar RAWG API üzerinden Metacritic skorlarıyla sıralanır. Yalnızca puanı bulunan PC oyunları listelenir.</p>
+    </div>
+    <div class="view" id="newsView">
+      <div class="news-toolbar">
+        <div>
+          <h1>OYUN HABERLERİ</h1>
+          <p>Farklı oyun sitelerinden güncel haberler, Türkçe başlık ve özetlerle.</p>
+        </div>
+        <div class="news-status" id="newsStatus">Haberler hazırlanıyor...</div>
+      </div>
+      <div id="newsGrid"><div class="loading">Oyun haberleri yükleniyor...</div></div>
+    </div>
+    <div class="view" id="recommendationsView">
+      <div class="recommend-toolbar">
+        <div>
+          <h1 id="recommendationTitle">TAVSİYELER</h1>
+          <p id="recommendationSubtitle">Senin için seçtiğimiz oyunlar.</p>
+        </div>
+        <div class="recommend-meta" id="recommendationMeta">Veri hazırlanıyor...</div>
+      </div>
+      <div id="recommendationGrid"><div class="loading">Tavsiye listesi yükleniyor...</div></div>
+      <p class="top-games-note">Listeler RAWG oyun verileri; puan, tür, çıkış tarihi ve popülerlik bilgilerine göre hazırlanır.</p>
+    </div>
+    <div class="view" id="mylistView">
+      <div class="lists-layout">
+        <div class="lists-sidebar">
+          <div class="lists-sidebar-header">
+            <span class="lists-sidebar-title">LİSTELER</span>
+            <button class="btn-new-list" id="newListBtn">+ Yeni</button>
+          </div>
+          <div id="listsNav"></div>
+        </div>
+        <div id="listContent">
+          <div class="empty-state"><div class="empty-icon">📋</div><h3>LİSTE SEÇ</h3><p>Soldan bir liste seç.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="view" id="friendsView">
+      <div class="section-title">ARKADAŞLAR</div>
+      <div class="user-search-bar">
+        <input type="text" id="userSearchInput" placeholder="Kullanıcı adı ara...">
+        <button class="btn-primary" id="userSearchBtn">Ara</button>
+      </div>
+      <div class="friends-tabs">
+        <button class="friends-tab active" id="ftFollowing">Takip Ettiklerim</button>
+        <button class="friends-tab" id="ftFollowers">Takipçilerim</button>
+        <button class="friends-tab" id="ftSearch">Arama Sonuçları</button>
+      </div>
+      <div id="friendsContent"></div>
+    </div>
+    <div class="view" id="profileView">
+      <div class="profile-header">
+        <button class="btn-back" id="backBtn">← Geri</button>
+        <div class="profile-avatar" id="profileAvatar"></div>
+        <div>
+          <div class="profile-name" id="profileName"></div>
+          <div class="profile-stats" id="profileStats"></div>
+        </div>
+        <button class="btn-follow" id="profileFollowBtn"></button>
+      </div>
+      <div class="profile-lists-tabs" id="profileListsTabs"></div>
+      <div id="profileListItems"></div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="ratingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <img class="modal-img" id="modalImg" src="" alt="">
+      <div class="modal-info">
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-meta" id="modalMeta"></div>
+      </div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="score-picker">
+        <div class="modal-label">PUAN VER</div>
+        <div class="score-display" id="scoreDisplay">7<span>/10</span></div>
+        <input type="range" class="score-slider" id="scoreSlider" min="1" max="10" value="7">
+        <div class="score-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+      </div>
+      <div class="modal-label">LİSTE SEÇ</div>
+      <select class="list-select" id="listSelect"></select>
+      <div class="modal-label">NOT (opsiyonel)</div>
+      <textarea class="notes-input" id="notesInput" placeholder="Bu oyun hakkında düşüncelerini yaz..."></textarea>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="modalCancel">İptal</button>
+        <button class="btn-save" id="saveBtn">Listeye Ekle ✓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="newListModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header">
+      <div class="modal-info"><div class="modal-title" id="newListModalTitle">Yeni Liste</div></div>
+      <button class="modal-close" id="newListModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-label">Liste Adı</div>
+      <input class="text-input" id="newListName" placeholder="ör: Oynamak İstediklerim">
+      <div class="modal-label">Açıklama (opsiyonel)</div>
+      <input class="text-input" id="newListDesc" placeholder="Kısa bir açıklama...">
+      <div class="modal-actions">
+        <button class="btn-cancel" id="newListCancel">İptal</button>
+        <button class="btn-save" id="newListSave">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="lang.js"></script>
+<script data-cfasync="false" src="public.js"></script>
+<script data-cfasync="false" src="app.js"></script>
+<script data-cfasync="false" src="site-language.js"></script>
+<script data-cfasync="false">
+// Theme
+(function(){
+  var root = document.documentElement;
+  function applyTheme(t) {
+    if (t === 'light') root.classList.add('light');
+    else root.classList.remove('light');
+    var icon = t === 'light' ? '&#9728;' : '&#127769;';
+    ['themeTogglePub','themeToggleApp'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = icon;
+    });
+    localStorage.setItem('qwerst-theme', t);
+  }
+  window._applyTheme = applyTheme;
+  window._toggleTheme = function(){ applyTheme(root.classList.contains('light') ? 'dark' : 'light'); };
+  applyTheme(localStorage.getItem('qwerst-theme') || 'dark');
+})();
+
+// Start main app as soon as supabase is ready — no XLSX wait (XLSX only needed for export)
+(function wait(n) {
+  if (typeof initApp === "function" && typeof supabase !== "undefined") {
+    initApp();
+  } else if (n > 0) {
+    setTimeout(function(){ wait(n-1); }, 100);
+  } else {
+    console.error("Timeout: supabase or initApp not ready");
+  }
+})(80);
+</script>
+<script data-cfasync="false" id="qw-skin-js">
+(function(){
+var $=function(i){return document.getElementById(i)};
+function setT(el,v){if(el&&el.textContent!==String(v))el.textContent=v}
+function tier(n){return n>=90?'leg':n>=75?'epi':n>=50?'rar':'com'}
+var NAMES={leg:'EFSANEVİ',epi:'EPİK',rar:'NADİR',com:'SIRADAN'};
+/* açılış */
+var boot=$('qwBoot');
+function bootOff(){boot.classList.add('off');document.removeEventListener('keydown',bootOff)}
+var seen=false;try{seen=sessionStorage.getItem('qwBoot')}catch(e){}
+if(seen){boot.classList.add('off')}else{boot.onclick=bootOff;document.addEventListener('keydown',bootOff);setTimeout(bootOff,2300);try{sessionStorage.setItem('qwBoot','1')}catch(e){}}
+/* imleç ışığı */
+document.addEventListener('mousemove',function(e){var s=document.querySelector('.qw-spot').style;s.setProperty('--cx',e.clientX+'px');s.setProperty('--cy',e.clientY+'px')});
+/* kartlar */
+var filter='all';
+function decorate(c){
+  if(c.dataset.qw)return;c.dataset.qw='1';
+  var sp=c.querySelectorAll('.game-card-meta span'),n=sp.length>1?parseInt(sp[sp.length-1].textContent,10):NaN;
+  var t=isNaN(n)?'com':tier(n);
+  c.classList.add('qw','t-'+t);c.dataset.t=t;
+  c.insertAdjacentHTML('beforeend','<span class="rib">'+NAMES[t]+'</span>'+(isNaN(n)?'':'<b class="sc">'+n+'</b>')+'<u class="foil"></u>');
+}
+function applyFilter(){
+  var cards=document.querySelectorAll('#trendingGames .game-card.qw'),cnt={all:cards.length,leg:0,epi:0,rar:0,com:0};
+  cards.forEach(function(c){cnt[c.dataset.t]++;c.classList.toggle('qwhide',filter!=='all'&&c.dataset.t!==filter)});
+  document.querySelectorAll('#qwFilter .qwfl small').forEach(function(s){setT(s,cnt[s.parentNode.dataset.f])});
+}
+document.querySelectorAll('#qwFilter .qwfl').forEach(function(b){b.onclick=function(){filter=b.dataset.f;document.querySelectorAll('#qwFilter .qwfl').forEach(function(x){x.classList.toggle('on',x===b)});applyFilter()}});
+document.addEventListener('mousemove',function(e){
+  var c=e.target.closest&&e.target.closest('.game-card.qw');if(!c)return;
+  var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+  c.classList.add('mv');c.style.setProperty('--ry',((x-.5)*12)+'deg');c.style.setProperty('--rx',((.5-y)*12)+'deg');c.style.setProperty('--mx',(x*100)+'%');c.style.setProperty('--my',(y*100)+'%');
+});
+document.addEventListener('mouseout',function(e){var c=e.target.closest&&e.target.closest('.game-card.qw');if(c&&!c.contains(e.relatedTarget)){c.classList.remove('mv');c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')}});
+/* giriş öncesi liderlik satırları */
+function tagRows(){
+  document.querySelectorAll('#loginTrendingGames>div[id^=trow-]').forEach(function(r,i){
+    var b=$('mc-'+i),n=b?parseInt(b.textContent,10):NaN;
+    r.classList.remove('t-leg','t-epi','t-rar','t-com');r.classList.add('t-'+(isNaN(n)?'com':tier(n)));
+  });
+}
+/* oyuncu kartı: seviye = oyun sayısından */
+var TITLES=['Çaylak','Kâşif','Koleksiyoncu','Uzman','Efsane'];
+function hud(){
+  var items=document.querySelectorAll('#listsNav .list-nav-item');if(!items.length)return;
+  var total=0;document.querySelectorAll('#listsNav .list-nav-count').forEach(function(s){total+=parseInt(s.textContent,10)||0});
+  var lv=Math.floor(total/10)+1,xp=(total%10)*10,name=(($('userBadge')||{}).textContent||'').replace('👤','').trim()||'Oyuncu';
+  setT($('qwAv'),name[0].toUpperCase());
+  var lh='SEVİYE '+lv+'<small>'+TITLES[Math.min(lv-1,TITLES.length-1)]+'</small>';if($('qwLv').dataset.v!==lh){$('qwLv').dataset.v=lh;$('qwLv').innerHTML=lh}
+  setT($('qwXpT'),xp+' / 100 XP · sonraki seviyeye '+(10-total%10)+' oyun');
+  setT($('qwN'),total);setT($('qwL'),items.length);
+  $('qwXp').style.width=xp+'%';$('qwHud').style.display='flex';
+}
+/* ayın en çok eklenen oyunu */
+var bi=0;
+window.qwBoss=function(){
+  var g=(window.__qwGames||[]).slice(0,3);if(!g.length)return;
+  function show(){var x=g[bi%g.length];bi++;$('qwBossImg').style.backgroundImage='url("'+(x.background_image||'')+'")';$('qwBossName').textContent=x.name;
+    $('qwBossMeta').textContent=(x.genres||[]).slice(0,2).map(function(a){return a.name}).join(' · ')+(x.released?' · '+x.released.slice(0,7).replace('-','/'):'');
+    $('qwBossBtn').onclick=function(){if(window.openLoginTrailer)openLoginTrailer(x)}}
+  show();if(!window.__qwBossT)window.__qwBossT=setInterval(function(){if(!$('qwBoss').matches(':hover'))show()},5000);
+};
+if(window.__qwGames)window.qwBoss();
+$('qwStart').onclick=function(){$('publicListsBtn').click();var r=$('registerTab');if(r)r.click()};
+$('qwCont').onclick=function(){$('publicListsBtn').click();var l=$('loginTab');if(l)l.click()};
+/* klavye */
+var KEYS=['tabSearch','tabMylist','tabFriends','topGamesBtn','bottomGamesBtn','newsBtn'];
+KEYS.forEach(function(id,i){var b=$(id);if(b)b.dataset.k=i+1});
+var kk=[38,38,40,40,37,39,37,39,66,65],ki=0;
+document.addEventListener('keydown',function(e){
+  var t=e.target.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||e.ctrlKey||e.metaKey||e.altKey)return;
+  ki=(e.keyCode===kk[ki])?ki+1:0;if(ki===kk.length){document.documentElement.classList.toggle('qw-secret');ki=0;return}
+  if($('appScreen').style.display==='none')return;
+  if(document.querySelector('.modal-overlay.open'))return;
+  if(e.key>='1'&&e.key<='6'){var b=$(KEYS[+e.key-1]);if(b)b.click()}
+  else if(e.key==='/'){e.preventDefault();var s=$('tabSearch');if(s)s.click();var i=$('searchInput');if(i)i.focus()}
+});
+/* DOM değişimlerini izle */
+var q=0;function tick(){if(q)return;q=requestAnimationFrame(function(){q=0;document.querySelectorAll('.game-card:not([data-qw])').forEach(decorate);applyFilter();tagRows();hud()})}
+new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,characterData:true});
+tick();
+})();
+</script>
+</body>
+</html>

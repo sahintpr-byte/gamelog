@@ -533,7 +533,7 @@ window.__qwGames=games; if(window.qwBoss) window.qwBoss();
         fetch('https://api.rawg.io/api/games/'+slug+'?key='+RAWG)
           .then(function(r){ return r.json(); })
           .then(function(detail){
-            var mc = detail.metacritic;
+            var mc = detail.metacritic || (detail.rating>0 ? Math.round(detail.rating*20) : 0);
             var badge = document.getElementById('mc-'+idx);
             if(!badge) return;
             if(mc) {
@@ -867,12 +867,12 @@ if(seen){boot.classList.add('off')}else{boot.onclick=bootOff;document.addEventLi
 document.addEventListener('mousemove',function(e){var s=document.querySelector('.qw-spot').style;s.setProperty('--cx',e.clientX+'px');s.setProperty('--cy',e.clientY+'px')});
 /* kartlar */
 var filter='all';
-function setTier(c,t,n){
+function setTier(c,t,n,src){
   ['leg','epi','rar','com','na'].forEach(function(x){c.classList.remove('t-'+x)});
   c.classList.add('t-'+t);c.dataset.t=t;
   setT(c.querySelector('.rib'),NAMES[t]);
   if(n&&!c.querySelector('.sc'))c.insertBefore(Object.assign(document.createElement('b'),{className:'sc'}),c.querySelector('.foil'));
-  if(n)setT(c.querySelector('.sc'),n);
+  if(n){var sc=c.querySelector('.sc');setT(sc,n);sc.title=src==='rawg'?'RAWG kullanıcı puanı (x20)':'Metacritic'}
   applyFilter();
 }
 function slugOf(c){
@@ -881,9 +881,13 @@ function slugOf(c){
   return t?t.textContent.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'';
 }
 function fetchScore(c,slug){
-  function ap(mc){if(c.isConnected)setTier(c,mc?tier(mc):'na',mc)}
+  function ap(v){if(c.isConnected)setTier(c,v[0]?tier(v[0]):'na',v[0],v[1])}
   if(cache[slug]!==undefined){ap(cache[slug]);return}
-  fetch('https://api.rawg.io/api/games/'+encodeURIComponent(slug)+'?key='+RK).then(function(r){return r.json()}).then(function(d){cache[slug]=d.metacritic||0;ap(cache[slug])}).catch(function(){cache[slug]=0;ap(0)});
+  fetch('https://api.rawg.io/api/games/'+encodeURIComponent(slug)+'?key='+RK).then(function(r){return r.json()}).then(function(d){
+    var v=d.metacritic?[d.metacritic,'mc']:(d.rating>0?[Math.round(d.rating*20),'rawg']:[0,'']);
+    if(!v[0])console.warn('qw: puan yok',slug,d.detail||'');
+    cache[slug]=v;ap(v);
+  }).catch(function(e){console.warn('qw: puan alınamadı',slug,e);cache[slug]=[0,''];ap(cache[slug])});
 }
 function decorate(c){
   if(c.dataset.qw)return;
@@ -893,7 +897,7 @@ function decorate(c){
   c.dataset.qw='1';
   var pending=trending&&isNaN(n),t=isNaN(n)?'na':tier(n);
   c.classList.add('qw','t-'+t);c.dataset.t=t;
-  c.insertAdjacentHTML('beforeend','<span class="rib">'+(pending?'YÜKLENİYOR':NAMES[t])+'</span>'+(isNaN(n)?'':'<b class="sc">'+n+'</b>')+'<u class="foil"></u>');
+  c.insertAdjacentHTML('beforeend','<span class="rib">'+(pending?'YÜKLENİYOR':NAMES[t])+'</span>'+(isNaN(n)?'':'<b class="sc" title="'+(c.dataset.src==='rawg'?'RAWG kullanıcı puanı (x20)':'Metacritic')+'">'+n+'</b>')+'<u class="foil"></u>');
   if(pending)fetchScore(c,slug);
 }
 function applyFilter(){
@@ -908,7 +912,7 @@ document.addEventListener('mousemove',function(e){
   c.classList.add('mv');c.style.setProperty('--ry',((x-.5)*12)+'deg');c.style.setProperty('--rx',((.5-y)*12)+'deg');c.style.setProperty('--mx',(x*100)+'%');c.style.setProperty('--my',(y*100)+'%');
 });
 document.addEventListener('mouseout',function(e){var c=e.target.closest&&e.target.closest('.qw');if(c&&!c.contains(e.relatedTarget)){c.classList.remove('mv');c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')}});
-if(typeof window.buildGameCard==='function'){var ob=window.buildGameCard;window.buildGameCard=function(g,i,cb){var c=ob(g,i,cb);if(g&&g.slug)c.dataset.slug=g.slug;if(g&&g.metacritic)c.dataset.mc=g.metacritic;return c}}
+if(typeof window.buildGameCard==='function'){var ob=window.buildGameCard;window.buildGameCard=function(g,i,cb){var c=ob(g,i,cb);if(g&&g.slug)c.dataset.slug=g.slug;var m=g&&(g.metacritic||(g.rating>0?Math.round(g.rating*20):0));if(m){c.dataset.mc=m;c.dataset.src=g.metacritic?'mc':'rawg'}return c}}
 /* giriş öncesi liderlik satırları */
 function tagRows(){
   document.querySelectorAll('#loginTrendingGames>div[id^=trow-]').forEach(function(r,i){

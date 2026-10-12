@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<script>(function(){try{if(/[?&]desktop=1/.test(location.search))sessionStorage.setItem("qwDesk","1");if(innerWidth<=700&&!sessionStorage.getItem("qwDesk"))location.replace("/oyun/mobil.html")}catch(e){}})()</script>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Oyun Listesi Oluştur ve Yeni Oyunlar Keşfet | QWERST</title>
@@ -528,30 +529,33 @@ window.__qwGames=games; if(window.qwBoss) window.qwBoss();
       row.onclick = function(){ openLoginTrailer(g); };
       el.appendChild(row);
 
-      // Fetch individual game details for metacritic score
-      (function(idx, slug){
+      // Puan: RAWG Metacritic -> Metascore servisi -> RAWG kullanıcı puanı
+      (function(idx, slug, gname){
+        function paint(mc, src){
+          var badge = document.getElementById('mc-'+idx);
+          if(!badge) return;
+          if(mc) {
+            var bg = mc>=75?'#3d8b3d':mc>=50?'#b87d00':'#8b2020';
+            badge.style.background = bg;
+            badge.style.color = '#fff';
+            badge.style.fontFamily = "'Bebas Neue',sans-serif";
+            badge.style.fontSize = '18px';
+            badge.style.fontWeight = '700';
+            badge.title = src==='rawg' ? 'RAWG kullanıcı puanı (x20)' : 'Metacritic';
+            badge.textContent = mc;
+          } else {
+            badge.textContent = 'N/A';
+          }
+        }
         fetch('https://api.rawg.io/api/games/'+slug+'?key='+RAWG)
           .then(function(r){ return r.json(); })
           .then(function(detail){
-            var mc = detail.metacritic || (detail.rating>0 ? Math.round(detail.rating*20) : 0);
-            var badge = document.getElementById('mc-'+idx);
-            if(!badge) return;
-            if(mc) {
-              var bg = mc>=75?'#3d8b3d':mc>=50?'#b87d00':'#8b2020';
-              badge.style.background = bg;
-              badge.style.color = '#fff';
-              badge.style.fontFamily = "'Bebas Neue',sans-serif";
-              badge.style.fontSize = '18px';
-              badge.style.fontWeight = '700';
-              badge.textContent = mc;
-            } else {
-              badge.textContent = 'N/A';
-            }
-          }).catch(function(){ 
-            var badge = document.getElementById('mc-'+idx);
-            if(badge) badge.textContent = 'N/A';
-          });
-      })(i, g.slug);
+            if(detail.metacritic){ paint(detail.metacritic,'mc'); return; }
+            var rr = detail.rating>0 ? Math.round(detail.rating*20) : 0;
+            (window.qwMeta ? window.qwMeta(gname, slug) : Promise.resolve(0))
+              .then(function(sc){ if(sc) paint(sc,'mc'); else paint(rr, rr?'rawg':''); });
+          }).catch(function(){ paint(0,''); });
+      })(i, g.slug, g.name);
     });
   }).catch(function(){ document.getElementById('loginTrendingGames').innerHTML='<div style="color:var(--muted);padding:20px">Yüklenemedi.</div>'; });
 
@@ -858,6 +862,14 @@ function setT(el,v){if(el&&el.textContent!==String(v))el.textContent=v}
 function tier(n){return n>=90?'leg':n>=75?'epi':n>=50?'rar':'com'}
 var NAMES={leg:'EFSANEVİ',epi:'EPİK',rar:'NADİR',com:'SIRADAN',na:'PUANSIZ'};
 var RK='b1ba1bc900a14e699e5e98788646cf16',cache={};
+var MS_URL='https://dzjmbwyandrkonqdjalk.supabase.co/functions/v1/metascore',SB_KEY='sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD',msCache={};
+function nameSlug(n){return String(n||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+window.qwMeta=function(name,slug){
+  var c=[nameSlug(name),slug||''].filter(function(x,i,a){return x&&a.indexOf(x)===i});
+  if(!c.length)return Promise.resolve(0);
+  var k=c.join(',');if(msCache[k])return msCache[k];
+  return msCache[k]=fetch(MS_URL+'?slug='+encodeURIComponent(k),{headers:{apikey:SB_KEY}}).then(function(r){return r.ok?r.json():{}}).then(function(d){return d.score||0}).catch(function(e){console.warn('qw: metascore servisi yok',e);return 0});
+};
 /* açılış */
 var boot=$('qwBoot');
 function bootOff(){boot.classList.add('off');document.removeEventListener('keydown',bootOff)}
@@ -880,14 +892,16 @@ function slugOf(c){
   var t=c.querySelector('div[style*="font-weight:600"]');
   return t?t.textContent.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'';
 }
+function titleOf(c){var t=c.querySelector('div[style*="font-weight:600"]');return t?t.textContent:''}
 function fetchScore(c,slug){
   function ap(v){if(c.isConnected)setTier(c,v[0]?tier(v[0]):'na',v[0],v[1])}
-  if(cache[slug]!==undefined){ap(cache[slug]);return}
-  fetch('https://api.rawg.io/api/games/'+encodeURIComponent(slug)+'?key='+RK).then(function(r){return r.json()}).then(function(d){
-    var v=d.metacritic?[d.metacritic,'mc']:(d.rating>0?[Math.round(d.rating*20),'rawg']:[0,'']);
-    if(!v[0])console.warn('qw: puan yok',slug,d.detail||'');
-    cache[slug]=v;ap(v);
-  }).catch(function(e){console.warn('qw: puan alınamadı',slug,e);cache[slug]=[0,''];ap(cache[slug])});
+  if(cache[slug]!==undefined){cache[slug].then(ap);return}
+  cache[slug]=fetch('https://api.rawg.io/api/games/'+encodeURIComponent(slug)+'?key='+RK).then(function(r){return r.json()}).then(function(d){
+    if(d.metacritic)return [d.metacritic,'mc'];
+    var rr=d.rating>0?Math.round(d.rating*20):0;
+    return window.qwMeta(titleOf(c)||d.name,slug).then(function(s){return s?[s,'mc']:(rr?[rr,'rawg']:[0,''])});
+  }).catch(function(e){console.warn('qw: puan alınamadı',slug,e);return [0,'']});
+  cache[slug].then(ap);
 }
 function decorate(c){
   if(c.dataset.qw)return;

@@ -90,7 +90,7 @@ async function copyShareLink(list){
   const username=profile?.username||currentUser.user_metadata?.username||currentUser.email.split('@')[0];
   const {error}=await sb.from('lists').update({is_public:true}).eq('id',list.id).eq('user_id',currentUser.id);
   if(error){toast('Liste paylaşılabilir hale getirilemedi.');return;}
-  const base=location.origin+location.pathname.split('/oyun.html')[0]+'/oyun.html/';
+  const base=location.origin+'/oyun.html/';
   const url=base+encodeURIComponent(shareSlug(username))+'/'+encodeURIComponent(shareSlug(list.name));
   try{await navigator.clipboard.writeText(url);toast('Paylaşım linki panoya kopyalandı.');}catch(e){window.prompt('Paylaşım linkini kopyalayın:',url);}
 }

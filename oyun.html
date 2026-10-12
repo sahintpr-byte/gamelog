@@ -547,14 +547,8 @@ window.__qwGames=games; if(window.qwBoss) window.qwBoss();
             badge.textContent = 'N/A';
           }
         }
-        fetch('https://api.rawg.io/api/games/'+slug+'?key='+RAWG)
-          .then(function(r){ return r.json(); })
-          .then(function(detail){
-            if(detail.metacritic){ paint(detail.metacritic,'mc'); return; }
-            var rr = detail.rating>0 ? Math.round(detail.rating*20) : 0;
-            (window.qwMeta ? window.qwMeta(gname, slug) : Promise.resolve(0))
-              .then(function(sc){ if(sc) paint(sc,'mc'); else paint(rr, rr?'rawg':''); });
-          }).catch(function(){ paint(0,''); });
+        (window.qwScore ? window.qwScore(gname, slug) : Promise.resolve([0,'']))
+          .then(function(v){ paint(v[0], v[1]); });
       })(i, g.slug, g.name);
     });
   }).catch(function(){ document.getElementById('loginTrendingGames').innerHTML='<div style="color:var(--muted);padding:20px">Yüklenemedi.</div>'; });
@@ -861,14 +855,39 @@ var $=function(i){return document.getElementById(i)};
 function setT(el,v){if(el&&el.textContent!==String(v))el.textContent=v}
 function tier(n){return n>=90?'leg':n>=75?'epi':n>=50?'rar':'com'}
 var NAMES={leg:'EFSANEVİ',epi:'EPİK',rar:'NADİR',com:'SIRADAN',na:'PUANSIZ'};
-var RK='b1ba1bc900a14e699e5e98788646cf16',cache={};
-var MS_URL='https://dzjmbwyandrkonqdjalk.supabase.co/functions/v1/metascore',SB_KEY='sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD',msCache={};
+var RK='b1ba1bc900a14e699e5e98788646cf16';
+var MS_URL='https://dzjmbwyandrkonqdjalk.supabase.co/functions/v1/metascore',SB_KEY='sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD';
 function nameSlug(n){return String(n||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
-window.qwMeta=function(name,slug){
-  var c=[nameSlug(name),slug||''].filter(function(x,i,a){return x&&a.indexOf(x)===i});
-  if(!c.length)return Promise.resolve(0);
-  var k=c.join(',');if(msCache[k])return msCache[k];
-  return msCache[k]=fetch(MS_URL+'?slug='+encodeURIComponent(k),{headers:{apikey:SB_KEY}}).then(function(r){return r.ok?r.json():{}}).then(function(d){return d.score||0}).catch(function(e){console.warn('qw: metascore servisi yok',e);return 0});
+/* istek kuyruğu: aynı anda en fazla 3 istek, hız sınırına takılınca bekleyip tekrar dene */
+var Q=[],act=0,MAXC=3;
+function pump(){while(act<MAXC&&Q.length){act++;Q.shift()()}}
+function enqueue(fn){return new Promise(function(res,rej){Q.push(function(){fn().then(res,rej).then(function(){act--;pump()})});pump()})}
+function wait(ms){return new Promise(function(ok){setTimeout(ok,ms)})}
+function jget(url,opts,tries){
+  return enqueue(function(){return fetch(url,opts).then(function(r){
+    if(r.status===429||r.status>=500)throw new Error('http '+r.status);
+    return r.ok?r.json():{}
+  })}).catch(function(e){if(tries>0)return wait(1200).then(function(){return jget(url,opts,tries-1)});throw e});
+}
+var msCache={},scores={};
+function metaFrom(name,slug){
+  var c=[nameSlug(name),slug||''].filter(function(x,i,a){return x&&a.indexOf(x)===i}),k=c.join(',');
+  if(!k)return Promise.resolve(0);
+  if(msCache[k])return msCache[k];
+  function go(tries){return jget(MS_URL+'?slug='+encodeURIComponent(k),{headers:{apikey:SB_KEY}},1).then(function(d){
+    if(d&&d.transient&&tries>0)return wait(3500).then(function(){return go(tries-1)});
+    return d&&d.score||0;
+  })}
+  return msCache[k]=go(2).catch(function(e){console.warn('qw: metascore servisi yok',e);delete msCache[k];return 0});
+}
+/* tek giriş noktası: RAWG Metacritic -> Metascore servisi -> RAWG kullanıcı puanı */
+window.qwScore=function(name,slug){
+  if(scores[slug])return scores[slug];
+  return scores[slug]=jget('https://api.rawg.io/api/games/'+encodeURIComponent(slug)+'?key='+RK,{},2).then(function(d){
+    if(d.metacritic)return [d.metacritic,'mc'];
+    var rr=d.rating>0?Math.round(d.rating*20):0;
+    return metaFrom(name||d.name,slug).then(function(s){return s?[s,'mc']:(rr?[rr,'rawg']:[0,''])});
+  }).catch(function(e){console.warn('qw: puan alınamadı',slug,e);delete scores[slug];return [0,'']});
 };
 /* açılış */
 var boot=$('qwBoot');
@@ -894,14 +913,7 @@ function slugOf(c){
 }
 function titleOf(c){var t=c.querySelector('div[style*="font-weight:600"]');return t?t.textContent:''}
 function fetchScore(c,slug){
-  function ap(v){if(c.isConnected)setTier(c,v[0]?tier(v[0]):'na',v[0],v[1])}
-  if(cache[slug]!==undefined){cache[slug].then(ap);return}
-  cache[slug]=fetch('https://api.rawg.io/api/games/'+encodeURIComponent(slug)+'?key='+RK).then(function(r){return r.json()}).then(function(d){
-    if(d.metacritic)return [d.metacritic,'mc'];
-    var rr=d.rating>0?Math.round(d.rating*20):0;
-    return window.qwMeta(titleOf(c)||d.name,slug).then(function(s){return s?[s,'mc']:(rr?[rr,'rawg']:[0,''])});
-  }).catch(function(e){console.warn('qw: puan alınamadı',slug,e);return [0,'']});
-  cache[slug].then(ap);
+  window.qwScore(titleOf(c),slug).then(function(v){if(c.isConnected)setTier(c,v[0]?tier(v[0]):'na',v[0],v[1])});
 }
 function decorate(c){
   if(c.dataset.qw)return;

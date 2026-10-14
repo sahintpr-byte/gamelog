@@ -407,7 +407,9 @@ header{background:color-mix(in srgb,var(--bg) 78%,transparent)!important;-webkit
 .qw.t-leg:hover .foil,.qw.t-epi:hover .foil{opacity:.5}
 .qw .btn-add:not(.added){transition:.2s}.qw:hover .btn-add:not(.added){background:var(--tc);color:#0d0d0f;border-color:var(--tc)}
 .qwhide{display:none!important}
-.qw[data-slug] .rib{left:48px}
+.qw[data-slug] .rib{display:none}
+.qw[data-slug] .sc{display:flex;flex-direction:column;align-items:flex-end;line-height:1}
+.qw[data-slug] .sc:after{content:attr(data-tier);font:600 8px 'DM Sans',sans-serif;letter-spacing:1px;margin-top:3px;text-shadow:0 1px 4px rgba(0,0,0,.8)}
 html.qw-secret{--accent:#ff3df2}
 @media(max-width:860px){#qwHero{grid-template-columns:1fr}.tab-btn[data-k]:before{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#qwBoot{display:none}#qwHud .xp i{transition:none}}
@@ -902,8 +904,9 @@ function setTier(c,t,n,src){
   ['leg','epi','rar','com','na'].forEach(function(x){c.classList.remove('t-'+x)});
   c.classList.add('t-'+t);c.dataset.t=t;
   setT(c.querySelector('.rib'),NAMES[t]);
-  if(n&&!c.querySelector('.sc'))c.insertBefore(Object.assign(document.createElement('b'),{className:'sc'}),c.querySelector('.foil'));
-  if(n){var sc=c.querySelector('.sc');setT(sc,n);sc.title=src==='rawg'?'RAWG kullanıcı puanı (x20)':'Metacritic'}
+  var sc=c.querySelector('.sc');
+  if(!sc&&(n||c.dataset.slug)){sc=Object.assign(document.createElement('b'),{className:'sc'});c.insertBefore(sc,c.querySelector('.foil'))}
+  if(sc){setT(sc,n||'—');sc.dataset.tier=NAMES[t];sc.title=n?(src==='rawg'?'RAWG kullanıcı puanı (x20)':'Metacritic'):''}
   applyFilter();
 }
 function slugOf(c){
@@ -923,7 +926,8 @@ function decorate(c){
   c.dataset.qw='1';
   var pending=trending&&isNaN(n),t=isNaN(n)?'na':tier(n);
   c.classList.add('qw','t-'+t);c.dataset.t=t;
-  c.insertAdjacentHTML('beforeend','<span class="rib">'+(pending?'YÜKLENİYOR':NAMES[t])+'</span>'+(isNaN(n)?'':'<b class="sc" title="'+(c.dataset.src==='rawg'?'RAWG kullanıcı puanı (x20)':'Metacritic')+'">'+n+'</b>')+'<u class="foil"></u>');
+  var hasSc=!isNaN(n)||trending;
+  c.insertAdjacentHTML('beforeend','<span class="rib">'+(pending?'YÜKLENİYOR':NAMES[t])+'</span>'+(hasSc?'<b class="sc" data-tier="'+(pending?'YÜKLENİYOR':NAMES[t])+'" title="'+(c.dataset.src==='rawg'?'RAWG kullanıcı puanı (x20)':'Metacritic')+'">'+(isNaN(n)?'…':n)+'</b>':'')+'<u class="foil"></u>');
   if(pending)fetchScore(c,slug);
 }
 function applyFilter(){
@@ -983,7 +987,7 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='/'){e.preventDefault();var s=$('tabSearch');if(s)s.click();var i=$('searchInput');if(i)i.focus()}
 });
 /* DOM değişimlerini izle */
-var q=0;function tick(){if(q)return;q=requestAnimationFrame(function(){q=0;document.querySelectorAll('.game-card:not([data-qw]),#trendingGames>div:not([data-qw]):not(.game-card)').forEach(decorate);applyFilter();tagRows();hud()})}
+var q=0;function tick(){if(q)return;q=requestAnimationFrame(function(){q=0;document.querySelectorAll('.game-card:not([data-qw]),#trendingGames>div:not([data-qw]):not(.game-card),#topGamesGrid>div:not([data-qw]):not(.game-card),#bottomGamesGrid>div:not([data-qw]):not(.game-card)').forEach(decorate);applyFilter();tagRows();hud()})}
 new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,characterData:true});
 tick();
 })();

@@ -916,7 +916,12 @@ function slugOf(c){
 }
 function titleOf(c){var t=c.querySelector('div[style*="font-weight:600"]');return t?t.textContent:''}
 function fetchScore(c,slug){
-  window.qwScore(titleOf(c),slug).then(function(v){if(c.isConnected)setTier(c,v[0]?tier(v[0]):'na',v[0],v[1])});
+  window.qwScore(titleOf(c),slug).then(function(v){
+    if(!c.isConnected)return;
+    if(!v[0]&&c.dataset.mc)return;                 // yeni sonuç yok: listedeki RAWG puanı kalsın
+    if(v[1]==='rawg'&&c.dataset.src==='mc')return; // listedeki Metacritic puanı zaten daha iyi
+    setTier(c,v[0]?tier(v[0]):'na',v[0],v[1]);
+  });
 }
 function decorate(c){
   if(c.dataset.qw)return;
@@ -924,10 +929,10 @@ function decorate(c){
   if(trending){slug=slugOf(c);if(!slug)return;n=parseInt(c.dataset.mc,10)}
   else{var sp=c.querySelectorAll('.game-card-meta span');n=sp.length>1?parseInt(sp[sp.length-1].textContent,10):NaN}
   c.dataset.qw='1';
-  var pending=trending&&isNaN(n),t=isNaN(n)?'na':tier(n);
+  var pending=trending&&(isNaN(n)||c.dataset.src==='rawg'),wait=trending&&isNaN(n),t=isNaN(n)?'na':tier(n);
   c.classList.add('qw','t-'+t);c.dataset.t=t;
   var hasSc=!isNaN(n)||trending;
-  c.insertAdjacentHTML('beforeend','<span class="rib">'+(pending?'YÜKLENİYOR':NAMES[t])+'</span>'+(hasSc?'<b class="sc" data-tier="'+(pending?'YÜKLENİYOR':NAMES[t])+'" title="'+(c.dataset.src==='rawg'?'RAWG kullanıcı puanı (x20)':'Metacritic')+'">'+(isNaN(n)?'…':n)+'</b>':'')+'<u class="foil"></u>');
+  c.insertAdjacentHTML('beforeend','<span class="rib">'+(wait?'YÜKLENİYOR':NAMES[t])+'</span>'+(hasSc?'<b class="sc" data-tier="'+(wait?'YÜKLENİYOR':NAMES[t])+'" title="'+(c.dataset.src==='rawg'?'RAWG kullanıcı puanı (x20)':'Metacritic')+'">'+(isNaN(n)?'…':n)+'</b>':'')+'<u class="foil"></u>');
   if(pending)fetchScore(c,slug);
 }
 function applyFilter(){
@@ -987,7 +992,7 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='/'){e.preventDefault();var s=$('tabSearch');if(s)s.click();var i=$('searchInput');if(i)i.focus()}
 });
 /* DOM değişimlerini izle */
-var q=0;function tick(){if(q)return;q=requestAnimationFrame(function(){q=0;document.querySelectorAll('.game-card:not([data-qw]),#trendingGames>div:not([data-qw]):not(.game-card),#topGamesGrid>div:not([data-qw]):not(.game-card),#bottomGamesGrid>div:not([data-qw]):not(.game-card)').forEach(decorate);applyFilter();tagRows();hud()})}
+var q=0;function tick(){if(q)return;q=requestAnimationFrame(function(){q=0;document.querySelectorAll('.game-card:not([data-qw]),#trendingGames>div:not([data-qw]):not(.game-card),#topGamesGrid>div:not([data-qw]):not(.game-card),#bottomGamesGrid>div:not([data-qw]):not(.game-card),#recommendationGrid>div:not([data-qw]):not(.game-card)').forEach(decorate);applyFilter();tagRows();hud()})}
 new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,characterData:true});
 tick();
 })();

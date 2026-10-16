@@ -414,6 +414,64 @@ html.qw-secret{--accent:#ff3df2}
 @media(max-width:860px){#qwHero{grid-template-columns:1fr}.tab-btn[data-k]:before{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#qwBoot{display:none}#qwHud .xp i{transition:none}}
 </style>
+<style id="qw-quiz">
+/* ===== QUIZ ===== */
+#tabQuiz{position:relative}
+.qz{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:20px;align-items:start}
+.qz-champ{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap}
+.qz-champ>div{flex:1 1 260px;display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 18px}
+.qz-champ .big{border-color:var(--qw-leg);background:linear-gradient(120deg,color-mix(in srgb,var(--qw-leg) 12%,var(--surface)),var(--surface))}
+.qz-champ .ic{font-size:30px;line-height:1}
+.qz-champ small{display:block;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.qz-champ b{font:26px 'Bebas Neue',sans-serif;letter-spacing:1px;font-weight:400}
+.qz-champ span{color:var(--muted);font-size:13px}
+.qz-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;min-height:380px;display:flex;flex-direction:column}
+.qz-card h2{font:clamp(34px,6vw,52px)/.95 'Bebas Neue',sans-serif;letter-spacing:2px;font-weight:400}
+.qz-card h2 span{color:var(--accent)}
+.qz-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+.qz-rules div{background:var(--surface2);border-radius:12px;padding:12px;text-align:center}
+.qz-rules b{display:block;font:28px 'Bebas Neue',sans-serif;color:var(--accent);font-weight:400}
+.qz-rules small{font-size:11px;color:var(--muted)}
+.qz-note{color:var(--muted);font-size:13px;line-height:1.55;margin-bottom:18px}
+.qz-btn{background:var(--accent);color:#0d0d0f;border:0;border-radius:12px;font:700 15px 'DM Sans',sans-serif;padding:14px 26px;cursor:pointer;min-height:48px;transition:transform .15s,box-shadow .2s}
+.qz-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px color-mix(in srgb,var(--accent) 25%,transparent)}
+.qz-btn.g{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.qz-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+.qz-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-bottom:10px}
+.qz-top b{color:var(--accent);font:24px 'Bebas Neue',sans-serif;font-weight:400;letter-spacing:1px}
+.qz-bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:20px}
+.qz-bar i{display:block;height:100%;width:100%;border-radius:99px;background:var(--accent);transition:width .1s linear}
+.qz-bar.low i{background:#ff5d5d}
+.qz-q{font-size:clamp(18px,3.4vw,23px);font-weight:600;line-height:1.35;margin-bottom:18px}
+.qz-opts{display:grid;gap:10px}
+.qz-opt{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:14px;padding:13px 14px;min-height:54px;font:500 15px 'DM Sans',sans-serif;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
+.qz-opt:hover:not(:disabled){border-color:var(--accent);transform:translateX(4px)}
+.qz-opt kbd{flex:0 0 auto;width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:var(--surface);border:1px solid var(--border);font:700 12px 'DM Sans',sans-serif;color:var(--muted)}
+.qz-opt.ok{border-color:#3d8b3d;background:color-mix(in srgb,#3d8b3d 22%,var(--surface2))}
+.qz-opt.bad{border-color:#c0392b;background:color-mix(in srgb,#c0392b 22%,var(--surface2));animation:qzshake .35s}
+.qz-opt.dim{opacity:.55}
+@keyframes qzshake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.qz-info{margin-top:14px;font-size:13px;color:var(--muted);min-height:20px;line-height:1.5}
+.qz-score{font:clamp(72px,16vw,120px)/1 'Bebas Neue',sans-serif;color:var(--tc,var(--accent));text-shadow:0 0 30px color-mix(in srgb,var(--tc,var(--accent)) 40%,transparent)}
+.qz-tier{display:inline-block;font:600 12px 'DM Sans',sans-serif;letter-spacing:1.5px;color:var(--tc);border:1px solid var(--tc);border-radius:8px;padding:4px 12px;margin-bottom:6px}
+.qz-cmp{background:var(--surface2);border-radius:14px;padding:14px 16px;margin:16px 0;font-size:14px;line-height:1.6}
+.qz-cmp b{color:var(--accent)}
+.qz-board{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px}
+.qz-tabs{display:flex;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:12px}
+.qz-tabs button{flex:1;background:none;border:0;color:var(--muted);font:600 13px 'DM Sans',sans-serif;padding:9px;border-radius:7px;cursor:pointer;min-height:40px}
+.qz-tabs button.on{background:var(--surface);color:var(--accent)}
+.qz-board h3{font:22px 'Bebas Neue',sans-serif;letter-spacing:1.5px;font-weight:400;margin-bottom:10px}
+.qz-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;font-size:14px}
+.qz-row:nth-child(odd){background:color-mix(in srgb,var(--surface2) 55%,transparent)}
+.qz-row.me{outline:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.qz-row .r{width:30px;text-align:center;font:20px 'Bebas Neue',sans-serif;color:var(--muted)}
+.qz-row .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.qz-row .s{font:20px 'Bebas Neue',sans-serif;color:var(--accent);letter-spacing:1px}
+.qz-row small{color:var(--muted);font-size:11px;min-width:42px;text-align:right}
+.qz-empty{color:var(--muted);font-size:13px;padding:18px 6px;text-align:center}
+@media(max-width:860px){.qz{grid-template-columns:1fr}.qz-card{padding:20px;min-height:0}}
+@media(prefers-reduced-motion:reduce){.qz-opt.bad{animation:none}}
+</style>
 </head>
 <body>
 <div id="qwBoot"><div>QWERST OS v26.10</div><div>&gt; kütüphane yükleniyor ........ OK</div><div>&gt; puanlar nadirliğe çevriliyor .. OK</div><div>&gt; oyuncu bulundu<span class="cur"></span></div><div class="bar"><i></i></div><small>Atlamak için tıkla ya da bir tuşa bas</small></div>
@@ -635,6 +693,7 @@ function closeVideoModal() {
         <button class="tab-btn" id="topGamesBtn" type="button" onclick="openTopGamesView()">🏆 Top 250</button>
         <button class="tab-btn" id="bottomGamesBtn" type="button" onclick="openBottomGamesView()">💀 Bottom 250</button>
         <button class="tab-btn" id="newsBtn" type="button" onclick="openNewsView()">📰 Oyun Haberleri</button>
+        <button class="tab-btn" id="tabQuiz" type="button">🎯 Quiz</button>
         <div class="recommend-menu">
           <button type="button">💡 Tavsiye ▾</button>
           <div class="recommend-dropdown">
@@ -723,6 +782,13 @@ function closeVideoModal() {
       </div>
       <div id="recommendationGrid"><div class="loading">Tavsiye listesi yükleniyor...</div></div>
       <p class="top-games-note">Listeler RAWG oyun verileri; puan, tür, çıkış tarihi ve popülerlik bilgilerine göre hazırlanır.</p>
+    </div>
+    <div class="view" id="quizView">
+      <div class="qz">
+        <div class="qz-champ" id="qzChamp"></div>
+        <div class="qz-card" id="qzMain"></div>
+        <div class="qz-board"><div class="qz-tabs"><button type="button" class="on" data-m="0">Bu ay</button><button type="button" data-m="1">Geçen ay</button></div><div id="qzBoard"><div class="qz-empty">Yükleniyor…</div></div></div>
+      </div>
     </div>
     <div class="view" id="mylistView">
       <div class="lists-layout">
@@ -980,21 +1046,179 @@ if(window.__qwGames)window.qwBoss();
 $('qwStart').onclick=function(){$('publicListsBtn').click();var r=$('registerTab');if(r)r.click()};
 $('qwCont').onclick=function(){$('publicListsBtn').click();var l=$('loginTab');if(l)l.click()};
 /* klavye */
-var KEYS=['tabSearch','tabMylist','tabFriends','topGamesBtn','bottomGamesBtn','newsBtn'];
+var KEYS=['tabSearch','tabMylist','tabFriends','topGamesBtn','bottomGamesBtn','newsBtn','tabQuiz'];
 KEYS.forEach(function(id,i){var b=$(id);if(b)b.dataset.k=i+1});
 var kk=[38,38,40,40,37,39,37,39,66,65],ki=0;
 document.addEventListener('keydown',function(e){
   var t=e.target.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||e.ctrlKey||e.metaKey||e.altKey)return;
   ki=(e.keyCode===kk[ki])?ki+1:0;if(ki===kk.length){document.documentElement.classList.toggle('qw-secret');ki=0;return}
+  if(window.qwQuizPlaying)return;
   if($('appScreen').style.display==='none')return;
   if(document.querySelector('.modal-overlay.open'))return;
-  if(e.key>='1'&&e.key<='6'){var b=$(KEYS[+e.key-1]);if(b)b.click()}
+  if(e.key>='1'&&e.key<='7'){var b=$(KEYS[+e.key-1]);if(b)b.click()}
   else if(e.key==='/'){e.preventDefault();var s=$('tabSearch');if(s)s.click();var i=$('searchInput');if(i)i.focus()}
 });
 /* DOM değişimlerini izle */
 var q=0;function tick(){if(q)return;q=requestAnimationFrame(function(){q=0;document.querySelectorAll('.game-card:not([data-qw]),#trendingGames>div:not([data-qw]):not(.game-card),#topGamesGrid>div:not([data-qw]):not(.game-card),#bottomGamesGrid>div:not([data-qw]):not(.game-card),#recommendationGrid>div:not([data-qw]):not(.game-card)').forEach(decorate);applyFilter();tagRows();hud()})}
 new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,characterData:true});
 tick();
+})();
+</script>
+<script data-cfasync="false" id="qw-quiz-js">
+(function(){
+var API='https://dzjmbwyandrkonqdjalk.supabase.co',KEY='sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD';
+var LIMIT=15000,N=10;
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+/* soru|DOĞRU cevap|yanlış|yanlış|yanlış|bilgi */
+var BANK=[
+"Half-Life serisinin baş karakteri kimdir?|Gordon Freeman|Master Chief|Duke Nukem|Marcus Fenix|Gordon Freeman, Black Mesa'da çalışan bir teorik fizikçidir.",
+"Valve'in PC oyun mağazasının adı nedir?|Steam|Origin|GOG|Uplay|Steam, 2003'te Valve tarafından başlatıldı.",
+"Minecraft'ı ilk geliştiren kişi kimdir?|Markus 'Notch' Persson|Gabe Newell|Hideo Kojima|Sid Meier|Mojang 2014'te Microsoft tarafından satın alındı.",
+"The Witcher 3: Wild Hunt hangi stüdyonun oyunudur?|CD Projekt Red|Bethesda|BioWare|Obsidian|Oyun 2015'te çıktı.",
+"Skyrim hangi oyun serisine aittir?|The Elder Scrolls|Fallout|Dragon Age|Dark Souls|Skyrim, serinin 5. ana oyunudur ve 2011'de çıktı.",
+"Portal oyunlarında yapay zekâ karakterinin adı nedir?|GLaDOS|SHODAN|HAL 9000|Cortana|GLaDOS'un 'pasta yalandır' esprisi internet kültürüne girdi.",
+"Counter-Strike ilk çıktığında hangi oyunun modu olarak başladı?|Half-Life|Quake|Unreal Tournament|Doom|Mod 1999'da yayımlandı, sonra Valve ile birleşti.",
+"Dota, ilk olarak hangi oyunun modu olarak ortaya çıktı?|Warcraft III|StarCraft|Diablo II|Age of Empires II|Defense of the Ancients, Warcraft III için hazırlanmış bir haritaydı.",
+"Diablo serisinin yapımcısı hangi şirkettir?|Blizzard|Valve|Ubisoft|EA|Blizzard aynı zamanda Warcraft ve StarCraft'ın da yapımcısıdır.",
+"Cyberpunk 2077'nin geçtiği şehir hangisidir?|Night City|Neo Tokyo|Los Santos|Rapture|Night City, Kaliforniya'da kurgusal bir metropoldür.",
+"Stardew Valley'i tek başına geliştiren kişi kimdir?|Eric Barone (ConcernedApe)|Toby Fox|Markus Persson|Jonathan Blow|Oyun 2016'da çıktı.",
+"Dark Souls serisi hangi stüdyoya aittir?|FromSoftware|Capcom|Platinum Games|Square Enix|FromSoftware aynı zamanda Elden Ring'in de yapımcısıdır.",
+"Elden Ring'in dünya kurgusuna hangi ünlü yazar katkı sağladı?|George R. R. Martin|J. R. R. Tolkien|Stephen King|Andrzej Sapkowski|Oyun 2022'de çıktı.",
+"Aşağıdakilerden hangisi GTA V'in oynanabilir karakteri değildir?|Niko Bellic|Michael De Santa|Franklin Clinton|Trevor Philips|Niko Bellic, GTA IV'ün kahramanıdır.",
+"1993'te çıkan Doom'u hangi stüdyo yaptı?|id Software|Epic Games|Bungie|Valve|id Software aynı zamanda Quake serisini de yaptı.",
+"Fallout oyunlarında oyuncunun koluna takılı cihaz nedir?|Pip-Boy|Omnitool|Ghost|Cortana|Pip-Boy envanter, harita ve görevleri gösterir.",
+"League of Legends'ın yapımcısı hangi şirkettir?|Riot Games|Valve|Blizzard|Epic Games|Oyun 2009'da yayınlandı.",
+"Among Us'ı hangi stüdyo geliştirdi?|Innersloth|Mojang|Supercell|Re-Logic|Oyun 2018'de çıktı, 2020'de büyük patlama yaptı.",
+"Hades'in ana karakteri kimdir?|Zagreus|Kratos|Orpheus|Theseus|Zagreus, ölüm tanrısı Hades'in oğludur.",
+"Baldur's Gate 3'ü hangi stüdyo geliştirdi?|Larian Studios|BioWare|Obsidian|Bethesda|Oyun 2023'te çıktı ve yılın oyunu ödülünü aldı.",
+"Hollow Knight'ın geliştiricisi hangisidir?|Team Cherry|Re-Logic|Supergiant Games|Mega Crit|Team Cherry, Avustralyalı küçük bir ekiptir.",
+"Civilization serisinin yaratıcısı kimdir?|Sid Meier|Will Wright|Peter Molyneux|Chris Roberts|İlk Civilization 1991'de çıktı.",
+"StarCraft'ta kaç farklı ırk vardır?|3|2|4|5|Terran, Zerg ve Protoss.",
+"Half-Life: Alyx hangi teknoloji için tasarlandı?|Sanal gerçeklik (VR)|Mobil|Konsol|Bulut oyun|Oyun 2020'de çıktı.",
+"2023'te CS:GO'nun yerini hangi oyun aldı?|Counter-Strike 2|Counter-Strike Source 2|CS Online|Valorant|Counter-Strike 2, Source 2 motoruyla geldi.",
+"Steam'in arkasındaki Valve'in kurucularından biri kimdir?|Gabe Newell|Phil Spencer|Tim Sweeney|Todd Howard|Gabe Newell, Valve'in eş kurucusudur.",
+"Mass Effect serisinin kahramanı kimdir?|Commander Shepard|Gordon Freeman|Garrus Vakarian|Geralt|Seri BioWare'in imzasını taşır.",
+"Team Fortress 2'de kaç oynanabilir sınıf vardır?|9|6|12|8|Scout'tan Spy'a kadar 9 sınıf vardır.",
+"Rocket League hangi sporu arabalarla oynatır?|Futbol|Basketbol|Voleybol|Tenis|Oyunu Psyonix geliştirdi.",
+"Unreal Engine'i hangi şirket geliştirir?|Epic Games|Unity Technologies|Crytek|Valve|Epic Games aynı zamanda Fortnite'ın yapımcısıdır.",
+"Red Dead Redemption 2'nin ana karakteri kimdir?|Arthur Morgan|John Marston|Dutch van der Linde|Micah Bell|Oyun PC'ye 2019'da geldi.",
+"İlk Age of Empires'ı hangi stüdyo geliştirdi?|Ensemble Studios|Relic Entertainment|Blizzard|Westwood|İlk oyun 1997'de çıktı.",
+"World of Warcraft hangi yıl çıktı?|2004|1999|2008|2011|WoW, Kasım 2004'te yayımlandı.",
+"Half-Life 2'nin büyük bölümü hangi şehirde geçer?|City 17|Black Mesa|Rapture|Night City|City 17, Doğu Avrupa'da kurgusal bir şehirdir.",
+"PUBG'nin yaratıcısı kimdir?|Brendan 'PlayerUnknown' Greene|Hideo Kojima|Cliff Bleszinski|Bruce Straley|PUBG, battle royale türünü kitlelere yaydı.",
+"Celeste'te ana karakter hangi dağa tırmanır?|Celeste Dağı|Everest|Kilimanjaro|Fuji|Oyun hem platform hem hikâye olarak çok sevildi.",
+"Disco Elysium'u hangi stüdyo geliştirdi?|ZA/UM|Obsidian|Paradox|Warhorse|Oyun neredeyse tamamen diyalog ve yetenek kontrolüne dayanır.",
+"Valheim hangi mitolojiden esinlenmiştir?|İskandinav (Viking)|Yunan|Mısır|Japon|Oyunu İsveçli Iron Gate geliştirdi.",
+"Mount & Blade serisini hangi Türk stüdyo geliştirir?|TaleWorlds Entertainment|Peak Games|Dream Games|Gram Games|TaleWorlds Ankara merkezlidir.",
+"Metro 2033 oyunları hangi yazarın romanına dayanır?|Dmitry Glukhovsky|Andrzej Sapkowski|Stephen King|Frank Herbert|Oyun Moskova metrosunda geçer.",
+"The Witcher oyunları hangi yazarın kitaplarına dayanır?|Andrzej Sapkowski|George R. R. Martin|Terry Pratchett|Neil Gaiman|Sapkowski Polonyalı bir fantastik yazardır.",
+"'Can it run ...?' esprisi hangi oyun için ortaya çıktı?|Crysis|Doom|Quake|Far Cry|Crysis 2007'de çıktı ve çok ağır bir oyundu.",
+"Factorio'nun temel mekaniği nedir?|Fabrika otomasyonu|Battle royale|Korku hayatta kalma|Yarış|Oyunu Çek stüdyo Wube Software yaptı.",
+"Tomb Raider serisinin kahramanı kimdir?|Lara Croft|Samus Aran|Ellie|Aloy|Seri 1996'da başladı.",
+"Starfield'ı hangi stüdyo geliştirdi?|Bethesda Game Studios|BioWare|Obsidian|Larian|Oyun 2023'te çıktı.",
+"Left 4 Dead hangi temaya sahiptir?|Zombi salgını, kooperatif|Uzay yarışı|Futbol|Şehir kurma|Oyunu Valve yayımladı.",
+"Slay the Spire hangi türün öncülerindendir?|Kart tabanlı roguelike|FPS|MOBA|Yarış|Oyunu Mega Crit geliştirdi.",
+"Cities: Skylines hangi türdendir?|Şehir kurma simülasyonu|Savaş|Platform|Bulmaca|Oyunu Finlandiyalı Colossal Order yaptı."
+].map(function(l){var p=l.split('|');return{q:p[0],a:p[1],w:[p[2],p[3],p[4]],i:p[5]}});
+/* oturum: ana uygulama token'ı localStorage'da tazeliyor */
+function session(){try{var k=Object.keys(localStorage).filter(function(x){return /^sb-.*-auth-token$/.test(x)})[0];if(!k)return null;var v=JSON.parse(localStorage.getItem(k));v=v&&v.currentSession?v.currentSession:v;return v&&v.access_token?v:null}catch(e){return null}}
+function rpc(name,args){
+  var s=session(),h={apikey:KEY,'Content-Type':'application/json'};if(s)h.Authorization='Bearer '+s.access_token;
+  return fetch(API+'/rest/v1/rpc/'+name,{method:'POST',headers:h,body:JSON.stringify(args||{})}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j&&j.message||('http '+r.status));return j})});
+}
+function tierOf(s){return s>=1300?['leg','EFSANE OYUNCU']:s>=1000?['epi','USTA']:s>=700?['rar','DENEYİMLİ']:['com','ÇAYLAK']}
+var TC={leg:'var(--qw-leg)',epi:'var(--qw-epi)',rar:'var(--qw-rar)',com:'var(--qw-com)'};
+function monthName(off){var d=new Date();d=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()-off,15));return d.toLocaleDateString('tr-TR',{month:'long',year:'numeric',timeZone:'Europe/Istanbul'})}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var run=null,boardOff=0,cur=[],prev=[],ticking=null;
+/* sıralama + şampiyon başlığı */
+function renderChamp(){
+  var a=cur[0],b=prev[0];
+  $('qzChamp').innerHTML='<div class="big"><span class="ic">👑</span><div><small>Bu ayın lideri · '+esc(monthName(0))+'</small>'+(a?'<b>'+esc(a.username)+'</b> <span>'+a.best_score+' puan</span>':'<b>Henüz kimse yok</b> <span>ilk sen ol</span>')+'</div></div>'
+   +'<div><span class="ic">🏆</span><div><small>Geçen ayın şampiyonu · '+esc(monthName(1))+'</small>'+(b?'<b>'+esc(b.username)+'</b> <span>'+b.best_score+' puan</span>':'<b>—</b> <span>kayıt yok</span>')+'</div></div>';
+}
+function renderBoard(){
+  var rows=boardOff?prev:cur,h='<h3>'+esc(monthName(boardOff))+' sıralaması</h3>';
+  if(!rows.length)h+='<div class="qz-empty">Bu ay için henüz puan yok.</div>';
+  rows.forEach(function(r){var m=r.rank==1?'🥇':r.rank==2?'🥈':r.rank==3?'🥉':r.rank;
+    h+='<div class="qz-row'+(r.is_me?' me':'')+'"><span class="r">'+m+'</span><span class="n">'+esc(r.username)+(r.is_me?' (sen)':'')+'</span><small>'+r.best_correct+'/10</small><span class="s">'+r.best_score+'</span></div>'});
+  $('qzBoard').innerHTML=h;
+}
+function loadBoards(){
+  return Promise.all([rpc('quiz_leaderboard',{p_month_offset:0}),rpc('quiz_leaderboard',{p_month_offset:1})]).then(function(r){cur=r[0]||[];prev=r[1]||[];renderChamp();renderBoard()}).catch(function(e){console.warn('quiz: sıralama alınamadı',e);$('qzBoard').innerHTML='<div class="qz-empty">Sıralama şu anda yüklenemedi.</div>';$('qzChamp').innerHTML=''});
+}
+function me(){return cur.filter(function(r){return r.is_me})[0]||null}
+/* ekranlar */
+function intro(){
+  stop();var m=me();
+  $('qzMain').innerHTML='<h2>PC OYUN <span>QUİZİ</span></h2><p class="qz-note" style="margin-top:10px">PC oyunları hakkında '+N+' soru. Ne kadar hızlı cevaplarsan o kadar çok puan. Her ay en yüksek puanlı oyuncu şampiyon olur.</p>'
+   +'<div class="qz-rules"><div><b>'+N+'</b><small>soru</small></div><div><b>15 sn</b><small>her soruya</small></div><div><b>1500</b><small>en yüksek puan</small></div></div>'
+   +'<p class="qz-note">Doğru cevap 100 puan, hızlı cevap için 50\'ye kadar bonus. Klavyede 1–4 tuşlarıyla da cevaplayabilirsin.'+(m?'<br>Bu ayki en iyin: <b style="color:var(--accent)">'+m.best_score+'</b> · '+m.rank+'. sıradasın.':'')+'</p>'
+   +'<div class="qz-actions"><button class="qz-btn" id="qzStart">Başla</button></div>';
+  $('qzStart').onclick=start;
+}
+function stop(){if(ticking){clearInterval(ticking);ticking=null}window.qwQuizPlaying=false}
+function start(){run={qs:shuffle(BANK).slice(0,N).map(function(q){return{q:q.q,i:q.i,o:shuffle([q.a].concat(q.w)),a:q.a}}),n:0,score:0,correct:0,ms:0,locked:false,t0:0};window.qwQuizPlaying=true;question()}
+function question(){
+  var q=run.qs[run.n];run.locked=false;
+  $('qzMain').innerHTML='<div class="qz-top"><span>Soru '+(run.n+1)+' / '+N+'</span><b>'+run.score+'</b></div><div class="qz-bar" id="qzBar"><i></i></div><div class="qz-q">'+esc(q.q)+'</div><div class="qz-opts">'
+   +q.o.map(function(o,i){return '<button class="qz-opt" data-i="'+i+'"><kbd>'+(i+1)+'</kbd>'+esc(o)+'</button>'}).join('')+'</div><div class="qz-info" id="qzInfo"></div><div class="qz-actions" id="qzNext" style="display:none"><button class="qz-btn g" id="qzNextBtn">'+(run.n+1<N?'Sonraki soru →':'Sonucu gör →')+'</button></div>';
+  document.querySelectorAll('.qz-opt').forEach(function(b){b.onclick=function(){answer(+b.dataset.i)}});
+  $('qzNextBtn').onclick=next;
+  run.t0=Date.now();stop();window.qwQuizPlaying=true;
+  ticking=setInterval(function(){
+    if(!$('quizView').classList.contains('active')){stop();run=null;intro();return}
+    var left=LIMIT-(Date.now()-run.t0),bar=$('qzBar');
+    if(bar){bar.firstChild.style.width=Math.max(0,left/LIMIT*100)+'%';bar.classList.toggle('low',left<4000)}
+    if(left<=0)answer(-1);
+  },100);
+}
+function answer(i){
+  if(!run||run.locked)return;run.locked=true;
+  var q=run.qs[run.n],took=Math.min(LIMIT,Date.now()-run.t0),ok=i>=0&&q.o[i]===q.a;
+  clearInterval(ticking);ticking=null;run.ms+=took;
+  if(ok){run.correct++;run.score+=100+Math.round(50*(LIMIT-took)/LIMIT)}
+  document.querySelectorAll('.qz-opt').forEach(function(b,k){b.disabled=true;if(q.o[k]===q.a)b.classList.add('ok');else if(k===i)b.classList.add('bad');else b.classList.add('dim')});
+  $('qzInfo').innerHTML=(i<0?'⏱ Süre doldu. ':ok?'✅ Doğru! ':'❌ Yanlış. ')+esc(q.i);
+  $('qzNext').style.display='flex';var nb=$('qzNextBtn');if(nb)nb.focus();
+}
+function next(){if(!run||!run.locked)return;run.locked=false;run.n++;if(run.n>=N)finish();else question()}
+function finish(){
+  stop();var t=tierOf(run.score),m0=me(),prevBest=m0?m0.best_score:0,r=run;
+  $('qzMain').innerHTML='<div><span class="qz-tier" style="--tc:'+TC[t[0]]+'">'+t[1]+'</span></div><div class="qz-score" id="qzScore" style="--tc:'+TC[t[0]]+'">0</div><p class="qz-note">'+r.correct+' / '+N+' doğru · ortalama '+(r.ms/N/1000).toFixed(1)+' sn</p><div class="qz-cmp" id="qzCmp">Puanın kaydediliyor…</div>'
+   +'<div class="qz-actions"><button class="qz-btn" id="qzAgain">Tekrar oyna</button><button class="qz-btn g" id="qzShare">Paylaş</button></div>';
+  var t0=Date.now(),el=$('qzScore');(function up(){var p=Math.min(1,(Date.now()-t0)/900);el.textContent=Math.round(r.score*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(up)})();
+  $('qzAgain').onclick=start;
+  $('qzShare').onclick=function(){var txt='QWERST PC Oyun Quizi: '+r.score+' puan ('+r.correct+'/'+N+') — '+location.origin+'/oyun.html';if(navigator.share)navigator.share({text:txt}).catch(function(){});else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(function(){$('qzShare').textContent='Kopyalandı ✓'})};
+  if(!session()){$('qzCmp').textContent='Puanını kaydetmek için oturum açık olmalı. Sayfayı yenileyip tekrar giriş yap.';return}
+  rpc('quiz_submit',{p_score:r.score,p_correct:r.correct,p_total_ms:Math.round(r.ms)}).then(function(){return loadBoards()}).then(function(){
+    var m=me(),lead=cur[0],h='';
+    if(!m){h='Puanın kaydedildi.'}
+    else if(m.rank===1){var s2=cur[1];h='👑 <b>Bu ayın lideri sensin!</b> '+m.best_score+' puanla birincisin'+(s2?'; ikinci '+esc(s2.username)+' ile fark <b>'+(m.best_score-s2.best_score)+'</b> puan.':'.')}
+    else{h='Bu ay <b>'+m.rank+'. sıradasın</b>. Lider <b>'+esc(lead.username)+'</b> ('+lead.best_score+' puan) ile aranda <b>'+(lead.best_score-m.best_score)+'</b> puan var.'}
+    if(r.score>prevBest&&prevBest>0)h+='<br>🔥 Bu ayki yeni kişisel rekorun!';
+    $('qzCmp').innerHTML=h;
+  }).catch(function(e){$('qzCmp').innerHTML='Puan kaydedilemedi ('+esc(/jwt|expired/i.test(e.message)?'oturum süresi dolmuş, sayfayı yenileyip tekrar dene':e.message)+'). <a href="#" id="qzRetry" style="color:var(--accent)">Tekrar dene</a>';var a=$('qzRetry');if(a)a.onclick=function(ev){ev.preventDefault();finish2(r)}});
+}
+function finish2(r){run=r;finish()}
+/* sekme */
+function open(){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  $('quizView').classList.add('active');$('tabQuiz').classList.add('active');
+  window.scrollTo({top:0});
+  intro();
+  loadBoards().then(function(){if(!window.qwQuizPlaying&&$('qzStart'))intro()});
+}
+$('tabQuiz').onclick=open;
+new MutationObserver(function(){if(!$('quizView').classList.contains('active')&&(window.qwQuizPlaying||run)){stop();run=null}}).observe($('quizView'),{attributes:true,attributeFilter:['class']});
+document.querySelectorAll('.qz-tabs button').forEach(function(b){b.onclick=function(){boardOff=+b.dataset.m;document.querySelectorAll('.qz-tabs button').forEach(function(x){x.classList.toggle('on',x===b)});renderBoard()}});
+document.addEventListener('keydown',function(e){
+  if(!window.qwQuizPlaying||!run||!$('quizView').classList.contains('active'))return;
+  if(e.key>='1'&&e.key<='4'&&!run.locked){e.preventDefault();answer(+e.key-1)}
+  else if((e.key==='Enter'||e.key===' ')&&run.locked){e.preventDefault();next()}
+});
 })();
 </script>
 </body>

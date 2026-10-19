@@ -101,6 +101,9 @@ function showPublicLogin(){
   if(screen) screen.classList.remove('public-home');
   document.getElementById('appScreen').style.display='none';
   document.getElementById('authScreen').style.display='block';
+  document.getElementById('authForm').style.display='block';
+  document.getElementById('authTabs').style.display='flex';
+  document.getElementById('passwordResetPanel').style.display='none';
   setAuthMode('login');
   setTimeout(()=>document.getElementById('authEmail')?.focus(),50);
 }
@@ -130,6 +133,28 @@ document.getElementById('publicBackBtn').onclick=showPublicHome;
 document.getElementById('loginTab').onclick=()=>setAuthMode('login');
 document.getElementById('registerTab').onclick=()=>setAuthMode('register');
 document.getElementById('authBtn').onclick=doAuth;
+document.getElementById('forgotPasswordLink').onclick=async e=>{
+  e.preventDefault();
+  const email=document.getElementById('authEmail').value.trim();
+  if(!email){showMsg('Şifre sıfırlama bağlantısı için önce e-posta adresinizi yazın.','error');document.getElementById('authEmail').focus();return;}
+  const link=document.getElementById('forgotPasswordLink');
+  link.textContent='Gönderiliyor...';
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+  link.textContent='Şifremi unuttum?';
+  if(error){showMsg('Şifre sıfırlama e-postası gönderilemedi. Lütfen tekrar deneyin.','error');return;}
+  showMsg('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.','success');
+};
+document.getElementById('updatePasswordBtn').onclick=async()=>{
+  const password=document.getElementById('newPassword').value;
+  const button=document.getElementById('updatePasswordBtn');
+  if(password.length<6){showMsg('Yeni şifre en az 6 karakter olmalı.','error');return;}
+  button.disabled=true; button.textContent='Güncelleniyor...';
+  const {error}=await sb.auth.updateUser({password});
+  button.disabled=false; button.textContent='Şifremi Güncelle';
+  if(error){showMsg('Şifre güncellenemedi. Lütfen tekrar deneyin.','error');return;}
+  showMsg('Şifreniz güncellendi. Şimdi yeni şifrenizle giriş yapabilirsiniz.','success');
+  setTimeout(showPublicLogin,1200);
+};
 document.getElementById('authEmail').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
 document.getElementById('authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();});
 
@@ -138,6 +163,7 @@ function setAuthMode(mode){
   document.getElementById('loginTab').classList.toggle('active',mode==='login');
   document.getElementById('registerTab').classList.toggle('active',mode==='register');
   document.getElementById('authBtn').textContent=mode==='login'?t('authBtn_login'):t('authBtn_register');
+  document.getElementById('forgotPasswordLink').style.display=mode==='login'?'flex':'none';
   document.getElementById('usernameField').style.display=mode==='register'?'block':'none';
   document.getElementById('authError').style.display='none';
   document.getElementById('authSuccess').style.display='none';
@@ -168,6 +194,14 @@ async function doAuth(){
 function showMsg(msg,type){
   const el=document.getElementById(type==='error'?'authError':'authSuccess');
   el.textContent=msg; el.style.display='block';
+}
+
+function showPasswordRecovery(){
+  showPublicLogin();
+  document.getElementById('authForm').style.display='none';
+  document.getElementById('authTabs').style.display='none';
+  document.getElementById('passwordResetPanel').style.display='block';
+  document.getElementById('newPassword').focus();
 }
 
 document.getElementById('logoutBtn').onclick=async()=>{
@@ -207,7 +241,9 @@ async function loadMyListsSilent(){
 }
 
 sb.auth.onAuthStateChange((event,session)=>{
-  if(session?.user && !currentUser){
+  if(event==='PASSWORD_RECOVERY'){
+    showPasswordRecovery();
+  } else if(session?.user && !currentUser){
     currentUser=session.user;
     if(document.getElementById('appScreen')) showApp();
   } else if(event==='SIGNED_OUT'){

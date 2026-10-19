@@ -56,6 +56,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .auth-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
 .auth-field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;padding:12px 14px;outline:none;transition:border-color .2s;}
 .auth-field input:focus{border-color:var(--accent);}
+.forgot-password{display:flex;justify-content:flex-end;margin:-4px 0 8px;color:var(--accent);font-size:12px;text-decoration:none;cursor:pointer;}
+.forgot-password:hover{text-decoration:underline;}
+.password-reset-panel{margin-top:8px;}
 .btn-auth{width:100%;background:var(--accent);border:none;border-radius:8px;color:#0d0d0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:14px;cursor:pointer;margin-top:8px;transition:opacity .2s;}
 .btn-auth:hover{opacity:.88;}.btn-auth:disabled{opacity:.5;cursor:not-allowed;}
 .auth-msg{border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
@@ -528,16 +531,21 @@ html.qw-secret{--accent:#ff3df2}
       <div class="auth-box" style="margin:0;">
         <div class="auth-logo">QWERST<span style="color:#e8ff47">.COM</span></div>
         <div class="auth-sub">Oyun listeni oluştur, takip et.</div>
-        <div class="auth-tabs">
+        <div class="auth-tabs" id="authTabs">
           <button class="auth-tab active" id="loginTab">Giriş Yap</button>
           <button class="auth-tab" id="registerTab">Kayıt Ol</button>
         </div>
-        <form onsubmit="event.preventDefault();" autocomplete="on">
+        <form id="authForm" onsubmit="event.preventDefault();" autocomplete="on">
         <div class="auth-field"><label>E-posta</label><input type="email" id="authEmail" placeholder="ornek@mail.com" autocomplete="email"></div>
         <div class="auth-field"><label>Şifre</label><input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password"></div>
+        <a href="#" class="forgot-password" id="forgotPasswordLink">Şifremi unuttum?</a>
         <div class="auth-field" id="usernameField" style="display:none"><label>Kullanıcı Adı</label><input type="text" id="authUsername" placeholder="oyunsever42" autocomplete="username"></div>
         <button type="submit" class="btn-auth" id="authBtn">Giriş Yap</button>
         </form>
+        <div class="password-reset-panel" id="passwordResetPanel" style="display:none">
+          <div class="auth-field"><label>Yeni Şifre</label><input type="password" id="newPassword" placeholder="••••••••" autocomplete="new-password"></div>
+          <button type="button" class="btn-auth" id="updatePasswordBtn">Şifremi Güncelle</button>
+        </div>
         <div class="auth-msg error" id="authError"></div>
         <div class="auth-msg success" id="authSuccess"></div>
       </div>

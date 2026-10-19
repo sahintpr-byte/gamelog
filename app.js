@@ -3,6 +3,7 @@ function initApp() {
 const SB_URL = 'https://dzjmbwyandrkonqdjalk.supabase.co';
 const SB_KEY = 'sb_publishable_oeokT78grwbNQeKo8xtZRA_xJdBkuPD';
 const RAWG   = 'b1ba1bc900a14e699e5e98788646cf16';
+const PASSWORD_RESET_REDIRECT = 'https://www.qwerst.com/oyun.html';
 
 const { createClient } = supabase;
 const sb = createClient(SB_URL, SB_KEY);
@@ -139,7 +140,7 @@ document.getElementById('forgotPasswordLink').onclick=async e=>{
   if(!email){showMsg('Şifre sıfırlama bağlantısı için önce e-posta adresinizi yazın.','error');document.getElementById('authEmail').focus();return;}
   const link=document.getElementById('forgotPasswordLink');
   link.textContent='Gönderiliyor...';
-  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:PASSWORD_RESET_REDIRECT});
   link.textContent='Şifremi unuttum?';
   if(error){showMsg('Şifre sıfırlama e-postası gönderilemedi. Lütfen tekrar deneyin.','error');return;}
   showMsg('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.','success');

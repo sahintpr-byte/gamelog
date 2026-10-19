@@ -9,6 +9,7 @@ const sb = createClient(SB_URL, SB_KEY);
 
 const PAGE_SIZE = 30;
 var currentUser=null, currentGame=null, currentSort='date', dateSortAsc=false;
+window.qwApp={sb:sb,viewProfile:viewProfile,user:function(){return currentUser}};
 let listViewMode='list', currentPage=1;
 
 // Auto-login: check existing session immediately

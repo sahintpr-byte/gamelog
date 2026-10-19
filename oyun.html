@@ -414,6 +414,25 @@ html.qw-secret{--accent:#ff3df2}
 @media(max-width:860px){#qwHero{grid-template-columns:1fr}.tab-btn[data-k]:before{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#qwBoot{display:none}#qwHud .xp i{transition:none}}
 </style>
+<style id="qw-friends">
+/* ===== Arkadaşların son eklediği oyunlar ===== */
+.qw-fr{border-top:1px solid var(--border)}
+.qw-fr-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px 6px;font:16px 'Bebas Neue',sans-serif;letter-spacing:1.5px;color:var(--muted)}
+.qw-fr-h small{font:500 10px 'DM Sans',sans-serif;letter-spacing:0;color:var(--muted)}
+.qw-fr-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:background .15s;border:0;background:none;width:100%;text-align:left;color:var(--text);font-family:'DM Sans',sans-serif}
+.qw-fr-item:hover,.qw-fr-item:focus-visible{background:var(--surface2)}
+.qw-fr-item .th{flex:0 0 auto;width:52px;height:34px;border-radius:6px;background:var(--surface2) center/cover no-repeat;border:1px solid var(--border)}
+.qw-fr-item .tx{min-width:0;flex:1}
+.qw-fr-item b{display:block;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qw-fr-item span{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qw-fr-item span em{font-style:normal;color:var(--accent)}
+.qw-fr-item:after{content:"›";color:var(--muted);font-size:18px;transition:transform .15s,color .15s}
+.qw-fr-item:hover:after{transform:translateX(3px);color:var(--accent)}
+.qw-fr-empty{padding:6px 16px 16px;font-size:12px;color:var(--muted);line-height:1.5}
+.qw-fr-sk{height:34px;margin:9px 16px;border-radius:6px;background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%) 0 0/200% 100%;animation:qwsk 1.4s infinite}
+@keyframes qwsk{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.qw-fr-sk{animation:none}}
+</style>
 <style id="qw-quiz">
 /* ===== QUIZ ===== */
 #tabQuiz{position:relative}
@@ -798,6 +817,7 @@ function closeVideoModal() {
             <button class="btn-new-list" id="newListBtn">+ Yeni</button>
           </div>
           <div id="listsNav"></div>
+          <div class="qw-fr" id="qwFriends"><div class="qw-fr-h">👥 ARKADAŞLARIN SON 5 OYUNU</div><div id="qwFrList"></div></div>
         </div>
         <div id="listContent">
           <div class="empty-state"><div class="empty-icon">📋</div><h3>LİSTE SEÇ</h3><p>Soldan bir liste seç.</p></div>
@@ -1062,6 +1082,60 @@ document.addEventListener('keydown',function(e){
 var q=0;function tick(){if(q)return;q=requestAnimationFrame(function(){q=0;document.querySelectorAll('.game-card:not([data-qw]),#trendingGames>div:not([data-qw]):not(.game-card),#topGamesGrid>div:not([data-qw]):not(.game-card),#bottomGamesGrid>div:not([data-qw]):not(.game-card),#recommendationGrid>div:not([data-qw]):not(.game-card)').forEach(decorate);applyFilter();tagRows();hud()})}
 new MutationObserver(tick).observe(document.body,{childList:true,subtree:true,characterData:true});
 tick();
+})();
+</script>
+<script data-cfasync="false" id="qw-friends-js">
+(function(){
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function safeUrl(u){u=String(u||'');if(!/^https?:\/\//i.test(u))return '';return u.replace(/['"()\s\\<>&]/g,function(c){return '%'+c.charCodeAt(0).toString(16).toUpperCase()})}
+function ago(t){var s=Math.max(0,(Date.now()-new Date(t).getTime())/1000);if(isNaN(s))return '';if(s<90)return 'az önce';if(s<3600)return Math.round(s/60)+' dk önce';if(s<86400)return Math.round(s/3600)+' sa önce';return Math.round(s/86400)+' gün önce'}
+var last=0,busy=false,items=[];
+function app(){return window.qwApp}
+function paint(rows,msg){
+  var box=$('qwFrList');if(!box)return;
+  if(msg){box.innerHTML='<div class="qw-fr-empty">'+msg+'</div>';return}
+  box.innerHTML=rows.map(function(r,i){
+    return '<button type="button" class="qw-fr-item" data-i="'+i+'" title="'+esc(r.user)+' kişisinin tüm listelerini aç"><div class="th"'+(safeUrl(r.img)?' style="background-image:url(\''+safeUrl(r.img)+'\')"':'')+'></div><div class="tx"><b>'+esc(r.name)+'</b><span><em>'+esc(r.user)+'</em> · '+ago(r.at)+'</span></div></button>';
+  }).join('');
+  box.querySelectorAll('.qw-fr-item').forEach(function(b){b.onclick=function(){openFriend(items[+b.dataset.i])}});
+}
+function openFriend(r){
+  var a=app();if(!r||!a||!a.viewProfile)return;
+  a.viewProfile(r.uid,r.user);
+  document.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active')});
+  var f=$('tabFriends');if(f)f.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+async function load(force){
+  var a=app(),fr=$('qwFriends');
+  if(!fr)return;
+  if(!a||!a.sb){fr.style.display='none';return}          // app.js güncel değilse kutu gizli kalır
+  var u=a.user&&a.user();if(!u)return;
+  if(busy||(!force&&Date.now()-last<30000))return;
+  busy=true;
+  if(!items.length)$('qwFrList').innerHTML='<div class="qw-fr-sk"></div><div class="qw-fr-sk"></div><div class="qw-fr-sk"></div>';
+  try{
+    var f=await a.sb.from('follows').select('following_id').eq('follower_id',u.id);
+    var ids=((f&&f.data)||[]).map(function(x){return x.following_id});
+    if(!ids.length){items=[];paint(null,'Henüz arkadaş eklemedin. <b>Arkadaşlar</b> sekmesinden kişi bulup takip edince, onların eklediği son oyunlar burada görünür.');return}
+    var g=await a.sb.from('game_lists').select('user_id,game_name,game_image,added_at').in('user_id',ids).order('added_at',{ascending:false}).limit(5);
+    var rows=(g&&g.data)||[];
+    if(!rows.length){items=[];paint(null,'Arkadaşların henüz listesine oyun eklememiş.');return}
+    var uids=rows.map(function(r){return r.user_id}).filter(function(x,i,arr){return arr.indexOf(x)===i});
+    var p=await a.sb.from('profiles').select('id,username').in('id',uids);
+    var names={};((p&&p.data)||[]).forEach(function(x){names[x.id]=x.username});
+    items=rows.map(function(r){return {uid:r.user_id,user:names[r.user_id]||'Oyuncu',name:r.game_name,img:r.game_image,at:r.added_at}});
+    paint(items);last=Date.now();
+  }catch(e){console.warn('qw: arkadaş kutusu yüklenemedi',e);paint(null,'Arkadaşlarının son eklediği oyunlar şu anda yüklenemedi.')}
+  finally{busy=false}
+}
+var mv=$('mylistView');
+if(mv){
+  new MutationObserver(function(){if(mv.classList.contains('active'))load(false)}).observe(mv,{attributes:true,attributeFilter:['class']});
+  if(mv.classList.contains('active'))load(false);
+}
+window.qwFriendsRefresh=function(){load(true)};
 })();
 </script>
 <script data-cfasync="false" id="qw-quiz-js">

@@ -381,7 +381,7 @@ async function loadUsers(){
   el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
   document.getElementById('userDetailPanel').style.display='none';
   const {data:users,error:usersErr}=await sb.rpc('admin_list_users');
-  if(usersErr){el.innerHTML='<div class="loading" style="color:var(--red)">Kullanıcı bilgileri alınamadı. Supabase SQL Editor’da <code>supabase/admin-users.sql</code> dosyasını çalıştırın.</div>';console.error(usersErr);return;}
+  if(usersErr){el.innerHTML='<div class="loading" style="color:var(--red)">Kullanıcı bilgileri alınamadı.<br><small style="display:block;margin-top:10px;color:var(--muted)">Supabase hatası: '+(usersErr.message||'Bilinmeyen hata')+'<br>Admin hesabınızı <code>admin_users</code> tablosuna eklediğinizden emin olun.</small></div>';console.error(usersErr);return;}
   if(!users||!users.length){el.innerHTML='<div class="loading">Kullanıcı yok.</div>';return;}
 
   const {data:gameCounts}=await sb.from('game_lists').select('user_id');

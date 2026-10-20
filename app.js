@@ -832,13 +832,24 @@ async function importList(event){
   try{
     if(ext==='csv'){
       const text=await file.text();
-      const lines=text.split('\n').filter(l=>l.trim());
-      const headers=lines[0].split(',').map(h=>h.replace(/^"|"$/g,'').trim());
-      rows=lines.slice(1).map(line=>{
+      const parseCsvLine=line=>{
         const vals=[]; let cur='',inQ=false;
-        for(const ch of line){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){vals.push(cur.trim());cur='';}else cur+=ch;}
+        for(let i=0;i<line.length;i++){
+          const ch=line[i];
+          if(ch==='"'){
+            if(inQ&&line[i+1]==='"'){cur+='"';i++;}
+            else inQ=!inQ;
+          }else if(ch===','&&!inQ){vals.push(cur.trim());cur='';}
+          else cur+=ch;
+        }
         vals.push(cur.trim());
-        const obj={}; headers.forEach((h,i)=>obj[h]=(vals[i]||'').replace(/^"|"$/g,''));
+        return vals;
+      };
+      const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim());
+      const headers=parseCsvLine(lines[0]);
+      rows=lines.slice(1).map(line=>{
+        const vals=parseCsvLine(line),obj={};
+        headers.forEach((h,i)=>obj[h]=vals[i]||'');
         return obj;
       });
     } else {
@@ -851,25 +862,47 @@ async function importList(event){
   const nameKey=Object.keys(rows[0]).find(k=>/oyun|name|game/i.test(k));
   const scoreKey=Object.keys(rows[0]).find(k=>/puan|score|rating/i.test(k));
   if(!nameKey){toast(t('toastNoCol'));return;}
+  const ratingIsFivePoint=!!scoreKey&&/rating/i.test(scoreKey);
+  const dateValueForRow=row=>{
+    const keys=Object.keys(row);
+    const directKey=keys.find(k=>/^date_added_to_collection$/i.test(k))||keys.find(k=>/date[_ ]?added|added[_ ]?at|eklenme/i.test(k));
+    let value=directKey?row[directKey]:'';
+    const shelvesKey=keys.find(k=>/^shelves$/i.test(k)||/shelf/i.test(k));
+    if(shelvesKey&&row[shelvesKey]){
+      try{
+        const shelves=JSON.parse(row[shelvesKey]);
+        const entries=Object.values(shelves||{});
+        const nested=entries.map(x=>x&&x.date_added).find(Boolean);
+        if(nested)value=nested;
+      }catch(e){}
+    }
+    const date=value?new Date(value):null;
+    return date&&!isNaN(date.getTime())?date.toISOString():null;
+  };
   let imported=0,skipped=0;
   toast(t('toastImporting'));
   for(const row of rows){
     const gameName=(row[nameKey]||'').trim(); if(!gameName) continue;
-    const score=Math.min(10,Math.max(1,parseInt(row[scoreKey])||5));
+    const rawScore=parseFloat(String(scoreKey?row[scoreKey]:'').replace(',','.'));
+    const convertedScore=ratingIsFivePoint?rawScore*2:rawScore;
+    const score=Number.isFinite(convertedScore)?Math.min(10,Math.max(1,Math.round(convertedScore))):5;
     const noteKey=Object.keys(row).find(k=>/not|note|comment/i.test(k));
+    const addedAt=dateValueForRow(row);
     try{
       const r=await fetch('https://api.rawg.io/api/games?key='+RAWG+'&search='+encodeURIComponent(gameName)+'&page_size=1&search_precise=true');
       const d=await r.json();
       const game=d.results&&d.results[0];
       if(!game){skipped++;continue;}
-      await sb.from('game_lists').upsert({
+      const payload={
         user_id:currentUser.id,game_id:game.id,list_id:activeListId,
         game_name:game.name,game_image:game.background_image||'',
         released:game.released||'',
         genres:(game.genres||[]).map(x=>x.name),
         platforms:(game.platforms||[]).slice(0,3).map(x=>x.platform.name),
         score,notes:noteKey?row[noteKey]:''
-      },{onConflict:'user_id,game_id'});
+      };
+      if(addedAt)payload.added_at=addedAt;
+      await sb.from('game_lists').upsert(payload,{onConflict:'user_id,game_id'});
       imported++;
     }catch(e){skipped++;}
   }

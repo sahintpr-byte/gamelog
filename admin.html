@@ -129,6 +129,7 @@ body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-ser
 .btn-del{background:none;border:1px solid var(--border);color:var(--muted);
   border-radius:6px;font-size:12px;padding:4px 10px;cursor:pointer;transition:all .2s;}
 .btn-del:hover{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.08);}
+.btn-danger{border-color:rgba(239,68,68,.45);color:#ff8b8b;white-space:nowrap;}
 
 @media(max-width:768px){.app{grid-template-columns:1fr;}.sidebar{display:none;}}
 </style>
@@ -379,32 +380,38 @@ async function loadUsers(){
   const el=document.getElementById('usersContent');
   el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
   document.getElementById('userDetailPanel').style.display='none';
-  const {data:users}=await sb.from('profiles').select('*').order('created_at',{ascending:false});
+  const {data:users,error:usersErr}=await sb.rpc('admin_list_users');
+  if(usersErr){el.innerHTML='<div class="loading" style="color:var(--red)">Kullanıcı bilgileri alınamadı. Supabase SQL Editor’da <code>supabase/admin-users.sql</code> dosyasını çalıştırın.</div>';console.error(usersErr);return;}
   if(!users||!users.length){el.innerHTML='<div class="loading">Kullanıcı yok.</div>';return;}
 
   const {data:gameCounts}=await sb.from('game_lists').select('user_id');
   const {data:bookCounts}=await sb.from('book_lists').select('user_id');
-  const {data:logins,error:loginErr}=await sb.rpc('admin_user_last_logins');
-  const ll={};
-  (logins||[]).forEach(r=>{ll[r.user_id]=r.last_sign_in_at;});
-  if(loginErr)console.warn('Son giriş verisi alınamadı:',loginErr.message);
   const gc={},bc={};
   (gameCounts||[]).forEach(r=>{gc[r.user_id]=(gc[r.user_id]||0)+1;});
   (bookCounts||[]).forEach(r=>{bc[r.user_id]=(bc[r.user_id]||0)+1;});
 
-  const rows=users.map(u=>`<tr style="cursor:pointer" onclick="loadUserDetail('${u.id}','${u.username}')">
-    <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${u.username[0].toUpperCase()}</div><strong>${u.username}</strong></div></td>
+  const rows=users.map(u=>{const username=u.username||'—';const safeName=username.replace(/'/g,"\\'");return `<tr style="cursor:pointer" onclick="loadUserDetail('${u.id}','${safeName}')">
+    <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${username[0].toUpperCase()}</div><strong>${username}</strong></div></td>
     <td class="mono" style="color:var(--muted);font-size:11px">${u.id.slice(0,8)}...</td>
-    <td class="mono" style="color:var(--muted);font-size:11px">••••••••</td>
+    <td class="mono" style="font-size:12px">${u.email||'—'}</td>
     <td><span class="badge cyan">🎮 ${gc[u.id]||0} oyun</span></td>
     <td><span class="badge green">📚 ${bc[u.id]||0} kitap</span></td>
     <td class="mono">${fdate(u.created_at)}</td>
-    <td class="mono">${loginErr?'—':fdatetime(ll[u.id])}</td>
-    <td><span style="font-size:11px;color:var(--accent)">→ Detay</span></td>
-  </tr>`).join('');
+    <td class="mono">${fdatetime(u.last_sign_in_at)}</td>
+    <td><button class="btn-del btn-danger" onclick="event.stopPropagation();deleteUser('${u.id}','${safeName}')">Sil</button></td>
+  </tr>`;}).join('');
 
   el.innerHTML=tableWrap('Tüm Kullanıcılar — satıra tıkla detay gör',users.length,
-    '<th>Kullanıcı</th><th>ID</th><th>Şifre</th><th>Oyunlar</th><th>Kitaplar</th><th>Kayıt Tarihi</th><th>Son Giriş</th><th></th>',rows);
+    '<th>Kullanıcı</th><th>ID</th><th>Kayıt e-postası</th><th>Oyunlar</th><th>Kitaplar</th><th>Kayıt Tarihi</th><th>Son Giriş</th><th>İşlem</th>',rows);
+}
+
+async function deleteUser(userId,username){
+  if(!confirm('"'+username+'" kullanıcısı ve hesabına bağlı veriler kalıcı olarak silinsin mi?'))return;
+  const {error}=await sb.rpc('admin_delete_user',{target_user_id:userId});
+  if(error){alert('Kullanıcı silinemedi: '+error.message);return;}
+  document.getElementById('userDetailPanel').style.display='none';
+  await loadUsers();
+  loadOverview();
 }
 
 async function loadUserDetail(userId, username){

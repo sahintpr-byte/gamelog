@@ -59,6 +59,7 @@ begin
   -- Bu tablo için açık temizlik, mevcut projedeki temel kullanıcı FK'sını
   -- garanti altına alır.
   delete from public.game_lists where user_id = target_user_id;
+  delete from public.profiles where id = target_user_id;
 
   -- Auth kullanıcısına doğrudan bağlı tüm public kayıtlarını önce temizle.
   -- Böylece game_lists, book_lists, follows vb. tablolardaki FK kısıtları

@@ -1,6 +1,6 @@
 -- Admin kullanıcı listesi ve silme işlemleri.
 -- Supabase SQL Editor'da bir kez çalıştırın.
--- Aşağıdaki INSERT satırındaki e-postayı gerçek admin hesabınızla değiştirin.
+-- Admin hesabı: sahintoper@hotmail.com
 
 create table if not exists public.admin_users (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -10,10 +10,9 @@ create table if not exists public.admin_users (
 alter table public.admin_users enable row level security;
 revoke all on public.admin_users from anon, authenticated;
 
--- Örnek yetkilendirme:
--- insert into public.admin_users(user_id)
--- select id from auth.users where email = 'admin@example.com'
--- on conflict (user_id) do nothing;
+insert into public.admin_users(user_id)
+select id from auth.users where email = 'sahintoper@hotmail.com'
+on conflict (user_id) do nothing;
 
 create or replace function public.admin_list_users()
 returns table (
@@ -59,6 +58,7 @@ begin
   -- Bu tablo için açık temizlik, mevcut projedeki temel kullanıcı FK'sını
   -- garanti altına alır.
   delete from public.game_lists where user_id = target_user_id;
+  delete from public.lists where user_id = target_user_id;
   delete from public.profiles where id = target_user_id;
 
   -- Auth kullanıcısına doğrudan bağlı tüm public kayıtlarını önce temizle.

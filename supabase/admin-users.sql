@@ -55,10 +55,15 @@ begin
     raise exception 'Aktif admin hesabı silinemez';
   end if;
 
+  delete from public.comments where user_id = target_user_id or game_list_owner_id = target_user_id;
+  delete from public.book_comments where user_id = target_user_id or book_list_owner_id = target_user_id;
+  delete from public.follows where follower_id = target_user_id or following_id = target_user_id;
   -- Bu tablo için açık temizlik, mevcut projedeki temel kullanıcı FK'sını
   -- garanti altına alır.
   delete from public.game_lists where user_id = target_user_id;
   delete from public.lists where user_id = target_user_id;
+  delete from public.book_lists where user_id = target_user_id;
+  delete from public.book_lists_meta where user_id = target_user_id;
   delete from public.profiles where id = target_user_id;
 
   -- Auth kullanıcısına doğrudan bağlı tüm public kayıtlarını önce temizle.

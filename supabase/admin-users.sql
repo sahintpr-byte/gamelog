@@ -46,6 +46,8 @@ language plpgsql
 security definer
 set search_path = public, auth
 as $$
+declare
+  fk record;
 begin
   if not exists (select 1 from public.admin_users where user_id = auth.uid()) then
     raise exception 'Admin yetkisi gerekli';
@@ -54,7 +56,28 @@ begin
     raise exception 'Aktif admin hesabı silinemez';
   end if;
 
-  -- İlişkili tabloların foreign key ON DELETE CASCADE kuralları çalışır.
+  -- Auth kullanıcısına doğrudan bağlı tüm public kayıtlarını önce temizle.
+  -- Böylece game_lists, book_lists, follows vb. tablolardaki FK kısıtları
+  -- auth.users silme işlemini engellemez.
+  for fk in
+    select distinct kcu.table_schema, kcu.table_name, kcu.column_name
+    from information_schema.table_constraints tc
+    join information_schema.key_column_usage kcu
+      on tc.constraint_name = kcu.constraint_name
+     and tc.table_schema = kcu.table_schema
+    join information_schema.constraint_column_usage ccu
+      on tc.constraint_name = ccu.constraint_name
+     and tc.constraint_schema = ccu.constraint_schema
+    where tc.constraint_type = 'FOREIGN KEY'
+      and tc.table_schema = 'public'
+      and ccu.table_schema = 'auth'
+      and ccu.table_name = 'users'
+      and ccu.column_name = 'id'
+  loop
+    execute format('delete from %I.%I where %I = $1', fk.table_schema, fk.table_name, fk.column_name)
+      using target_user_id;
+  end loop;
+
   delete from auth.users where id = target_user_id;
   return found;
 end;
